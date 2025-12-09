@@ -1,9 +1,11 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useImportFromRAWG } from "../../hooks/useAdmin";
 import { FaSearch, FaDownload, FaCheckCircle } from "react-icons/fa";
 import styles from "./RAWGImport.module.css";
 
 const RAWGImport = () => {
+  const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState(false);
@@ -11,7 +13,7 @@ const RAWGImport = () => {
 
   const handleSearch = async () => {
     if (searchQuery.trim().length < 3) {
-      alert("Escribe al menos 3 caracteres para buscar");
+      alert(t("admin.search_placeholder")); // Using placeholder as validation message too for now
       return;
     }
 
@@ -22,9 +24,7 @@ const RAWGImport = () => {
 
       // For now, show placeholder message
       setSearchResults([]);
-      alert(
-        "Función de búsqueda RAWG en desarrollo.\n\nPróximamente podrás buscar e importar juegos desde la base de datos RAWG."
-      );
+      alert("Function not implemented yet.");
     } catch (error: any) {
       alert(`Error: ${error.message}`);
     } finally {
@@ -35,12 +35,12 @@ const RAWGImport = () => {
   const handleImport = async (rawgId: number, title: string) => {
     if (
       window.confirm(
-        `¿Importar "${title}" desde RAWG?\n\nEsto creará el juego en tu catálogo con toda la metadata de RAWG.`
+        `${t("admin.import_btn")} "${title}"?`
       )
     ) {
       try {
         await importMutation.mutateAsync({ rawgId });
-        alert("Juego importado correctamente");
+        alert("Success");
       } catch (err: any) {
         alert(`Error: ${err.response?.data?.message || err.message}`);
       }
@@ -50,9 +50,9 @@ const RAWGImport = () => {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h1>Importar desde RAWG</h1>
+        <h1>{t("admin.import_title")}</h1>
         <p className={styles.subtitle}>
-          Busca juegos en la base de datos de RAWG e impórtalos a tu catálogo
+          {t("admin.import_subtitle")}
         </p>
       </div>
 
@@ -61,7 +61,7 @@ const RAWGImport = () => {
         <div className={styles.searchBar}>
           <input
             type="text"
-            placeholder="Buscar juegos en RAWG (ej: GTA V, Minecraft)..."
+            placeholder={t("admin.search_placeholder")}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyPress={(e) => e.key === "Enter" && handleSearch()}
@@ -72,24 +72,21 @@ const RAWGImport = () => {
             disabled={isSearching}
             className={styles.searchBtn}
           >
-            <FaSearch /> {isSearching ? "Buscando..." : "Buscar"}
+            <FaSearch /> {isSearching ? t("admin.searching") : t("admin.btn_search")}
           </button>
         </div>
       </div>
 
       {/* Info Box */}
       <div className={styles.infoBox}>
-        <h3>ℹ️ Cómo funciona</h3>
+        <h3>{t("admin.how_it_works")}</h3>
         <ol>
-          <li>Busca un juego por su nombre en la base de datos de RAWG</li>
-          <li>Selecciona el juego que quieres importar</li>
+          <li>{t("admin.step_1")}</li>
+          <li>{t("admin.step_2")}</li>
           <li>
-            El sistema traerá automáticamente:
+            {t("admin.step_3")}
             <ul>
-              <li>Título, descripción y fecha de lanzamiento</li>
-              <li>Imágenes (portada y screenshots)</li>
-              <li>Desarrollador y publisher</li>
-              <li>Precio de Steam (si está disponible)</li>
+              <li>{t("admin.details_list")}</li>
             </ul>
           </li>
         </ol>
@@ -98,7 +95,7 @@ const RAWGImport = () => {
       {/* Results */}
       {searchResults.length > 0 && (
         <div className={styles.results}>
-          <h2>Resultados ({searchResults.length})</h2>
+          <h2>{t("admin.results")} ({searchResults.length})</h2>
           <div className={styles.grid}>
             {searchResults.map((game: any) => (
               <div key={game.id} className={styles.card}>
@@ -114,7 +111,7 @@ const RAWGImport = () => {
                 <div className={styles.cardContent}>
                   <h3 className={styles.cardTitle}>{game.name}</h3>
                   <p className={styles.cardMeta}>
-                    {game.released && `Lanzamiento: ${game.released}`}
+                    {game.released && `${t("admin.release")}: ${game.released}`}
                   </p>
                   {game.rating && (
                     <div className={styles.rating}>⭐ {game.rating}/5</div>
@@ -126,7 +123,7 @@ const RAWGImport = () => {
                     disabled={importMutation.isPending}
                     className={styles.importBtn}
                   >
-                    <FaDownload /> Importar
+                    <FaDownload /> {t("admin.import_btn")}
                   </button>
                 </div>
               </div>
@@ -138,7 +135,7 @@ const RAWGImport = () => {
       {/* Empty State */}
       {!isSearching && searchResults.length === 0 && searchQuery && (
         <div className={styles.emptyState}>
-          <p>No se encontraron resultados para "{searchQuery}"</p>
+          <p>{t("admin.no_results")} "{searchQuery}"</p>
         </div>
       )}
     </div>

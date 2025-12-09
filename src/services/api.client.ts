@@ -42,14 +42,14 @@ apiClient.interceptors.response.use(
         // return apiClient(originalRequest);
 
         // For now, just logout or reject
-        // localStorage.removeItem('token');
-        // window.location.href = '/login';
+        localStorage.removeItem("token");
+        window.location.href = "/login";
 
         return Promise.reject(error);
       } catch (refreshError) {
         // Handle refresh failure (logout user)
         localStorage.removeItem("token");
-        // window.location.href = '/login'; // Optional: Redirect
+        window.location.href = "/login";
         return Promise.reject(refreshError);
       }
     }

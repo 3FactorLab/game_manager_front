@@ -1,0 +1,55 @@
+{
+  "common": {
+    "loading": "Cargando...",
+    "error": "Algo salió mal",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "search": "Buscar...",
+    "access_denied": "Acceso Denegado",
+    "admin_only": "Solo los administradores pueden acceder a esta sección."
+  },
+  "nav": {
+    "inicio": "Inicio",
+    "home": "Catálogo",
+    "store": "Tienda",
+    "library": "Mi Biblioteca",
+    "login": "Iniciar Sesión",
+    "register": "Registrarse",
+    "profile": "Perfil"
+  },
+  "home": {
+    "hero_title": "Descubre tu próxima aventura",
+    "hero_subtitle": "Explora miles de juegos impulsados por la comunidad."
+  },
+  "landing": {
+    "hero_title": "Bienvenido a GameManager",
+    "hero_subtitle": "Tu plataforma definitiva para descubrir, organizar y gestionar tu colección de juegos sin esfuerzo. Rastrea tu biblioteca, explora nuevos títulos y nunca te pierdas un gran juego.",
+    "explore_games": "Explorar Juegos",
+    "my_library": "Mi Biblioteca",
+    "login": "Iniciar Sesión",
+    "feature_discover": "Descubrir",
+    "feature_organize": "Organizar",
+    "feature_track": "Seguimiento"
+  },
+  "footer": {
+    "rights": "© {{year}} Game Manager. Creado por"
+  },
+  "admin": {
+    "import_title": "Importar desde RAWG",
+    "import_subtitle": "Busca juegos en la base de datos de RAWG e impórtalos a tu catálogo",
+    "search_placeholder": "Buscar juegos en RAWG (ej: GTA V, Minecraft)...",
+    "searching": "Buscando...",
+    "btn_search": "Buscar",
+    "how_it_works": "ℹ️ Cómo funciona",
+    "step_1": "Busca un juego por su nombre en la base de datos de RAWG",
+    "step_2": "Selecciona el juego que quieres importar",
+    "step_3": "El sistema traerá automáticamente:",
+    "details_list": "Título, descripción, fecha, imágenes, desarrollador, precio",
+    "results": "Resultados",
+    "release": "Lanzamiento",
+    "import_btn": "Importar",
+    "no_results": "No se encontraron resultados para"
+  }
+}

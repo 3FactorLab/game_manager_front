@@ -5,7 +5,7 @@
   background-color: var(--bg-primary);
   color: var(--text-primary);
   position: relative;
-  overflow: hidden;
+  /* overflow: hidden; Removed to fix sticky header */
 }
 
 /* Animated gradient background for entire app */

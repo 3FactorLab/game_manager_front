@@ -1,8 +1,10 @@
 import { Outlet } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import styles from "./MainLayout.module.css";
 import { Navbar } from "./Navbar";
 
 export const MainLayout = () => {
+  const { t } = useTranslation();
   return (
     <div className={styles.root}>
       <header className={`${styles.header} glass-panel`}>
@@ -15,7 +17,7 @@ export const MainLayout = () => {
 
       <footer className={styles.footer}>
         <p>
-          © 2025 Game Manager. Created by{" "}
+          {t("footer.rights", { year: new Date().getFullYear() })}{" "}
           <strong>Andrés Fernández Morelli</strong>.
         </p>
       </footer>

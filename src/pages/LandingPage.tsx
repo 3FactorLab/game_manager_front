@@ -82,15 +82,27 @@ const LandingPage = () => {
           transition={{ delay: 1, duration: 0.8 }}
         >
           <div className={styles.feature}>
-            <span className={styles.featureIcon}>🎮</span>
+            <img 
+              src="/discover_image.png" 
+              alt="Discover" 
+              className={styles.featureIcon}
+            />
             <span className={styles.featureText}>{t("landing.feature_discover")}</span>
           </div>
           <div className={styles.feature}>
-            <span className={styles.featureIcon}>📚</span>
+            <img 
+              src="/catalog_image.png" 
+              alt="Organize" 
+              className={styles.featureIcon}
+            />
             <span className={styles.featureText}>{t("landing.feature_organize")}</span>
           </div>
           <div className={styles.feature}>
-            <span className={styles.featureIcon}>⭐</span>
+            <img 
+              src="/track_image.png" 
+              alt="Track" 
+              className={styles.featureIcon}
+            />
             <span className={styles.featureText}>{t("landing.feature_track")}</span>
           </div>
         </motion.div>
