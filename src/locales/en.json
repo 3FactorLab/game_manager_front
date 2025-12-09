@@ -1,0 +1,23 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "search": "Search..."
+  },
+  "nav": {
+    "home": "Home",
+    "store": "Store",
+    "library": "My Library",
+    "login": "Login",
+    "register": "Register",
+    "profile": "Profile"
+  },
+  "home": {
+    "hero_title": "Discover your next adventure",
+    "hero_subtitle": "Explore thousands of games powered by the community."
+  }
+}

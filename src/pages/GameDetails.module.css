@@ -1,0 +1,157 @@
+.container {
+  padding-bottom: 4rem;
+}
+
+.hero {
+  position: relative;
+  height: 400px;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: flex-end;
+}
+
+.heroBackground {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+.heroOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to top, var(--bg-primary) 0%, transparent 100%);
+  z-index: 1;
+}
+
+.heroContent {
+  position: relative;
+  z-index: 2;
+  padding: 2rem;
+  width: 100%;
+}
+
+.title {
+  font-size: 3.5rem;
+  line-height: 1.1;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+.meta {
+  display: flex;
+  gap: 1rem;
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+}
+
+.content {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+.mainInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.description {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: var(--text-secondary);
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.priceCard {
+  position: sticky;
+  top: calc(var(--header-height) + 1rem);
+}
+
+.priceRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.price {
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.detailRow {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.detailLabel {
+  color: var(--text-muted);
+}
+
+.genreValue {
+  font-weight: 700;
+  color: #34d399;
+}
+
+.metacriticScore {
+  font-weight: 700;
+  color: #fbbf24;
+  font-size: 1.1rem;
+}
+
+/* Cover Image */
+.coverImage {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: var(--radius-lg);
+}
+
+/* Screenshot Gallery */
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.screenshot {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  transition: transform 0.2s ease;
+  cursor: pointer;
+}
+
+.screenshot:hover {
+  transform: scale(1.05);
+}
+
+@media (min-width: 1024px) {
+  .content {
+    grid-template-columns: 1fr 350px;
+  }
+}
