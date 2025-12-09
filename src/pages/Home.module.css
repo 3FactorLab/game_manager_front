@@ -1,4 +1,11 @@
+/* Container wrapper */
+.container {
+  position: relative;
+}
+
 .hero {
+  position: relative;
+  z-index: 1;
   margin-bottom: 3rem;
   text-align: center;
   padding: 2rem 1rem;
@@ -24,6 +31,8 @@
 }
 
 .grid {
+  position: relative;
+  z-index: 1;
   display: grid;
   grid-template-columns: repeat(1, 1fr);
   gap: 1.5rem;
@@ -31,6 +40,8 @@
 }
 
 .loadMoreContainer {
+  position: relative;
+  z-index: 1;
   display: flex;
   justify-content: center;
   padding: 2rem 0;

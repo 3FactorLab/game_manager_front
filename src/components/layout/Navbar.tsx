@@ -32,12 +32,12 @@ export const Navbar = () => {
       <div className={styles.navLinks}>
         <NavItem
           to="/"
-          label={t("nav.home")}
+          label={t("nav.inicio")}
           onClick={() => setIsMobileOpen(false)}
         />
         <NavItem
-          to="/store"
-          label={t("nav.store")}
+          to="/home"
+          label={t("nav.home")}
           onClick={() => setIsMobileOpen(false)}
         />
         {isAuthenticated && (
@@ -112,12 +112,12 @@ export const Navbar = () => {
       <div className={clsx(styles.mobileDrawer, isMobileOpen && styles.open)}>
         <NavItem
           to="/"
-          label={t("nav.home")}
+          label={t("nav.inicio")}
           onClick={() => setIsMobileOpen(false)}
         />
         <NavItem
-          to="/store"
-          label={t("nav.store")}
+          to="/home"
+          label={t("nav.home")}
           onClick={() => setIsMobileOpen(false)}
         />
         {isAuthenticated && (

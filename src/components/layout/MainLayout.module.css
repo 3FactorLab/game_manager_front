@@ -4,13 +4,48 @@
   flex-direction: column;
   background-color: var(--bg-primary);
   color: var(--text-primary);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Animated gradient background for entire app */
+.root::before {
+  content: "";
+  position: fixed;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+      circle at 30% 50%,
+      rgba(239, 68, 68, 0.1) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 70% 50%,
+      rgba(249, 115, 22, 0.1) 0%,
+      transparent 50%
+    );
+  animation: gradientShift 15s ease infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes gradientShift {
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate(-10%, -10%) rotate(180deg);
+  }
 }
 
 .header {
-  height: var(--header-height);
   position: sticky;
   top: 0;
   z-index: 50;
+  height: var(--header-height);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -19,6 +54,8 @@
 }
 
 .main {
+  position: relative;
+  z-index: 1;
   flex-grow: 1;
   width: 100%;
   max-width: 1280px;
@@ -27,6 +64,8 @@
 }
 
 .footer {
+  position: relative;
+  z-index: 1;
   padding: 2rem;
   text-align: center;
   color: var(--text-muted);

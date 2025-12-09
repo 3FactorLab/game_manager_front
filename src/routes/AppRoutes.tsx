@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { MainLayout } from "../components/layout/MainLayout";
+import LandingPage from "../pages/LandingPage";
 import Home from "../pages/Home";
 import LoginPage from "../features/auth/pages/LoginPage";
 import RegisterPage from "../features/auth/pages/RegisterPage";
@@ -47,7 +48,8 @@ const AppRoutes = () => {
   return (
     <Routes>
       <Route element={<MainLayout />}>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/home" element={<Home />} />
         <Route path="/game/:id" element={<GameDetails />} />
 
         {/* Protected User Routes */}

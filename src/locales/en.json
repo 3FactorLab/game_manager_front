@@ -9,7 +9,8 @@
     "search": "Search..."
   },
   "nav": {
-    "home": "Home",
+    "inicio": "Home",
+    "home": "Catalog",
     "store": "Store",
     "library": "My Library",
     "login": "Login",
@@ -19,5 +20,15 @@
   "home": {
     "hero_title": "Discover your next adventure",
     "hero_subtitle": "Explore thousands of games powered by the community."
+  },
+  "landing": {
+    "hero_title": "Welcome to GameManager",
+    "hero_subtitle": "Your ultimate platform to discover, organize, and manage your game collection effortlessly. Track your library, explore new titles, and never miss a great game again.",
+    "explore_games": "Explore Games",
+    "my_library": "My Library",
+    "login": "Sign In",
+    "feature_discover": "Discover",
+    "feature_organize": "Organize",
+    "feature_track": "Track"
   }
 }

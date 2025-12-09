@@ -16,7 +16,7 @@ const Home = () => {
     useGames({ limit: 12, search: searchQuery });
 
   return (
-    <div>
+    <div className={styles.container}>
       <section className={styles.hero}>
         <h1 className={`${styles.title} text-gradient`}>
           {searchQuery ? `Results for "${searchQuery}"` : t("home.hero_title")}

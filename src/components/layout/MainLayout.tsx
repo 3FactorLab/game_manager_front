@@ -6,9 +6,6 @@ export const MainLayout = () => {
   return (
     <div className={styles.root}>
       <header className={`${styles.header} glass-panel`}>
-        <div style={{ fontWeight: "bold", fontSize: "1.25rem" }}>
-          GameManager
-        </div>
         <Navbar />
       </header>
 
