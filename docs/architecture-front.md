@@ -537,6 +537,95 @@ flowchart TB
 - 🟨 **Amarillo**: Usuario
 - 🟩 **Verde Oscuro**: Backend
 
+### 🔬 Visualización Detallada
+
+Para facilitar la comprensión, aquí desglosamos la arquitectura en dos flujos críticos:
+
+#### 1. Flujo de Autenticación (Dual Token)
+
+Este diagrama muestra la interacción precisa entre el Login, el almacenamiento local y el sistema de intercepción de Axios para el refresco silencioso de tokens.
+
+```mermaid
+sequenceDiagram
+    participant User as 👤 Usuario
+    participant Login as ⚛️ LoginPage
+    participant Auth as 🧠 AuthService
+    participant Storage as 💾 LocalStorage
+    participant API as 🔧 API Client
+    participant Back as ☁️ Backend
+
+    Note over User, Back: Fase 1: Inicio de Sesión
+    User->>Login: 1. Ingresa Credenciales
+    Login->>Auth: 2. login(email, password)
+    Auth->>API: 3. POST /users/login
+    API->>Back: 4. Request
+    Back-->>API: 5. Response (Token + RefreshToken)
+    API-->>Auth: 6. Data
+    Auth->>Storage: 7. setItem('token', 'refreshToken')
+    Auth->>Login: 8. Success
+    Login->>User: 9. Redirige a Home
+
+    Note over User, Back: Fase 2: Petición Protegida & Auto-Refresh
+
+    User->>API: 10. Request Protegido (ej: /library)
+    API->>Storage: 11. getToken()
+    API->>Back: 12. Request + Bearer Token
+
+    alt Token Expirado (401)
+        Back-->>API: ❌ 401 Unauthorized
+        Note right of API: Interceptor captura error
+        API->>Back: 🔄 POST /refresh-token
+        Back-->>API: ✅ New Tokens
+        API->>Storage: Update Tokens
+        API->>Back: 🔄 Retry Original Request
+        Back-->>API: ✅ Success Data
+    end
+    API-->>User: 13. Datos Finales
+```
+
+#### 2. Flujo de Datos & Optimistic UI
+
+Este diagrama ilustra cómo `WishlistContext` actualiza la UI instantáneamente mientras `React Query` y los servicios manejan la persistencia en segundo plano.
+
+```mermaid
+flowchart LR
+    subgraph UI [Capa de Presentación]
+        direction TB
+        Component[⚛️ GameDetails]
+        Event[👆 Click 'Add to Wishlist']
+    end
+
+    subgraph Logic [Capa de Lógica]
+        direction TB
+        Context[❤️ WishlistContext]
+        Query[⚡ React Query Cache]
+    end
+
+    subgraph Data [Capa de Datos]
+        direction TB
+        Service[📦 User Service]
+        API[🔧 API Client]
+    end
+
+    Event -->|1. Call| Context
+    Context -->|2. Optimistic Update| Component
+    Context -.->|3. Async Call| Service
+    Service -->|4. Request| API
+    API -->|5. HTTP| Backend[(☁️ Backend)]
+
+    Backend -.->|6. Success| API
+    API -.->|7. Resolve| Service
+    Service -.->|8. Settlement| Context
+
+    Context -.->|9. Sync/Rollback| Query
+    Query -.->|10. Refetch| Component
+
+    style Component fill:#E3F2FD,stroke:#1565C0
+    style Context fill:#FCE4EC,stroke:#C2185B
+    style Query fill:#FFEBEE,stroke:#D32F2F,stroke-dasharray: 5 5
+    style Service fill:#F3E5F5,stroke:#7B1FA2
+```
+
 ---
 
 ## 🎯 Patrones y Mejores Prácticas
@@ -665,7 +754,7 @@ Captura errores de React antes de que crasheen toda la aplicación:
 
 ### ¿Por qué Feature-Based en lugar de Type-Based?
 
-```
+```typescript
 // ❌ Type-Based (difícil de escalar)
 /components
 /hooks
