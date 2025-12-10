@@ -1,4 +1,4 @@
-/**
+﻿/**
  * GameDetails.tsx
  * Detailed game information page with purchase and wishlist functionality.
  * Features:
@@ -16,6 +16,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { BsCartPlus, BsHeart, BsHeartFill } from "react-icons/bs";
 import { useGameDetails } from "../features/games/hooks/useGameDetails";
 import { useWishlist } from "../features/collection/hooks/useWishlist";
+import { useCart } from "../features/cart/CartContext";
 import { Card } from "../components/ui/Card";
 import { Button } from "../components/ui/Button";
 import { ImageModal } from "../components/ui/ImageModal";
@@ -38,6 +39,7 @@ const GameDetails = () => {
   const { isAuthenticated } = useAuth();
   const { data: game, isLoading, error } = useGameDetails(id);
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
+  const { addItem } = useCart();
 
   // Modal state for screenshot lightbox
   const [modalOpen, setModalOpen] = useState(false);
@@ -184,6 +186,13 @@ const GameDetails = () => {
               >
                 <BsCartPlus /> Buy Now
               </Button>
+                            <Button
+                variant="ghost"
+                disabled={!isAuthenticated}
+                onClick={() => addItem(game)}
+              >
+                Add to Cart
+              </Button>
               <Button
                 variant="ghost"
                 disabled={!isAuthenticated || addToWishlist.isPending || removeFromWishlist.isPending}
@@ -272,3 +281,9 @@ const GameDetails = () => {
 };
 
 export default GameDetails;
+
+
+
+
+
+

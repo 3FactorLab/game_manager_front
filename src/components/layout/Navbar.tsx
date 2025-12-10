@@ -1,49 +1,40 @@
 ﻿/**
  * Navbar.tsx
  * Main navigation bar component with responsive design.
- * Features:
- * - Desktop navigation with links and search bar
- * - Mobile drawer menu with hamburger toggle
- * - User authentication state (login/register or user dropdown)
- * - Admin panel link for admin users
- * - Internationalization support
  */
 
 import { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { FaBars, FaTimes, FaUserCircle, FaSignOutAlt } from "react-icons/fa";
+import { FaBars, FaTimes, FaUserCircle, FaSignOutAlt, FaShoppingCart } from "react-icons/fa";
 import { clsx } from "clsx";
 import { useAuth } from "../../features/auth/AuthContext";
+import { useCart } from "../../features/cart/CartContext";
 import { Button } from "../ui/Button";
 import { SearchBar } from "../ui/SearchBar";
 import { UserDropdown } from "./UserDropdown";
 import styles from "./Navbar.module.css";
 
-/**
- * Navbar component
- * Responsive navigation bar with authentication-aware UI.
- * Shows different navigation options based on user role and auth status.
- *
- * @returns {JSX.Element} Navigation bar with logo, links, search, and user actions
- */
 export const Navbar = () => {
   const { t } = useTranslation();
   const { user, isAuthenticated, logout } = useAuth();
+  const { items: cartItems, removeItem, clear, count, total } = useCart();
   const navigate = useNavigate();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
 
-  /** Toggle mobile menu drawer */
   const toggleMobile = () => setIsMobileOpen(!isMobileOpen);
+  const toggleCart = () => setIsCartOpen((open) => !open);
 
-  /**
-   * Handle user logout
-   * Logs out user, navigates to home, and closes mobile menu
-   */
   const handleLogout = () => {
     logout();
     navigate("/");
     setIsMobileOpen(false);
+  };
+
+  const handleCheckout = () => {
+    setIsCartOpen(false);
+    navigate("/checkout");
   };
 
   return (
@@ -59,39 +50,18 @@ export const Navbar = () => {
 
       {/* Desktop Navigation */}
       <div className={styles.navLinks}>
-        <NavItem
-          to="/"
-          label={t("nav.inicio")}
-          onClick={() => setIsMobileOpen(false)}
-        />
-        <NavItem
-          to="/home"
-          label={t("nav.home")}
-          onClick={() => setIsMobileOpen(false)}
-        />
+        <NavItem to="/" label={t("nav.inicio") ?? "Home"} onClick={() => setIsMobileOpen(false)} />
+        <NavItem to="/home" label={t("nav.home") ?? "Store"} onClick={() => setIsMobileOpen(false)} />
         {isAuthenticated && (
-          <NavItem
-            to="/library"
-            label={t("nav.library")}
-            onClick={() => setIsMobileOpen(false)}
-          />
+          <NavItem to="/library" label={t("nav.library")} onClick={() => setIsMobileOpen(false)} />
         )}
         {isAuthenticated && user?.role === "admin" && (
-          <NavItem
-            to="/admin"
-            label="Admin Panel"
-            onClick={() => setIsMobileOpen(false)}
-          />
+          <NavItem to="/admin" label="Admin Panel" onClick={() => setIsMobileOpen(false)} />
         )}
       </div>
 
       <div
-        style={{
-          flexGrow: 1,
-          display: "flex",
-          justifyContent: "center",
-          margin: "0 2rem",
-        }}
+        style={{ flexGrow: 1, display: "flex", justifyContent: "center", margin: "0 2rem" }}
         className={styles.desktopParams}
       >
         <SearchBar />
@@ -99,8 +69,52 @@ export const Navbar = () => {
 
       {/* Desktop Actions */}
       <div className={clsx(styles.actions, styles.desktopParams)}>
+        {count > 0 && (
+          <div className={styles.cartWrapper}>
+            <button className={styles.cartButton} onClick={toggleCart} title="View cart">
+              <FaShoppingCart />
+              <span className={styles.cartBadge}>{count}</span>
+            </button>
+            {isCartOpen && (
+              <div className={styles.cartDropdown}>
+                <div className={styles.cartHeader}>
+                  <span>Cart ({count})</span>
+                  <button onClick={clear} className={styles.clearCart} title="Clear cart">
+                    Clear
+                  </button>
+                </div>
+                <div className={styles.cartList}>
+                  {cartItems.map((item) => (
+                    <div key={item._id} className={styles.cartItem}>
+                      <div className={styles.cartItemInfo}>
+                        <div className={styles.cartItemTitle}>{item.title}</div>
+                        <div className={styles.cartItemPrice}>
+                          {item.price === 0 ? "Free" : `${item.currency.toUpperCase()} ${item.price.toFixed(2)}`}
+                        </div>
+                      </div>
+                      <button
+                        className={styles.removeCartItem}
+                        onClick={() => removeItem(item._id)}
+                        aria-label={`Remove ${item.title}`}
+                      >
+                        <FaTimes />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+                <div className={styles.cartFooter}>
+                  <div className={styles.cartTotal}>Total: {total.toFixed(2)}</div>
+                  <Button size="sm" onClick={handleCheckout} style={{ width: "100%" }}>
+                    Checkout
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
         {isAuthenticated ? (
-          <UserDropdown user={user} onLogout={handleLogout} />
+          <UserDropdown />
         ) : (
           <>
             <Link to="/login">
@@ -122,37 +136,17 @@ export const Navbar = () => {
 
       {/* Mobile Drawer */}
       <div className={clsx(styles.mobileDrawer, isMobileOpen && styles.open)}>
-        <NavItem
-          to="/"
-          label={t("nav.inicio")}
-          onClick={() => setIsMobileOpen(false)}
-        />
-        <NavItem
-          to="/home"
-          label={t("nav.home")}
-          onClick={() => setIsMobileOpen(false)}
-        />
+        <NavItem to="/" label={t("nav.inicio") ?? "Home"} onClick={() => setIsMobileOpen(false)} />
+        <NavItem to="/home" label={t("nav.home") ?? "Store"} onClick={() => setIsMobileOpen(false)} />
         {isAuthenticated && (
-          <NavItem
-            to="/library"
-            label={t("nav.library")}
-            onClick={() => setIsMobileOpen(false)}
-          />
+          <NavItem to="/library" label={t("nav.library")} onClick={() => setIsMobileOpen(false)} />
         )}
         {isAuthenticated && user?.role === "admin" && (
-          <NavItem
-            to="/admin"
-            label="Admin Panel"
-            onClick={() => setIsMobileOpen(false)}
-          />
+          <NavItem to="/admin" label="Admin Panel" onClick={() => setIsMobileOpen(false)} />
         )}
 
         <div
-          style={{
-            height: "1px",
-            background: "var(--glass-border)",
-            margin: "0.5rem 0",
-          }}
+          style={{ height: "1px", background: "var(--glass-border)", margin: "0.5rem 0" }}
         />
 
         {isAuthenticated ? (
@@ -160,11 +154,7 @@ export const Navbar = () => {
             <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
               <FaUserCircle /> <span>{user?.username}</span>
             </div>
-            <Button
-              variant="ghost"
-              onClick={handleLogout}
-              style={{ justifyContent: "flex-start" }}
-            >
+            <Button variant="ghost" onClick={handleLogout} style={{ justifyContent: "flex-start" }}>
               <FaSignOutAlt /> Logout
             </Button>
           </div>
@@ -202,3 +192,4 @@ const NavItem = ({
     {label}
   </NavLink>
 );
+

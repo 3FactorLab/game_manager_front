@@ -1,4 +1,4 @@
-/**
+﻿/**
  * main.tsx
  * Application entry point that bootstraps the React application.
  * Sets up the provider hierarchy for routing, state management, authentication,
@@ -13,6 +13,7 @@ import { HelmetProvider } from "react-helmet-async";
 
 import "./index.css"; // Global styles and CSS custom properties
 import "./lib/i18n"; // Initialize i18next for internationalization
+import { CartProvider } from "./features/cart/CartContext";
 import { queryClient } from "./lib/queryClient"; // React Query client configuration
 import { AuthProvider } from "./features/auth/AuthContext"; // Authentication context
 import App from "./App.tsx";
@@ -22,18 +23,21 @@ import App from "./App.tsx";
  * 1. StrictMode - React development mode checks
  * 2. HelmetProvider - SEO meta tags management
  * 3. QueryClientProvider - Server state management with React Query
- * 4. AuthProvider - Authentication state and user context
- * 5. BrowserRouter - Client-side routing
+ * 4. CartProvider - Cart state
+ * 5. AuthProvider - Authentication state and user context
+ * 6. BrowserRouter - Client-side routing
  */
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          <BrowserRouter>
-            <App />
-          </BrowserRouter>
-        </AuthProvider>
+        <CartProvider>
+          <AuthProvider>
+            <BrowserRouter>
+              <App />
+            </BrowserRouter>
+          </AuthProvider>
+        </CartProvider>
       </QueryClientProvider>
     </HelmetProvider>
   </StrictMode>

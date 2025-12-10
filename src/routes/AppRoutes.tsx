@@ -1,4 +1,4 @@
-/**
+﻿/**
  * AppRoutes.tsx
  * Application routing configuration using React Router v7.
  * Defines all application routes including public, protected, and admin routes.
@@ -55,7 +55,7 @@ const ProtectedRoute = ({
   if (requireAdmin && user.role !== "admin") {
     return (
       <div style={{ padding: "2rem", textAlign: "center" }}>
-        <h2>⛔ {t("common.access_denied")}</h2>
+        <h2>â›” {t("common.access_denied")}</h2>
         <p>{t("common.admin_only")}</p>
       </div>
     );
@@ -87,12 +87,20 @@ const AppRoutes = () => {
         <Route path="/store" element={<StorePage />} />
         <Route path="/game/:id" element={<GameDetails />} />
 
-        {/* Protected User Routes */}
+                {/* Protected User Routes */}
         <Route
           path="/library"
           element={
             <ProtectedRoute>
               <LibraryPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/checkout"
+          element={
+            <ProtectedRoute>
+              <CheckoutPage />
             </ProtectedRoute>
           }
         />
@@ -152,3 +160,7 @@ const AppRoutes = () => {
 
 // Exported to App.tsx as main routing component
 export default AppRoutes;
+
+
+
+

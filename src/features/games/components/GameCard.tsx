@@ -1,4 +1,4 @@
-/**
+﻿/**
  * GameCard.tsx
  * Displays individual game information in a card format.
  * Shows game cover, title, genre, platform, score, and pricing with offer calculations.
@@ -6,9 +6,11 @@
  */
 
 import { useNavigate } from "react-router-dom";
+import { BsCartPlus } from "react-icons/bs";
 import { Card } from "../../../components/ui/Card";
 import type { Game } from "../../../services/games.service";
 import { formatCurrency } from "../../../utils/format";
+import { useCart } from "../../cart/CartContext";
 import styles from "./GameCard.module.css";
 
 /**
@@ -28,6 +30,7 @@ interface GameCardProps {
  */
 export const GameCard = ({ game }: GameCardProps) => {
   const navigate = useNavigate();
+  const { addItem } = useCart();
 
   /**
    * Navigate to game details page
@@ -58,6 +61,16 @@ export const GameCard = ({ game }: GameCardProps) => {
           className={styles.coverImage}
           loading="lazy"
         />
+        <button
+          className={styles.addToCart}
+          onClick={(e) => {
+            e.stopPropagation();
+            addItem(game);
+          }}
+          title="Add to cart"
+        >
+          <BsCartPlus />
+        </button>
       </div>
 
       {/* Game information */}
@@ -71,7 +84,7 @@ export const GameCard = ({ game }: GameCardProps) => {
           <span className={styles.genreBadge}>{game.genre}</span>
           <span className={styles.platformBadge}>{game.platform}</span>
           {game.score && (
-            <span className={styles.scoreBadge}>⭐ {game.score}/10</span>
+            <span className={styles.scoreBadge}>ѓр? {game.score}/10</span>
           )}
         </div>
 
