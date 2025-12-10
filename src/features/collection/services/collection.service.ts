@@ -54,14 +54,11 @@ export const collectionService = {
     return data;
   },
 
-<<<<<<< HEAD
-=======
   /**
    * Get user's wishlist
    * Fetches games user wants to purchase
    * @returns {Promise<Game[]>} Wishlist games
    */
->>>>>>> 94001264c67ba53ce77ef7b8cc03e94a35268e89
   async getWishlist(): Promise<Game[]> {
     const { data } = await apiClient.get<Game[]>("/collection/wishlist");
     return data;
