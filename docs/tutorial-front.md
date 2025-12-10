@@ -27,6 +27,29 @@ Aquí definimos las reglas globales antes de empezar.
 
 ---
 
+## 📊 1.1. Tipos (`src/types/`)
+
+Definiciones TypeScript centralizadas para garantizar type safety en toda la aplicación.
+
+### `src/types/api.types.ts`
+
+- **Qué hace**: Define interfaces para respuestas de API y manejo de errores.
+- **Por qué**: Centralizar tipos garantiza consistencia y evita duplicación.
+- **Interfaces principales**:
+  - `ApiError`: Estructura estandarizada de errores del backend
+  - `isApiError()`: Type guard para validación segura de errores en runtime
+  - `GamesApiResponse`: Respuesta paginada del catálogo de juegos
+
+### `src/types/rawg.types.ts`
+
+- **Qué hace**: Define interfaces para la integración con RAWG API.
+- **Por qué**: Tipado completo de respuestas de API externa.
+- **Interfaces principales**:
+  - `RAWGGame`: Estructura completa de un juego de RAWG
+  - `RAWGSearchResponse`: Respuesta de búsqueda con paginación
+
+---
+
 ## 📂 2. Features (`src/features/`)
 
 Cada feature es un **módulo autocontenido** con todo lo necesario para funcionar independientemente.
@@ -64,6 +87,7 @@ El módulo de autenticación completo.
 
 - **Qué hace**: Interfaces TypeScript para User, AuthResponse, Credentials.
 - **Por qué**: Type safety en toda la feature.
+- **Detalle**: `AuthResponse` incluye tanto `token` (access) como `refreshToken` para sistema dual token.
 
 ### `src/features/games/`
 
@@ -111,6 +135,46 @@ Biblioteca y wishlist del usuario.
   - `GET /collection/wishlist` - Wishlist
   - `POST /collection/wishlist` - Añadir a wishlist
   - `DELETE /collection/wishlist/:id` - Quitar de wishlist
+
+### `src/features/wishlist/`
+
+Módulo de lista de deseos con Context API.
+
+#### `WishlistContext.tsx`
+
+- **Qué hace**: Context provider para gestión de wishlist del usuario.
+- **Por qué**: Alternativa a hooks con optimistic updates para mejor UX.
+- **Características**:
+  - Fetch automático al autenticarse
+  - Optimistic updates (UI se actualiza antes de respuesta del servidor)
+  - Rollback automático si falla la petición
+  - Toast notifications para feedback
+- **Funciones exportadas**:
+  - `addToWishlist(game)`: Añade juego con update optimista
+  - `removeFromWishlist(gameId)`: Quita juego con update optimista
+  - `isInWishlist(gameId)`: Verifica si juego está en wishlist
+- **Usado por**: `WishlistPage.tsx`
+
+### `src/features/cart/`
+
+Módulo de carrito de compras.
+
+#### `CartContext.tsx`
+
+- **Qué hace**: Context provider para gestión del carrito.
+- **Por qué**: Estado global del carrito con persistencia.
+- **Características**:
+  - Persistencia en localStorage
+  - Cálculo automático de total y contador
+  - Previene duplicados
+  - Maneja precios con descuento
+- **Funciones exportadas**:
+  - `addItem(game)`: Añade juego al carrito
+  - `removeItem(id)`: Quita juego del carrito
+  - `clear()`: Vacía el carrito
+  - `count`: Número de items
+  - `total`: Precio total
+- **Interface**: `CartItem` con campos esenciales (id, title, price, cover)
 
 ### `src/features/checkout/`
 
@@ -167,6 +231,15 @@ Componentes base del sistema de diseño.
 - **Detalle**: Usa `forwardRef` para compatibilidad con `react-hook-form`.
 - **Props**: `label`, `error`, y todas las props nativas de input.
 
+#### `Loader.tsx`
+
+- **Qué hace**: Spinner de carga reutilizable.
+- **Props**:
+  - `size`: 'sm' | 'md' | 'lg' (default: 'md')
+  - `className`: Clases CSS adicionales
+- **Detalle**: Usa CSS Modules para animación del spinner.
+- **Usado en**: Páginas con estados de carga (WishlistPage, LibraryPage, etc.)
+
 #### `SearchBar.tsx`
 
 - **Qué hace**: Barra de búsqueda con navegación.
@@ -180,6 +253,20 @@ Componentes base del sistema de diseño.
 - **Qué hace**: Modal para galería de imágenes (lightbox).
 - **Props**: `images`, `currentIndex`, `onClose`, `onNavigate`
 - **Detalle**: Navegación con flechas, cierre con ESC o click fuera.
+
+### `src/components/ErrorBoundary.tsx`
+
+Componente de manejo de errores a nivel de aplicación.
+
+- **Qué hace**: Captura errores de React antes de que crasheen toda la app.
+- **Por qué**: Mejora la experiencia de usuario y facilita debugging.
+- **Características**:
+  - UI fallback amigable con diseño glassmorphism
+  - Logging automático de errores en desarrollo
+  - Botones de "Refresh" y "Try Again"
+  - Detalles del error visibles solo en modo desarrollo
+  - Integrado en `App.tsx` para cubrir toda la aplicación
+- **Estilos**: `ErrorBoundary.module.css` con diseño responsive
 
 ### `src/components/layout/`
 
@@ -249,6 +336,16 @@ Componentes de página que orquestan features y UI.
 - **Qué hace**: Muestra la biblioteca del usuario.
 - **Detalle**: Grid de juegos comprados con filtros por estado.
 
+### `WishlistPage.tsx`
+
+- **Qué hace**: Muestra la lista de deseos del usuario.
+- **Lógica**:
+  - Usa `WishlistContext` para estado global
+  - Estados: loading (Loader), no autenticado, vacío, con juegos
+  - Grid de `GameCard` para cada juego
+  - Contador de juegos en header
+- **Detalle**: Mensajes personalizados según estado (login requerido, lista vacía, etc.)
+
 ### `CheckoutPage.tsx`
 
 - **Qué hace**: Página de confirmación de compra.
@@ -257,6 +354,12 @@ Componentes de página que orquestan features y UI.
 ### `LandingPage.tsx`
 
 - **Qué hace**: Página de bienvenida para usuarios no autenticados.
+
+### `StorePage.tsx`
+
+- **Qué hace**: Página placeholder para tienda.
+- **Detalle**: Muestra "Coming Soon" con estilos inline (pendiente de refactorizar).
+- **Nota**: Funcionalidad aún no implementada.
 
 ### `admin/`
 
@@ -278,18 +381,24 @@ Capa de comunicación con el backend.
 - **Qué hace**: Cliente Axios configurado con interceptores.
 - **Interceptor de Request**:
   - Añade automáticamente `Authorization: Bearer <token>` si existe
-- **Interceptor de Response**:
-  - Si recibe 401, borra el token y redirige a login
-  - (Comentado: lógica de refresh token para implementar en el futuro)
+- **Interceptor de Response (Auto-Refresh)**:
+  - Detecta respuestas 401 (token expirado)
+  - Automáticamente llama a `/users/refresh-token` con el refresh token
+  - Actualiza ambos tokens en localStorage
+  - **Reintenta la petición original** sin que el usuario lo note
+  - Si el refresh falla, borra tokens y redirige a login
+  - Previene loops infinitos con flag `_retry`
 
 ### `auth.service.ts`
 
 - **Funciones**:
-  - `login(credentials)`: POST /users/login
-  - `register(data)`: POST /users/register
+  - `login(credentials)`: POST /users/login - Devuelve access + refresh token
+  - `register(data)`: POST /users/register - Devuelve access + refresh token
   - `getProfile()`: GET /users/profile
   - `updateProfile(formData)`: PUT /users/profile
-  - `logout()`: Borra token de localStorage
+  - `refreshToken()`: POST /users/refresh-token - Obtiene nuevos tokens
+  - `logout()`: Borra **ambos tokens** de localStorage
+- **Detalle**: Gestiona sistema dual token (access + refresh) para sesiones extendidas
 
 ### `games.service.ts`
 
@@ -297,6 +406,19 @@ Capa de comunicación con el backend.
   - `getCatalog(params)`: GET /games con paginación y búsqueda
   - `getGameById(id)`: GET /games/:id
 - **Interface**: Define `Game` con todos los campos del juego.
+
+### `user.service.ts`
+
+Servicio para gestión de wishlist del usuario (sistema context-based).
+
+- **Qué hace**: API client para wishlist usando endpoints de usuario.
+- **Por qué**: Sistema alternativo a `collection.service.ts`, usado por `WishlistContext`.
+- **Funciones**:
+  - `getWishlist()`: GET /users/wishlist - Devuelve array de juegos
+  - `addToWishlist(gameId)`: POST /users/wishlist/:id - Añade juego
+  - `removeFromWishlist(gameId)`: DELETE /users/wishlist/:id - Quita juego
+- **Detalle**: Mapea estructura del backend a interfaz `Game` del frontend.
+- **Nota**: Coexiste con `collection.service.ts` para compatibilidad. WishlistContext usa este servicio.
 
 ### `admin.service.ts`
 
@@ -349,6 +471,19 @@ Funciones helper sin dependencias de React.
 - **Función**: `formatCurrency(amount, currency)` → "$19.99"
 - **Por qué**: Centralizar formateo garantiza consistencia.
 
+### `error.util.ts`
+
+Utilidades centralizadas para manejo de errores.
+
+- **Qué hace**: Proporciona funciones helper para manejo consistente de errores.
+- **Por qué**: Evita duplicación de lógica try/catch y estandariza mensajes de error.
+- **Funciones principales**:
+  - `logger.error()`, `logger.warn()`, `logger.info()`: Logging condicional (solo en desarrollo)
+  - `getErrorMessage(error)`: Extrae mensaje de error de forma segura desde cualquier tipo de error
+  - `handleApiError(error, customMessage?)`: Manejo estandarizado con toast + logging automático
+  - `withErrorHandling(fn, errorMessage?)`: Wrapper para operaciones async con try/catch automático
+- **Uso**: Importado en componentes admin, hooks y servicios para manejo consistente
+
 ---
 
 ## 📂 9. Estilos
@@ -390,7 +525,9 @@ El punto de entrada de la aplicación.
 El componente raíz.
 
 - Renderiza `<AppRoutes />` (todas las rutas)
+- Envuelve rutas con `<ErrorBoundary>` para captura de errores
 - Configura `<Toaster />` para notificaciones globales
+- **Detalle**: ErrorBoundary previene crashes completos de la app
 
 ---
 
@@ -429,7 +566,7 @@ const { wishlist, addToWishlist, isInWishlist } = useWishlist()
 
 ---
 
-## 🧪 Testing (`src/components/ui/Button.test.tsx`)
+## 🧪 11. Testing (`src/components/ui/Button.test.tsx`)
 
 Nuestra red de seguridad.
 
@@ -439,13 +576,66 @@ Nuestra red de seguridad.
 
 ---
 
-## 🚀 Scripts (`package.json`)
+## 📝 12. Documentación Académica
+
+Todos los archivos críticos incluyen documentación estilo académico:
+
+### Estilo de Comentarios
+
+- **Nivel de archivo**: Comentario inicial explicando propósito y responsabilidad
+- **Nivel de función/componente**: Comentario breve con:
+  - Qué hace (propósito)
+  - Parámetros principales (si no son obvios)
+  - Valor de retorno (si aplica)
+- **Exports**: Explicación de destino y propósito
+- **Idioma**: Todos los comentarios en inglés
+
+### Archivos Documentados (35+)
+
+- Core: `App.tsx`, `main.tsx`, `AuthContext.tsx`, `api.client.ts`
+- UI: `Button.tsx`, `Card.tsx`, `Input.tsx`, `Navbar.tsx`, `UserDropdown.tsx`
+- Pages: `Home.tsx`, `LoginPage.tsx`, `GameDetails.tsx`
+- Services: `auth.service.ts`, `games.service.ts`, `checkout.service.ts`
+- Hooks: `useGames.ts`, `useWishlist.ts`, `useCheckout.ts`
+- Config: `queryClient.ts`, `i18n.ts`, `schemas.ts`
+
+---
+
+## 🚀 13. Scripts (`package.json`)
 
 - `npm run dev`: Inicia servidor de desarrollo (Vite)
 - `npm run build`: Compila para producción
 - `npm run preview`: Previsualiza build de producción
 - `npm run lint`: Ejecuta ESLint
 - `npm run test`: Ejecuta tests con Vitest
+
+---
+
+## 🎯 14. Mejoras Recientes (Diciembre 2025)
+
+### Type Safety (95% Coverage)
+
+- Eliminación de 12 de 13 usos de `any`
+- Interfaces centralizadas en `src/types/`
+- Type guards para validación en runtime
+
+### Error Handling
+
+- Error Boundary a nivel de aplicación
+- Utilidades centralizadas en `error.util.ts`
+- Logging condicional (solo desarrollo)
+
+### Autenticación
+
+- Sistema dual token (access + refresh)
+- Auto-refresh transparente
+- Sesiones extendidas de 15 min a 7 días
+
+### UI/UX
+
+- Botón con spinner animado ⏳
+- Estilos inline movidos a CSS modules
+- Diseño glassmorphism consistente
 
 ---
 
