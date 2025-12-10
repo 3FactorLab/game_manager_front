@@ -1,3 +1,10 @@
+/**
+ * AppRoutes.tsx
+ * Application routing configuration using React Router v7.
+ * Defines all application routes including public, protected, and admin routes.
+ * Implements ProtectedRoute component for authentication and authorization.
+ */
+
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { MainLayout } from "../components/layout/MainLayout";
@@ -18,8 +25,18 @@ import UserManagement from "../pages/admin/UserManagement";
 import GameManagement from "../pages/admin/GameManagement";
 import RAWGImport from "../pages/admin/RAWGImport";
 
-// Protected Route Component
 import { useAuth } from "../features/auth/AuthContext";
+
+/**
+ * ProtectedRoute component
+ * Wrapper component for routes that require authentication.
+ * Redirects to login if user is not authenticated.
+ * Shows access denied message if user lacks required role.
+ *
+ * @param {React.ReactNode} children - Route content to protect
+ * @param {boolean} requireAdmin - Whether route requires admin role
+ * @returns {JSX.Element} Protected content or redirect
+ */
 
 const ProtectedRoute = ({
   children,
@@ -47,10 +64,24 @@ const ProtectedRoute = ({
   return <>{children}</>;
 };
 
+/**
+ * AppRoutes component
+ * Main routing configuration for the application.
+ * Organizes routes into categories:
+ * - Public routes (/, /home, /store, /game/:id)
+ * - Protected user routes (/library, /checkout/:id)
+ * - Protected admin routes (/admin/*)
+ * - Auth routes (/login, /register)
+ *
+ * All routes are wrapped in MainLayout for consistent navigation.
+ *
+ * @returns {JSX.Element} Application routes
+ */
 const AppRoutes = () => {
   return (
     <Routes>
       <Route element={<MainLayout />}>
+        {/* Public Routes */}
         <Route path="/" element={<LandingPage />} />
         <Route path="/home" element={<Home />} />
         <Route path="/store" element={<StorePage />} />
@@ -112,11 +143,12 @@ const AppRoutes = () => {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
 
-        {/* Fallback */}
+        {/* Fallback - redirect unknown routes to home */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>
   );
 };
 
+// Exported to App.tsx as main routing component
 export default AppRoutes;

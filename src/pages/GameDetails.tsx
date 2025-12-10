@@ -1,15 +1,35 @@
+/**
+ * GameDetails.tsx
+ * Detailed game information page with purchase and wishlist functionality.
+ * Features:
+ * - Game cover, screenshots, and videos
+ * - Full game description and metadata
+ * - Purchase button with checkout navigation
+ * - Wishlist add/remove functionality
+ * - Image modal for viewing screenshots
+ * - Responsive layout with glassmorphism design
+ */
+
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 // import { useTranslation } from "react-i18next";
 import { BsCartPlus, BsHeart, BsHeartFill } from "react-icons/bs";
-import { useWishlist } from "../features/collection/hooks/useWishlist";
 import { useGameDetails } from "../features/games/hooks/useGameDetails";
-import { Button } from "../components/ui/Button";
+import { useWishlist } from "../features/collection/hooks/useWishlist";
 import { Card } from "../components/ui/Card";
+import { Button } from "../components/ui/Button";
 import { ImageModal } from "../components/ui/ImageModal";
 import { formatCurrency } from "../utils/format";
 import { useAuth } from "../features/auth/AuthContext";
 import styles from "./GameDetails.module.css";
+
+/**
+ * GameDetails component
+ * Displays comprehensive game information with purchase and wishlist options.
+ * Fetches game data using useGameDetails hook.
+ *
+ * @returns {JSX.Element} Game details page
+ */
 
 const GameDetails = () => {
   const { id } = useParams<{ id: string }>();

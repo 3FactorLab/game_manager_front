@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useUsers, useDeleteUser } from "../../hooks/useAdmin";
+import { handleApiError, getErrorMessage } from "../../utils/error.util";
 import styles from "./UserManagement.module.css";
 
 const UserManagement = () => {
@@ -18,12 +19,8 @@ const UserManagement = () => {
       try {
         await deleteUserMutation.mutateAsync(userId);
         alert("Usuario eliminado correctamente");
-      } catch (err: any) {
-        alert(
-          `Error al eliminar usuario: ${
-            err.response?.data?.message || err.message
-          }`
-        );
+      } catch (error) {
+        handleApiError(error, "Failed to delete user");
       }
     }
   };
@@ -40,7 +37,7 @@ const UserManagement = () => {
     return (
       <div className={styles.container}>
         <div className={styles.error}>
-          Error al cargar usuarios: {(error as any).message}
+          Error al cargar usuarios: {getErrorMessage(error)}
         </div>
       </div>
     );

@@ -1,20 +1,42 @@
+/**
+ * GameCard.tsx
+ * Displays individual game information in a card format.
+ * Shows game cover, title, genre, platform, score, and pricing with offer calculations.
+ * Navigates to game details page on click.
+ */
+
 import { useNavigate } from "react-router-dom";
 import { Card } from "../../../components/ui/Card";
 import type { Game } from "../../../services/games.service";
 import { formatCurrency } from "../../../utils/format";
 import styles from "./GameCard.module.css";
 
+/**
+ * GameCard component props
+ */
 interface GameCardProps {
-  game: Game;
+  game: Game; // Game data to display
 }
 
+/**
+ * GameCard component
+ * Clickable card displaying game information with cover image and pricing.
+ * Calculates and displays offer discounts when applicable.
+ *
+ * @param {GameCardProps} props - Component props
+ * @returns {JSX.Element} Game card with image, details, and pricing
+ */
 export const GameCard = ({ game }: GameCardProps) => {
   const navigate = useNavigate();
 
+  /**
+   * Navigate to game details page
+   */
   const handleCardClick = () => {
     navigate(`/game/${game._id}`);
   };
 
+  // Calculate offer pricing
   const hasOffer = game.isOffer && game.offerPrice !== undefined;
   const currentPrice = hasOffer ? game.offerPrice : game.price;
 
@@ -25,6 +47,7 @@ export const GameCard = ({ game }: GameCardProps) => {
       hoverable
       onClick={handleCardClick}
     >
+      {/* Game cover image */}
       <div className={styles.coverImageWrapper}>
         <img
           src={
@@ -37,11 +60,13 @@ export const GameCard = ({ game }: GameCardProps) => {
         />
       </div>
 
+      {/* Game information */}
       <div className={styles.content}>
         <h3 className={styles.title} title={game.title}>
           {game.title}
         </h3>
 
+        {/* Badges: genre, platform, score */}
         <div className={styles.badges}>
           <span className={styles.genreBadge}>{game.genre}</span>
           <span className={styles.platformBadge}>{game.platform}</span>
@@ -50,11 +75,12 @@ export const GameCard = ({ game }: GameCardProps) => {
           )}
         </div>
 
+        {/* Footer with pricing */}
         <div className={styles.footer}>
-          {/* Action Button Placeholder (e.g. Add to Cart) - Optional on card */}
           <div />
 
           <div className={styles.priceContainer}>
+            {/* Discount percentage badge */}
             {hasOffer && (
               <span className={styles.discount}>
                 -
@@ -64,11 +90,13 @@ export const GameCard = ({ game }: GameCardProps) => {
                 %
               </span>
             )}
+            {/* Original price (strikethrough) */}
             {hasOffer && (
               <span className={styles.oldPrice}>
                 {formatCurrency(game.price, game.currency)}
               </span>
             )}
+            {/* Current price */}
             <span className={styles.price}>
               {currentPrice === 0
                 ? "Free"
@@ -80,3 +108,5 @@ export const GameCard = ({ game }: GameCardProps) => {
     </Card>
   );
 };
+
+// Exported to Home and other pages for game grid display

@@ -1,13 +1,15 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useImportFromRAWG } from "../../hooks/useAdmin";
-import { FaSearch, FaDownload, FaCheckCircle } from "react-icons/fa";
+import { FaSearch, FaDownload } from "react-icons/fa";
+import type { RAWGGame } from "../../types/rawg.types";
+import { handleApiError } from "../../utils/error.util";
 import styles from "./RAWGImport.module.css";
 
 const RAWGImport = () => {
   const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [searchResults, setSearchResults] = useState<RAWGGame[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const importMutation = useImportFromRAWG();
 
@@ -25,24 +27,20 @@ const RAWGImport = () => {
       // For now, show placeholder message
       setSearchResults([]);
       alert("Function not implemented yet.");
-    } catch (error: any) {
-      alert(`Error: ${error.message}`);
+    } catch (error) {
+      handleApiError(error, "Failed to search RAWG");
     } finally {
       setIsSearching(false);
     }
   };
 
   const handleImport = async (rawgId: number, title: string) => {
-    if (
-      window.confirm(
-        `${t("admin.import_btn")} "${title}"?`
-      )
-    ) {
+    if (window.confirm(`${t("admin.import_btn")} "${title}"?`)) {
       try {
         await importMutation.mutateAsync({ rawgId });
         alert("Success");
-      } catch (err: any) {
-        alert(`Error: ${err.response?.data?.message || err.message}`);
+      } catch (error) {
+        handleApiError(error, "Failed to import game");
       }
     }
   };
@@ -51,9 +49,7 @@ const RAWGImport = () => {
     <div className={styles.container}>
       <div className={styles.header}>
         <h1>{t("admin.import_title")}</h1>
-        <p className={styles.subtitle}>
-          {t("admin.import_subtitle")}
-        </p>
+        <p className={styles.subtitle}>{t("admin.import_subtitle")}</p>
       </div>
 
       {/* Search Section */}
@@ -72,7 +68,8 @@ const RAWGImport = () => {
             disabled={isSearching}
             className={styles.searchBtn}
           >
-            <FaSearch /> {isSearching ? t("admin.searching") : t("admin.btn_search")}
+            <FaSearch />{" "}
+            {isSearching ? t("admin.searching") : t("admin.btn_search")}
           </button>
         </div>
       </div>
@@ -95,9 +92,11 @@ const RAWGImport = () => {
       {/* Results */}
       {searchResults.length > 0 && (
         <div className={styles.results}>
-          <h2>{t("admin.results")} ({searchResults.length})</h2>
+          <h2>
+            {t("admin.results")} ({searchResults.length})
+          </h2>
           <div className={styles.grid}>
-            {searchResults.map((game: any) => (
+            {searchResults.map((game) => (
               <div key={game.id} className={styles.card}>
                 <div
                   className={styles.cardImage}
@@ -135,7 +134,9 @@ const RAWGImport = () => {
       {/* Empty State */}
       {!isSearching && searchResults.length === 0 && searchQuery && (
         <div className={styles.emptyState}>
-          <p>{t("admin.no_results")} "{searchQuery}"</p>
+          <p>
+            {t("admin.no_results")} "{searchQuery}"
+          </p>
         </div>
       )}
     </div>

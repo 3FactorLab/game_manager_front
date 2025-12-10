@@ -1,3 +1,13 @@
+/**
+ * LoginPage.tsx
+ * User login page with form validation using react-hook-form and Zod.
+ * Features:
+ * - Email and password validation
+ * - Error handling and display
+ * - Loading state during authentication
+ * - Link to registration page
+ */
+
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "react-router-dom";
@@ -8,11 +18,19 @@ import { Button } from "../../../components/ui/Button";
 import { Input } from "../../../components/ui/Input";
 import { Card } from "../../../components/ui/Card";
 
+/**
+ * LoginPage component
+ * Displays login form with validation and error handling.
+ * Redirects to home page on successful login.
+ *
+ * @returns {JSX.Element} Login page with form
+ */
 const LoginPage = () => {
   const { t } = useTranslation();
   const { login, isLoading } = useAuth();
   const navigate = useNavigate();
 
+  // Initialize react-hook-form with Zod schema validation
   const {
     register,
     handleSubmit,
@@ -22,14 +40,20 @@ const LoginPage = () => {
     resolver: zodResolver(loginSchema),
   });
 
+  /**
+   * Handle form submission
+   * Attempts login and navigates to home on success.
+   * Displays error message on failure.
+   * @param {LoginSchemaType} data - Form data (email, password)
+   */
   const onSubmit = async (data: LoginSchemaType) => {
     try {
       await login(data);
-      navigate("/");
+      navigate("/"); // Redirect to home on success
     } catch (error) {
       console.error(error); // Log for debugging
       setError("root", {
-        message: "Invalid email or password", // Simplified error handling
+        message: "Invalid email or password", // User-friendly error
       });
     }
   };

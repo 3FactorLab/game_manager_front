@@ -1,3 +1,14 @@
+/**
+ * Navbar.tsx
+ * Main navigation bar component with responsive design.
+ * Features:
+ * - Desktop navigation with links and search bar
+ * - Mobile drawer menu with hamburger toggle
+ * - User authentication state (login/register or user dropdown)
+ * - Admin panel link for admin users
+ * - Internationalization support
+ */
+
 import { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -6,16 +17,29 @@ import { clsx } from "clsx";
 import { useAuth } from "../../features/auth/AuthContext";
 import { Button } from "../ui/Button";
 import { SearchBar } from "../ui/SearchBar";
+import { UserDropdown } from "./UserDropdown";
 import styles from "./Navbar.module.css";
 
+/**
+ * Navbar component
+ * Responsive navigation bar with authentication-aware UI.
+ * Shows different navigation options based on user role and auth status.
+ *
+ * @returns {JSX.Element} Navigation bar with logo, links, search, and user actions
+ */
 export const Navbar = () => {
   const { t } = useTranslation();
   const { user, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
+  /** Toggle mobile menu drawer */
   const toggleMobile = () => setIsMobileOpen(!isMobileOpen);
 
+  /**
+   * Handle user logout
+   * Logs out user, navigates to home, and closes mobile menu
+   */
   const handleLogout = () => {
     logout();
     navigate("/");
@@ -71,24 +95,7 @@ export const Navbar = () => {
       {/* Desktop Actions */}
       <div className={clsx(styles.actions, styles.desktopParams)}>
         {isAuthenticated ? (
-          <div className={styles.userMenu}>
-            <div className={styles.avatar}>
-              {user?.avatar ? (
-                <img src={user.avatar} alt={user.username} />
-              ) : (
-                <FaUserCircle size={24} />
-              )}
-            </div>
-            <span style={{ fontWeight: 500 }}>{user?.username}</span>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleLogout}
-              title="Logout"
-            >
-              <FaSignOutAlt />
-            </Button>
-          </div>
+          <UserDropdown />
         ) : (
           <>
             <Link to="/login">

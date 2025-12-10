@@ -1,3 +1,10 @@
+/**
+ * useAdmin.ts
+ * Collection of custom hooks for admin-only operations.
+ * Provides hooks for user management, game CRUD, and RAWG import functionality.
+ * All hooks automatically invalidate relevant queries on successful mutations.
+ */
+
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { adminService } from "../services/admin.service";
 

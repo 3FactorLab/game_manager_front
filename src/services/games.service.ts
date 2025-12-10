@@ -1,4 +1,16 @@
+/**
+ * games.service.ts
+ * Service for fetching games catalog and individual game details.
+ * Handles data transformation between backend response format and frontend interfaces.
+ * Maps backend fields (e.g., 'released') to frontend fields (e.g., 'releaseDate').
+ */
+
 import apiClient from "./api.client";
+
+/**
+ * Game interface
+ * Represents a game entity with all its properties
+ */
 
 export interface Game {
   _id: string;
@@ -44,21 +56,37 @@ export interface GamesQueryParams {
 export const gamesService = {
   // Public Endpoint: Fetch catalog
   async getCatalog(params: GamesQueryParams): Promise<PaginatedResponse<Game>> {
-    // Define the raw backend response type locally or import it if shared
-    const { data: rawData } = await apiClient.get<any>("/public/games", {
-      params,
-    });
+    // Backend response structure
+    interface BackendGame extends Omit<Game, "assets"> {
+      assets?: Game["assets"];
+      image?: string;
+      screenshots?: string[];
+    }
+
+    interface BackendResponse {
+      games: BackendGame[];
+      total: number;
+      totalPages: number;
+      page: number;
+    }
+
+    const { data: rawData } = await apiClient.get<BackendResponse>(
+      "/public/games",
+      {
+        params,
+      }
+    );
 
     // Map Backend Response (games, total, page...) to Frontend Interface (data, pagination)
     return {
-      data: (rawData.games || []).map((game: any) => ({
+      data: (rawData.games || []).map((game) => ({
         ...game,
         assets: game.assets || {
           cover:
             game.image ||
             "https://placehold.co/600x400/101010/FFF?text=No+Cover",
           screenshots: Array.isArray(game.screenshots)
-            ? game.screenshots.filter((s: string) => s.startsWith("http"))
+            ? game.screenshots.filter((s) => s.startsWith("http"))
             : [],
           videos: [],
         },
@@ -74,19 +102,29 @@ export const gamesService = {
 
   // Public Endpoint: Fetch single game
   async getGameById(id: string): Promise<Game> {
-    const { data: rawGame } = await apiClient.get<any>(`/public/games/${id}`);
+    interface BackendGame extends Omit<Game, "assets" | "releaseDate"> {
+      assets?: Game["assets"];
+      releaseDate?: string;
+      released?: string;
+      image?: string;
+      screenshots?: string[];
+    }
+
+    const { data: rawGame } = await apiClient.get<BackendGame>(
+      `/public/games/${id}`
+    );
 
     // Map backend structure to frontend interface
     return {
       ...rawGame,
-      releaseDate: rawGame.released || rawGame.releaseDate, // Backend uses 'released'
+      releaseDate: rawGame.released || rawGame.releaseDate || "", // Backend uses 'released'
       assets: rawGame.assets || {
         cover:
           rawGame.image ||
           "https://placehold.co/600x400/101010/FFF?text=No+Cover",
         screenshots: Array.isArray(rawGame.screenshots)
           ? rawGame.screenshots.filter(
-              (s: string) => typeof s === "string" && s.startsWith("http")
+              (s) => typeof s === "string" && s.startsWith("http")
             )
           : [],
         videos: [],
