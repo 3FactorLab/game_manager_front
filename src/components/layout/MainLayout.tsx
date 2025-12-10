@@ -95,7 +95,7 @@ export const MainLayout = () => {
             <div>&copy; {new Date().getFullYear()} GameManager.</div>
             <div>
               Crafted with <span className={styles.heart}>&hearts;</span> by the team (
-              <a href="https://andres-fdz-morelli-portfolio.netlify.app/projects" target="_blank" rel="noreferrer">Andr&eacute;s Fern&aacute;ndez Morelli</a>
+              <a href="https://s-fdz-morelli-portfolio.netlify.app/projects" target="_blank" rel="noreferrer">Andr&eacute;s Fern&aacute;ndez</a>
               {" "}&middot;{" "}
               <a href="https://alonsovine.github.io/portfolioR/" target="_blank" rel="noreferrer">Alonso Vi&ntilde;e</a>
               {" "}&middot;{" "}
