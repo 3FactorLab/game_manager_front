@@ -24,7 +24,8 @@ export interface User {
  */
 export interface AuthResponse {
   message: string;
-  token: string; // JWT token for authentication
+  token: string; // JWT access token for authentication
+  refreshToken: string; // Refresh token for obtaining new access tokens
   user: User; // User data
 }
 

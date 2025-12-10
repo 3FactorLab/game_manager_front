@@ -43,12 +43,15 @@ apiClient.interceptors.request.use(
 
 /**
  * Response Interceptor
- * Handles 401 Unauthorized errors by:
- * 1. Removing invalid token from localStorage
- * 2. Redirecting user to login page
+ * Handles 401 Unauthorized errors by attempting to refresh the access token.
  *
- * Note: Token refresh logic is not implemented yet.
- * If backend supports refresh tokens, implement here.
+ * Flow:
+ * 1. If 401 error and not already retried, attempt token refresh
+ * 2. Get refresh token from localStorage
+ * 3. Call /users/refresh-token endpoint
+ * 4. Store new tokens
+ * 5. Retry original request with new access token
+ * 6. If refresh fails or no refresh token, logout user
  */
 apiClient.interceptors.response.use(
   (response) => {
@@ -61,12 +64,35 @@ apiClient.interceptors.response.use(
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true; // Prevent infinite retry loop
 
-      // TODO: Implement token refresh logic if backend supports it
-      // For now, just logout user and redirect to login
-      localStorage.removeItem("token");
-      window.location.href = "/login";
+      const refreshToken = localStorage.getItem("refreshToken");
 
-      return Promise.reject(error);
+      // No refresh token available, logout user
+      if (!refreshToken) {
+        localStorage.removeItem("token");
+        window.location.href = "/login";
+        return Promise.reject(error);
+      }
+
+      try {
+        // Attempt to refresh the access token
+        const { data } = await axios.post("/api/users/refresh-token", {
+          token: refreshToken,
+        });
+
+        // Store new tokens
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("refreshToken", data.refreshToken);
+
+        // Update the failed request with new token and retry
+        originalRequest.headers.Authorization = `Bearer ${data.token}`;
+        return apiClient(originalRequest);
+      } catch (refreshError) {
+        // Refresh failed, logout user and redirect to login
+        localStorage.removeItem("token");
+        localStorage.removeItem("refreshToken");
+        window.location.href = "/login";
+        return Promise.reject(refreshError);
+      }
     }
 
     return Promise.reject(error);

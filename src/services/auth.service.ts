@@ -31,6 +31,7 @@ export const authService = {
     );
     if (data.token) {
       localStorage.setItem("token", data.token); // Store JWT for future requests
+      localStorage.setItem("refreshToken", data.refreshToken); // Store refresh token
     }
     return data;
   },
@@ -48,17 +49,19 @@ export const authService = {
     );
     if (data.token) {
       localStorage.setItem("token", data.token); // Auto-login after registration
+      localStorage.setItem("refreshToken", data.refreshToken); // Store refresh token
     }
     return data;
   },
 
   /**
    * Logout current user
-   * Removes JWT token from localStorage
+   * Removes JWT token and refresh token from localStorage
    * Note: Backend token invalidation could be added here if needed
    */
   async logout(): Promise<void> {
     localStorage.removeItem("token");
+    localStorage.removeItem("refreshToken");
   },
 
   /**
@@ -88,6 +91,30 @@ export const authService = {
       }
     );
     return data.user;
+  },
+
+  /**
+   * Refresh access token using refresh token
+   * Calls backend refresh endpoint to get new token pair
+   * @returns {Promise<AuthResponse>} New tokens and user data
+   */
+  async refreshToken(): Promise<AuthResponse> {
+    const refreshToken = localStorage.getItem("refreshToken");
+    if (!refreshToken) {
+      throw new Error("No refresh token available");
+    }
+
+    const { data } = await apiClient.post<AuthResponse>(
+      "/users/refresh-token",
+      { token: refreshToken }
+    );
+
+    if (data.token) {
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("refreshToken", data.refreshToken);
+    }
+
+    return data;
   },
 
   /**

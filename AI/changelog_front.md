@@ -1,5 +1,54 @@
 # Frontend Changelog
 
+## 2025-12-10 - Phase 3: Refresh Token Auto-Refresh
+
+### Added
+
+- **Automatic token refresh** on 401 Unauthorized errors:
+
+  - Interceptor in `api.client.ts` detects expired access tokens
+  - Automatically calls `/api/users/refresh-token` endpoint
+  - Stores new token pair (access + refresh)
+  - Retries original failed request seamlessly
+  - Graceful fallback to logout if refresh fails
+
+- **refreshToken field** to `AuthResponse` interface (`types.ts`)
+
+- **refreshToken() method** in `auth.service.ts`:
+  - Calls backend refresh endpoint
+  - Updates both tokens in localStorage
+  - Returns new auth response
+
+### Changed
+
+- **auth.service.ts**:
+
+  - `login()`: Now stores both `token` and `refreshToken`
+  - `register()`: Now stores both `token` and `refreshToken`
+  - `logout()`: Clears both tokens from localStorage
+
+- **api.client.ts**:
+  - Response interceptor replaced with auto-refresh logic
+  - Handles 401 errors with token refresh instead of immediate logout
+  - Prevents infinite retry loops with `_retry` flag
+
+### Impact
+
+- ✅ **Extended session duration** - From 15 minutes to 7 days
+- ✅ **Seamless user experience** - No forced logouts during active sessions
+- ✅ **Zero user interruption** - Token refresh happens transparently
+- ✅ **Security maintained** - Backend implements token rotation
+- ✅ **Backward compatible** - Falls back to logout if refresh fails
+
+### Technical Details
+
+- **Backend endpoint**: `POST /api/users/refresh-token`
+- **Storage**: Both tokens in localStorage (acceptable for academic project)
+- **Flow**: 401 → Get refreshToken → Call endpoint → Store new tokens → Retry request
+- **Edge cases handled**: No refresh token, expired refresh token, network errors
+
+---
+
 ## 2025-12-10 - Phase 2: Error Boundaries
 
 ### Added
