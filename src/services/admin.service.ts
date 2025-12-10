@@ -1,6 +1,18 @@
+/**
+ * admin.service.ts
+ * Service for admin-only operations including user and game management.
+ * Provides CRUD operations for users and games, plus RAWG integration.
+ * All endpoints require admin authentication.
+ */
+
 import apiClient from "./api.client";
+import type { RAWGGame, RAWGSearchResponse } from "../types/rawg.types";
 import type { Game } from "./games.service";
 
+/**
+ * User interface (admin view)
+ * Represents user data visible to admins
+ */
 export interface User {
   _id: string;
   username: string;
@@ -9,6 +21,10 @@ export interface User {
   createdAt: string;
 }
 
+/**
+ * PaginatedUsers interface
+ * Response structure for paginated user list
+ */
 export interface PaginatedUsers {
   users: User[];
   total: number;
@@ -16,6 +32,10 @@ export interface PaginatedUsers {
   totalPages: number;
 }
 
+/**
+ * Admin service
+ * Collection of admin-only API operations for user and game management
+ */
 export const adminService = {
   // ==================== USER MANAGEMENT ====================
 
@@ -80,14 +100,18 @@ export const adminService = {
   },
 
   /**
-   * Search games in RAWG database (Admin only)
-   * Endpoint: GET /api/games/search?q=query
+   * Search RAWG API for games
+   * @param query - Search query string
+   * @returns Array of RAWG games matching the query
    */
-  async searchRAWG(query: string): Promise<any[]> {
-    const { data } = await apiClient.get("/games/search", {
-      params: { q: query },
-    });
-    return data;
+  async searchRAWG(query: string): Promise<RAWGGame[]> {
+    const { data } = await apiClient.get<RAWGSearchResponse>(
+      `/admin/rawg/search`,
+      {
+        params: { query },
+      }
+    );
+    return data.results || [];
   },
 
   /**
@@ -102,3 +126,5 @@ export const adminService = {
     return data;
   },
 };
+
+// Exported to useAdmin hooks for admin panel operations

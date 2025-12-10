@@ -3,6 +3,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { gamesService } from "../../services/games.service";
 import { useDeleteGame } from "../../hooks/useAdmin";
 import { FaTrash, FaEdit } from "react-icons/fa";
+import { handleApiError, getErrorMessage } from "../../utils/error.util";
 import styles from "./GameManagement.module.css";
 
 const GameManagement = () => {
@@ -36,8 +37,8 @@ const GameManagement = () => {
       try {
         await deleteGameMutation.mutateAsync(gameId);
         alert("Juego eliminado correctamente");
-      } catch (err: any) {
-        alert(`Error: ${err.response?.data?.message || err.message}`);
+      } catch (error) {
+        handleApiError(error, "Failed to delete game");
       }
     }
   };
@@ -48,7 +49,7 @@ const GameManagement = () => {
   if (error) {
     return (
       <div className={styles.container}>
-        <div className={styles.error}>Error: {(error as any).message}</div>
+        <div className={styles.error}>Error: {getErrorMessage(error)}</div>
       </div>
     );
   }

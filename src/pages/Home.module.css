@@ -40,11 +40,28 @@
 }
 
 .loadMoreContainer {
-  position: relative;
-  z-index: 1;
   display: flex;
   justify-content: center;
-  padding: 2rem 0;
+  margin-top: 3rem;
+  padding-bottom: 2rem;
+}
+
+/* Loading state */
+.loadingState {
+  text-align: center;
+  padding: 4rem;
+}
+
+/* Error state */
+.errorState {
+  text-align: center;
+  color: var(--error);
+  padding: 4rem;
+}
+
+/* End of list message */
+.endMessage {
+  color: var(--text-muted);
 }
 
 @media (min-width: 640px) {

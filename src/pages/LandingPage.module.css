@@ -69,6 +69,10 @@
   margin-bottom: 3rem;
 }
 
+.actions a {
+  text-decoration: none;
+}
+
 .primaryBtn,
 .secondaryBtn {
   display: flex;

@@ -1,3 +1,14 @@
+/**
+ * RegisterPage.tsx
+ * User registration page with form validation using react-hook-form and Zod.
+ * Features:
+ * - Username, email, and password validation
+ * - Password confirmation matching
+ * - Error handling and display
+ * - Loading state during registration
+ * - Link to login page
+ */
+
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "react-router-dom";
@@ -8,11 +19,19 @@ import { Button } from "../../../components/ui/Button";
 import { Input } from "../../../components/ui/Input";
 import { Card } from "../../../components/ui/Card";
 
+/**
+ * RegisterPage component
+ * Displays registration form with validation and error handling.
+ * Redirects to home page on successful registration.
+ *
+ * @returns {JSX.Element} Registration page with form
+ */
 const RegisterPage = () => {
   const { t } = useTranslation();
   const { register: registerUser, isLoading } = useAuth();
   const navigate = useNavigate();
 
+  // Initialize react-hook-form with Zod schema validation
   const {
     register,
     handleSubmit,
@@ -22,10 +41,16 @@ const RegisterPage = () => {
     resolver: zodResolver(registerSchema),
   });
 
+  /**
+   * Handle form submission
+   * Attempts registration and navigates to home on success.
+   * Displays error message on failure.
+   * @param {RegisterSchemaType} data - Form data (username, email, password, confirmPassword)
+   */
   const onSubmit = async (data: RegisterSchemaType) => {
     try {
       await registerUser(data);
-      navigate("/");
+      navigate("/"); // Redirect to home on success
     } catch (error) {
       console.error(error);
       setError("root", {

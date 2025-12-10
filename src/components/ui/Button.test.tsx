@@ -18,7 +18,7 @@ describe("Button", () => {
 
   it("shows loading state", () => {
     render(<Button isLoading>Click Me</Button>);
-    expect(screen.getByText("...")).toBeInTheDocument();
+    expect(screen.getByText("⏳")).toBeInTheDocument();
     expect(screen.queryByText("Click Me")).not.toBeInTheDocument();
   });
 

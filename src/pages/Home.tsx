@@ -1,3 +1,10 @@
+/**
+ * Home.tsx
+ * Main games catalog page with infinite scroll pagination.
+ * Displays game grid with search functionality and React Query for data fetching.
+ * Supports search via URL query parameters.
+ */
+
 import React from "react";
 import { useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -7,16 +14,25 @@ import type { Game } from "../services/games.service";
 import { Button } from "../components/ui/Button";
 import styles from "./Home.module.css";
 
+/**
+ * Home page component
+ * Displays paginated game catalog with search and infinite scroll.
+ * Uses React Query's useInfiniteQuery for efficient data fetching and caching.
+ *
+ * @returns {JSX.Element} Home page with game grid
+ */
 const Home = () => {
   const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const searchQuery = searchParams.get("search") || "";
 
+  // Fetch games with infinite scroll pagination (12 games per page)
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status } =
     useGames({ limit: 12, search: searchQuery });
 
   return (
     <div className={styles.container}>
+      {/* Hero section with title */}
       <section className={styles.hero}>
         <h1 className={`${styles.title} text-gradient`}>
           {searchQuery ? `Results for "${searchQuery}"` : t("home.hero_title")}
@@ -24,19 +40,21 @@ const Home = () => {
         <p className={styles.subtitle}>{t("home.hero_subtitle")}</p>
       </section>
 
+      {/* Loading state */}
       {status === "pending" ? (
-        <div style={{ textAlign: "center", padding: "4rem" }}>
+        <div className={styles.loadingState}>
           <span className="text-gradient" style={{ fontSize: "1.5rem" }}>
             Loading Games...
           </span>
-          {/* Can replace with Skeleton later */}
         </div>
       ) : status === "error" ? (
-        <div style={{ textAlign: "center", color: "var(--error)" }}>
+        /* Error state */
+        <div className={styles.errorState}>
           Error loading games. Please try again later.
         </div>
       ) : (
         <>
+          {/* Game grid with infinite scroll */}
           <div className={styles.grid}>
             {data.pages.map((group, i) => (
               <React.Fragment key={i}>
@@ -47,6 +65,7 @@ const Home = () => {
             ))}
           </div>
 
+          {/* Load more button */}
           <div className={styles.loadMoreContainer}>
             {hasNextPage ? (
               <Button
@@ -57,9 +76,7 @@ const Home = () => {
                 {isFetchingNextPage ? "Loading more..." : "Load More Games"}
               </Button>
             ) : (
-              <span style={{ color: "var(--text-muted)" }}>
-                You've reached the end!
-              </span>
+              <span className={styles.endMessage}>You've reached the end!</span>
             )}
           </div>
         </>
@@ -68,4 +85,5 @@ const Home = () => {
   );
 };
 
+// Exported to AppRoutes as main games catalog page
 export default Home;
