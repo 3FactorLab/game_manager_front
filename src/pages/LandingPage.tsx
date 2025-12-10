@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+﻿import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FaGamepad, FaBook, FaSignInAlt } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
@@ -24,7 +24,11 @@ const LandingPage = () => {
           animate={{ scale: 1 }}
           transition={{ delay: 0.3, duration: 0.5, type: "spring" }}
         >
-          <FaGamepad className={styles.heroIcon} />
+          <img
+            src="/game_manager_icon.png"
+            alt="Game Manager"
+            className={styles.heroIconImg}
+          />
         </motion.div>
 
         <motion.h1
@@ -82,25 +86,25 @@ const LandingPage = () => {
           transition={{ delay: 1, duration: 0.8 }}
         >
           <div className={styles.feature}>
-            <img 
-              src="/discover_image.png" 
-              alt="Discover" 
+            <img
+              src="/discover_image.png"
+              alt="Discover"
               className={styles.featureIcon}
             />
             <span className={styles.featureText}>{t("landing.feature_discover")}</span>
           </div>
           <div className={styles.feature}>
-            <img 
-              src="/catalog_image.png" 
-              alt="Organize" 
+            <img
+              src="/catalog_image.png"
+              alt="Organize"
               className={styles.featureIcon}
             />
             <span className={styles.featureText}>{t("landing.feature_organize")}</span>
           </div>
           <div className={styles.feature}>
-            <img 
-              src="/track_image.png" 
-              alt="Track" 
+            <img
+              src="/track_image.png"
+              alt="Track"
               className={styles.featureIcon}
             />
             <span className={styles.featureText}>{t("landing.feature_track")}</span>

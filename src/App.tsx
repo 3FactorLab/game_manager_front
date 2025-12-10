@@ -1,4 +1,4 @@
-/**
+﻿/**
  * App.tsx
  * Root application component that sets up global providers and routing.
  * Configures react-hot-toast for notifications with glassmorphism styling
@@ -9,6 +9,7 @@
 import AppRoutes from "./routes/AppRoutes";
 import { Toaster } from "react-hot-toast";
 import { ErrorBoundary } from "./components/ErrorBoundary";
+import { Helmet } from "react-helmet-async";
 
 /**
  * Main App component
@@ -21,6 +22,10 @@ import { ErrorBoundary } from "./components/ErrorBoundary";
 function App() {
   return (
     <ErrorBoundary>
+      <Helmet>
+        <title>GameManager</title>
+        <link rel="icon" href="/public/game_manager_icon.png" />
+      </Helmet>
       {/* Application routing system with error protection */}
       <AppRoutes />
 

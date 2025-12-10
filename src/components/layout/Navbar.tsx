@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Navbar.tsx
  * Main navigation bar component with responsive design.
  * Features:
@@ -49,6 +49,11 @@ export const Navbar = () => {
   return (
     <div className={styles.navbar}>
       <Link to="/" className={styles.logo}>
+        <img
+          src="/game_manager_icon.png"
+          alt="GameManager"
+          className={styles.logoIcon}
+        />
         Game<span>Manager</span>
       </Link>
 
@@ -95,7 +100,7 @@ export const Navbar = () => {
       {/* Desktop Actions */}
       <div className={clsx(styles.actions, styles.desktopParams)}>
         {isAuthenticated ? (
-          <UserDropdown />
+          <UserDropdown user={user} onLogout={handleLogout} />
         ) : (
           <>
             <Link to="/login">
@@ -151,12 +156,8 @@ export const Navbar = () => {
         />
 
         {isAuthenticated ? (
-          <div
-            style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
-          >
-            <div
-              style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
-            >
+          <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
               <FaUserCircle /> <span>{user?.username}</span>
             </div>
             <Button
@@ -168,9 +169,7 @@ export const Navbar = () => {
             </Button>
           </div>
         ) : (
-          <div
-            style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
-          >
+          <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
             <Link to="/login" onClick={() => setIsMobileOpen(false)}>
               <Button variant="ghost" style={{ width: "100%" }}>
                 {t("nav.login")}
@@ -197,9 +196,7 @@ const NavItem = ({
 }) => (
   <NavLink
     to={to}
-    className={({ isActive }) =>
-      clsx(styles.link, isActive && styles.linkActive)
-    }
+    className={({ isActive }) => clsx(styles.link, isActive && styles.linkActive)}
     onClick={onClick}
   >
     {label}

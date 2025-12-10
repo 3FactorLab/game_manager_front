@@ -1,4 +1,4 @@
-.navbar {
+﻿.navbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -24,6 +24,12 @@
   color: var(--accent-primary);
 }
 
+.logoIcon {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+}
+
 .navLinks {
   display: flex;
   align-items: center;
@@ -41,7 +47,7 @@
 
 .link:hover,
 .linkActive {
-  color: var(--text-primary);
+  color: var(--accent-primary);
 }
 
 .actions {
@@ -118,3 +124,5 @@
     display: block;
   }
 }
+
+
