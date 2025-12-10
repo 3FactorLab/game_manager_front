@@ -28,9 +28,7 @@ export const collectionService = {
     return data;
   },
 
-  // Simulate Wishlist for now as it wasn't explicitly detailed in backend
   async getWishlist(): Promise<Game[]> {
-    // Assuming backend supports query param or separate endpoint
     const { data } = await apiClient.get<Game[]>("/collection/wishlist");
     return data;
   },

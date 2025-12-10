@@ -21,6 +21,7 @@
     0 0 0 1px var(--glass-highlight) inset;
   text-align: center;
   z-index: 1;
+  margin-top: -5vh; /* Shift up to reduce top space */
 }
 
 .iconWrapper {
