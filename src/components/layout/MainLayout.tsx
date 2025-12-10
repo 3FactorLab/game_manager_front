@@ -90,11 +90,19 @@ export const MainLayout = () => {
             </p>
           </div>
         </div>
-                <div className={styles.footerBottom}>
-          <span>
-            &copy; {new Date().getFullYear()} GameManager. Crafted with {" "}
-            <span className={styles.heart}>&hearts;</span> by the team.
-          </span>
+                                                <div className={styles.footerBottom}>
+          <div className={styles.footerText}>
+            <div>&copy; {new Date().getFullYear()} GameManager.</div>
+            <div>
+              Crafted with <span className={styles.heart}>&hearts;</span> by the team (
+              <a href="https://andres-fdz-morelli-portfolio.netlify.app/projects" target="_blank" rel="noreferrer">Andr&eacute;s Fern&aacute;ndez</a>
+              {" "}&middot;{" "}
+              <a href="https://alonsovine.github.io/portfolioR/" target="_blank" rel="noreferrer">Alonso Vi&ntilde;e</a>
+              {" "}&middot;{" "}
+              <a href="https://javieerca.github.io/javier-cortes-portfolio/" target="_blank" rel="noreferrer">Javier Cort&eacute;s</a>
+              ).
+            </div>
+          </div>
           <span className={styles.muted}>Glass UI | React | Vite | TS</span>
         </div>
       </footer>
@@ -104,6 +112,13 @@ export const MainLayout = () => {
 
 // Exported to AppRoutes as layout wrapper for all pages
 export default MainLayout;
+
+
+
+
+
+
+
 
 
 
