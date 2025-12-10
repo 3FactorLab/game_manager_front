@@ -14,6 +14,7 @@ import { HelmetProvider } from "react-helmet-async";
 import "./index.css"; // Global styles and CSS custom properties
 import "./lib/i18n"; // Initialize i18next for internationalization
 import { CartProvider } from "./features/cart/CartContext";
+import { WishlistProvider } from "./features/wishlist/WishlistContext";
 import { queryClient } from "./lib/queryClient"; // React Query client configuration
 import { AuthProvider } from "./features/auth/AuthContext"; // Authentication context
 import App from "./App.tsx";
@@ -28,17 +29,19 @@ import App from "./App.tsx";
  * 6. BrowserRouter - Client-side routing
  */
 createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <HelmetProvider>
-      <QueryClientProvider client={queryClient}>
-        <CartProvider>
-          <AuthProvider>
-            <BrowserRouter>
-              <App />
-            </BrowserRouter>
-          </AuthProvider>
-        </CartProvider>
-      </QueryClientProvider>
-    </HelmetProvider>
-  </StrictMode>
+    <StrictMode>
+        <HelmetProvider>
+            <QueryClientProvider client={queryClient}>
+                <AuthProvider>
+                    <CartProvider>
+                        <WishlistProvider>
+                            <BrowserRouter>
+                                <App />
+                            </BrowserRouter>
+                        </WishlistProvider>
+                    </CartProvider>
+                </AuthProvider>
+            </QueryClientProvider>
+        </HelmetProvider>
+    </StrictMode>
 );
