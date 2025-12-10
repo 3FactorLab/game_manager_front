@@ -48,16 +48,78 @@ resources: {
 }
 ```
 
-### 3. Token Refresh Logic (4-6 horas)
+### 3. Corregir Rutas de Archivos Estáticos (5 minutos)
 
-**Estado:** No implementado
+**Estado:** Warning de Vite detectado
 
-**Requiere:**
+**Problema:** 2 referencias usan `/public/game_manager_icon.png` en lugar de `/game_manager_icon.png`
 
-- Soporte del backend (endpoint `/api/auth/refresh`)
-- Actualizar `api.client.ts` con lógica de refresh
-- Actualizar `auth.service.ts` para manejar refresh tokens
-- Guardar/limpiar refresh tokens en localStorage
+**Acción requerida:**
+
+```bash
+# Buscar las referencias incorrectas
+grep -r "/public/game_manager_icon.png" src/
+grep -r "/public/game_manager_icon.png" index.html
+```
+
+**Cambio necesario:**
+
+```diff
+-/public/game_manager_icon.png
++/game_manager_icon.png
+```
+
+**Razón:** Los archivos en `public/` se sirven desde la raíz (`/`) en Vite, no desde `/public/`.
+
+### 4. Completar Migración de 6ª Screenshot (10 minutos)
+
+**Estado:** ⏸️ Pendiente - Esperando que RAWG API se recupere
+
+**Progreso:**
+
+- ✅ Backend modificado (`rawg.service.ts`) para pedir 6 screenshots
+- ✅ Script de migración creado (`update-screenshots.ts`)
+- ✅ npm script agregado (`npm run update-screenshots`)
+- ⏸️ Ejecución pendiente (RAWG API caída - error 502)
+- ⏸️ Frontend pendiente de actualizar
+
+**Acción requerida cuando RAWG funcione:**
+
+**Backend:**
+
+```bash
+cd game-manager-BACK
+npm run update-screenshots
+```
+
+**Frontend:**
+
+```typescript
+// En GameDetails.tsx línea 116
+{game.assets.screenshots.slice(0, 6).map((screenshot, i) => (
+  // ... resto del código
+))}
+```
+
+**Verificación:**
+
+- Comprobar que juegos tienen 6 screenshots en MongoDB
+- Verificar que frontend muestra 6 screenshots
+- Confirmar que lightbox funciona con 6 imágenes
+
+**Nota:** Script incluye retry logic y fallback (duplicar última screenshot) si RAWG sigue caído.
+
+### 5. Token Refresh Logic (4-6 horas)
+
+**Estado:** ✅ Implementado (2025-12-10)
+
+**Completado:**
+
+- ✅ Soporte del backend (endpoint `/api/users/refresh-token`)
+- ✅ Actualizado `api.client.ts` con lógica de refresh automático
+- ✅ Actualizado `auth.service.ts` para manejar refresh tokens
+- ✅ Guardar/limpiar refresh tokens en localStorage
+- ✅ Debug logging agregado
 
 **Beneficio:** Usuarios no serán deslogueados inesperadamente cuando expire el token.
 
