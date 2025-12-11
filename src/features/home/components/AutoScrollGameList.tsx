@@ -4,8 +4,8 @@ import { useGames } from "../../games/hooks/useGames";
 import styles from "./AutoScrollGameList.module.css";
 
 export const AutoScrollGameList: React.FC = () => {
-  // Fetch a good amount of games to populate the list
-  const { data, isLoading } = useGames({ limit: 15 });
+  // Fetch more games to ensure enough content for wider grids (e.g. 5 columns)
+  const { data, isLoading } = useGames({ limit: 25 });
   // Derived state (no useState/useEffect needed)
   const allGames = data?.pages?.[0]?.data
     ? data.pages.flatMap((page) => page.data)
@@ -16,40 +16,30 @@ export const AutoScrollGameList: React.FC = () => {
 
   if (isLoading || games.length === 0) return null;
 
-  // Chunk games into groups of 3 for the rows
-  const rows = [];
-  for (let i = 0; i < games.length; i += 3) {
-    rows.push(games.slice(i, i + 3));
-  }
-
   return (
     <div className={styles.container}>
       <div className={styles.scrollContainer}>
         <div className={styles.track}>
-          {rows.map((row, rowIndex) => (
-            <div key={rowIndex} className={styles.row}>
-              {row.map((game, gameIndex) => (
-                <Link
-                  to={`/game/${game._id}`}
-                  key={`${rowIndex}-${gameIndex}-${game._id}`}
-                  className={styles.gameCard}
-                  title={game.title}
-                >
-                  <img
-                    src={
-                      game.assets?.cover ||
-                      "https://placehold.co/600x400/101010/FFF?text=No+Cover"
-                    }
-                    alt={game.title}
-                    className={styles.gameImage}
-                    loading="lazy"
-                  />
-                  <div className={styles.gameOverlay}>
-                    <p className={styles.gameTitle}>{game.title}</p>
-                  </div>
-                </Link>
-              ))}
-            </div>
+          {games.map((game, index) => (
+            <Link
+              to={`/game/${game._id}`}
+              key={`${index}-${game._id}`}
+              className={styles.gameCard}
+              title={game.title}
+            >
+              <img
+                src={
+                  game.assets?.cover ||
+                  "https://placehold.co/600x400/101010/FFF?text=No+Cover"
+                }
+                alt={game.title}
+                className={styles.gameImage}
+                loading="lazy"
+              />
+              <div className={styles.gameOverlay}>
+                <p className={styles.gameTitle}>{game.title}</p>
+              </div>
+            </Link>
           ))}
         </div>
       </div>

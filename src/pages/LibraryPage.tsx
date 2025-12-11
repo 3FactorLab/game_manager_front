@@ -4,6 +4,7 @@ import { Card } from "../components/ui/Card";
 import { Button } from "../components/ui/Button";
 import { StatusBadge } from "../features/collection/components/StatusBadge";
 import { Link, useNavigate } from "react-router-dom";
+import styles from "./LibraryPage.module.css";
 
 const LibraryPage = () => {
   const { t } = useTranslation();
@@ -34,20 +35,11 @@ const LibraryPage = () => {
   const hasItems = libraryItems && libraryItems.length > 0;
 
   return (
-    <div>
-      <div
-        style={{
-          display: "flex",
-          gap: "1rem",
-          alignItems: "center",
-          marginBottom: "2rem",
-        }}
-      >
-        <h1 className="text-gradient" style={{ marginRight: "auto" }}>
-          {t("nav.library")}
-        </h1>
+    <div className={styles.container}>
+      <div className={styles.header}>
+        <h1 className={`${styles.title} text-gradient`}>{t("nav.library")}</h1>
 
-        <div style={{ display: "flex", gap: "0.5rem" }}>
+        <div className={styles.headerActions}>
           <Button variant="primary" size="sm">
             My Games
           </Button>
@@ -62,58 +54,40 @@ const LibraryPage = () => {
       </div>
 
       {!hasItems ? (
-        renderEmptyState()
+        <div className={styles.emptyState}>
+          <h2 className={`${styles.emptyTitle} text-gradient`}>
+            Your library is empty
+          </h2>
+          <p className={styles.emptyText}>Go explore and find some games!</p>
+          <Link to="/" className={styles.browseLink}>
+            Browse Store
+          </Link>
+        </div>
       ) : (
-        <div style={{ display: "grid", gap: "1rem" }}>
+        <div className={styles.grid}>
           {libraryItems?.map((item) => (
             <Card
               key={item._id}
               hoverable
-              style={{
-                display: "flex",
-                gap: "1.5rem",
-                alignItems: "center",
-                cursor: "pointer",
-              }}
+              className={styles.libraryCard}
               onClick={() => navigate(`/game/${item.game._id}`)}
+              padding="md"
             >
-              <div
-                style={{
-                  width: "120px",
-                  aspectRatio: "16/9",
-                  overflow: "hidden",
-                  borderRadius: "8px",
-                }}
-              >
+              <div className={styles.imageWrapper}>
                 <img
                   src={
                     item.game.assets?.cover ||
                     "https://placehold.co/200x112/101010/FFF?text=Game"
                   }
                   alt={item.game.title}
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
-                  }}
+                  className={styles.image}
                 />
               </div>
-              <div style={{ flexGrow: 1 }}>
-                <h3 style={{ marginBottom: "0.5rem" }}>{item.game.title}</h3>
-                <div
-                  style={{
-                    display: "flex",
-                    gap: "1rem",
-                    alignItems: "center",
-                  }}
-                >
+              <div className={styles.cardContent}>
+                <h3 className={styles.gameTitle}>{item.game.title}</h3>
+                <div className={styles.metaRow}>
                   <StatusBadge status={item.status} />
-                  <span
-                    style={{
-                      color: "var(--text-muted)",
-                      fontSize: "0.9rem",
-                    }}
-                  >
+                  <span className={styles.purchaseDate}>
                     Purchased on {new Date(item.addedAt).toLocaleDateString()}
                   </span>
                 </div>

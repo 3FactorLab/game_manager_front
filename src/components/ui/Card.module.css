@@ -28,3 +28,12 @@
 .padding-lg {
   padding: 2rem;
 }
+
+@media (max-width: 640px) {
+  .padding-md {
+    padding: 1rem;
+  }
+  .padding-lg {
+    padding: 1.5rem;
+  }
+}

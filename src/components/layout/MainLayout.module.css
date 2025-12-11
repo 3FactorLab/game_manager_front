@@ -57,7 +57,7 @@
   z-index: 1;
   flex-grow: 1;
   width: 100%;
-  max-width: 1280px;
+  max-width: 100%; /* Ultrawide Unlocked: Let pages decide constraint */
   margin: 0 auto;
   padding: 2rem 1rem;
 }
@@ -71,12 +71,26 @@
 }
 
 .footerInner {
-  max-width: 1280px;
+  max-width: 1800px;
   margin: 0 auto;
   padding: 2.5rem 1.5rem 2rem;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 2rem;
+}
+
+/* ... existing styles ... */
+
+.footerBottom {
+  max-width: 1800px;
+  margin: 0 auto;
+  padding: 1rem 1.5rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--text-secondary);
+  border-top: 1px solid var(--glass-border);
+  gap: 1rem;
 }
 
 .footerBrand {
