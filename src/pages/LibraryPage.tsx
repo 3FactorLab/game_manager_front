@@ -1,9 +1,9 @@
 import { useTranslation } from "react-i18next";
 import { useLibrary } from "../features/collection/hooks/useLibrary";
-import { Card } from "../components/ui/Card";
 import { Button } from "../components/ui/Button";
-import { StatusBadge } from "../features/collection/components/StatusBadge";
+import { GameCard } from "../features/games/components/GameCard";
 import { Link, useNavigate } from "react-router-dom";
+import styles from "./LibraryPage.module.css";
 
 const LibraryPage = () => {
   const { t } = useTranslation();
@@ -34,7 +34,7 @@ const LibraryPage = () => {
   const hasItems = libraryItems && libraryItems.length > 0;
 
   return (
-    <div>
+    <div className={styles.container}>
       <div
         style={{
           display: "flex",
@@ -43,9 +43,14 @@ const LibraryPage = () => {
           marginBottom: "2rem",
         }}
       >
-        <h1 className="text-gradient" style={{ marginRight: "auto" }}>
-          {t("nav.library")}
-        </h1>
+        <div style={{ display: "flex", alignItems: "baseline", gap: "1rem", marginRight: "auto" }}>
+          <h1 className="text-gradient">
+            {t("nav.library")}
+          </h1>
+          <span style={{ color: "var(--text-secondary)", fontSize: "1.1rem" }}>
+            {libraryItems?.length || 0} {(libraryItems?.length || 0) === 1 ? "Game" : "Games"}
+          </span>
+        </div>
 
         <div style={{ display: "flex", gap: "0.5rem" }}>
           <Button variant="primary" size="sm">
@@ -64,61 +69,9 @@ const LibraryPage = () => {
       {!hasItems ? (
         renderEmptyState()
       ) : (
-        <div style={{ display: "grid", gap: "1rem" }}>
+        <div className={styles.grid}>
           {libraryItems?.map((item) => (
-            <Card
-              key={item._id}
-              hoverable
-              style={{
-                display: "flex",
-                gap: "1.5rem",
-                alignItems: "center",
-                cursor: "pointer",
-              }}
-              onClick={() => navigate(`/game/${item.game._id}`)}
-            >
-              <div
-                style={{
-                  width: "120px",
-                  aspectRatio: "16/9",
-                  overflow: "hidden",
-                  borderRadius: "8px",
-                }}
-              >
-                <img
-                  src={
-                    item.game.assets?.cover ||
-                    "https://placehold.co/200x112/101010/FFF?text=Game"
-                  }
-                  alt={item.game.title}
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
-                  }}
-                />
-              </div>
-              <div style={{ flexGrow: 1 }}>
-                <h3 style={{ marginBottom: "0.5rem" }}>{item.game.title}</h3>
-                <div
-                  style={{
-                    display: "flex",
-                    gap: "1rem",
-                    alignItems: "center",
-                  }}
-                >
-                  <StatusBadge status={item.status} />
-                  <span
-                    style={{
-                      color: "var(--text-muted)",
-                      fontSize: "0.9rem",
-                    }}
-                  >
-                    Purchased on {new Date(item.addedAt).toLocaleDateString()}
-                  </span>
-                </div>
-              </div>
-            </Card>
+            <GameCard key={item._id} game={item.game} />
           ))}
         </div>
       )}

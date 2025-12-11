@@ -3,7 +3,7 @@
  * Main navigation bar component with responsive design.
  */
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { FaBars, FaTimes, FaUserCircle, FaSignOutAlt, FaShoppingCart, FaHeart } from "react-icons/fa";
@@ -22,6 +22,23 @@ export const Navbar = () => {
     const navigate = useNavigate();
     const [isMobileOpen, setIsMobileOpen] = useState(false);
     const [isCartOpen, setIsCartOpen] = useState(false);
+    const cartRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (cartRef.current && !cartRef.current.contains(event.target as Node)) {
+                setIsCartOpen(false);
+            }
+        };
+
+        if (isCartOpen) {
+            document.addEventListener("mousedown", handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [isCartOpen]);
 
     const toggleMobile = () => setIsMobileOpen(!isMobileOpen);
     const toggleCart = () => setIsCartOpen((open) => !open);
@@ -66,7 +83,7 @@ export const Navbar = () => {
             {/* Desktop Actions */}
             <div className={clsx(styles.actions, styles.desktopParams)}>
                 {count > 0 && (
-                    <div className={styles.cartWrapper}>
+                    <div className={styles.cartWrapper} ref={cartRef}>
                         <button className={styles.cartButton} onClick={toggleCart} title="View cart">
                             <FaShoppingCart />
                             <span className={styles.cartBadge}>{count}</span>

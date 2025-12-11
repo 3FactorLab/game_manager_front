@@ -34,6 +34,7 @@ export interface Game {
   };
   score?: number;
   metacritic?: number;
+  image?: string; // Fallback for backend compatibility
 }
 
 export interface PaginatedResponse<T> {

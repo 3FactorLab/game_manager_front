@@ -18,6 +18,7 @@ import GameDetails from "../pages/GameDetails";
 import LibraryPage from "../pages/LibraryPage";
 import CheckoutPage from "../pages/CheckoutPage";
 import WishlistPage from "../pages/WishlistPage";
+import OrdersPage from "../pages/OrdersPage";
 
 // Admin Pages
 import AdminDashboard from "../pages/admin/AdminDashboard";
@@ -112,6 +113,14 @@ const AppRoutes = () => {
                     element={
                         <ProtectedRoute>
                             <WishlistPage />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/orders"
+                    element={
+                        <ProtectedRoute>
+                            <OrdersPage />
                         </ProtectedRoute>
                     }
                 />

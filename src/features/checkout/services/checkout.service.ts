@@ -14,9 +14,12 @@ export interface CheckoutResponse {
 
 export const checkoutService = {
   async purchaseGames(gameIds: string[]): Promise<CheckoutResponse> {
-    const { data } = await apiClient.post<CheckoutResponse>("/payments/checkout", {
-      gameIds,
-    });
+    const { data } = await apiClient.post<CheckoutResponse>(
+      "/payments/checkout/simulate",
+      {
+        gameIds,
+      }
+    );
     return data;
   },
 };

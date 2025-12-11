@@ -50,7 +50,7 @@
   top: calc(100% + 0.5rem);
   right: 0;
   min-width: 280px;
-  background: var(--bg-glass);
+  background: rgba(15, 23, 42, 0.95);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--glass-border);

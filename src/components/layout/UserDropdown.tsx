@@ -22,6 +22,7 @@ import {
   FaChevronDown,
   FaChevronUp,
   FaUserEdit,
+  FaList,
 } from "react-icons/fa";
 import { useAuth } from "../../features/auth/AuthContext";
 import { AvatarUploadModal } from "../../features/profile/components/AvatarUploadModal";
@@ -198,6 +199,15 @@ export const UserDropdown = () => {
               >
                 <FaBook />
                 <span>My Library</span>
+              </Link>
+
+              <Link
+                to="/orders"
+                className={styles.menuItem}
+                onClick={() => setIsOpen(false)}
+              >
+                <FaList />
+                <span>My Orders</span>
               </Link>
 
               <div className={styles.divider} />

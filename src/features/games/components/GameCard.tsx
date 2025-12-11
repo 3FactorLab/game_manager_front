@@ -50,7 +50,7 @@ export const GameCard = ({ game }: GameCardProps) => {
             {/* Game cover image */}
             <div className={styles.coverImageWrapper}>
                 <img
-                    src={game.assets?.cover || "https://placehold.co/600x400/101010/FFF?text=No+Cover"}
+                    src={game.assets?.cover || game.image || "https://placehold.co/600x400/101010/FFF?text=No+Cover"}
                     alt={game.title}
                     className={styles.coverImage}
                     loading="lazy"
