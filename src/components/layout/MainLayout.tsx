@@ -19,138 +19,193 @@ import { Navbar } from "./Navbar";
  * @returns {JSX.Element} Layout with navbar, content area, and footer
  */
 export const MainLayout = () => {
-  const { t } = useTranslation();
-  return (
-    <div className={styles.root}>
-      {/* Header with navigation */}
-      <header className={`${styles.header} glass-panel`}>
-        <Navbar />
-      </header>
+    const { t } = useTranslation();
+    return (
+        <div className={styles.root}>
+            {/* Header with navigation */}
+            <header className={`${styles.header} glass-panel`}>
+                <Navbar />
+            </header>
 
-      {/* Main content area - renders nested routes */}
-      <main className={styles.main}>
-        <Outlet />
-      </main>
+            {/* Main content area - renders nested routes */}
+            <main className={styles.main}>
+                <Outlet />
+            </main>
 
-      <footer className={styles.footer}>
-        <div className={styles.footerInner}>
-          <div className={styles.footerBrand}>
-            <div className={styles.brandRow}>
-              <img
-                src="/game_manager_icon.png"
-                alt="GameManager"
-                className={styles.brandIcon}
-              />
-              <div>
-                <div className={styles.brandName}>
-                  Game<span>Manager</span>
+            <footer className={styles.footer}>
+                <div className={styles.footerInner}>
+                    <div className={styles.footerBrand}>
+                        <div className={styles.brandRow}>
+                            <img src="/game_manager_icon.png" alt="GameManager" className={styles.brandIcon} />
+                            <div>
+                                <div className={styles.brandName}>
+                                    Game<span>Manager</span>
+                                </div>
+                                <p className={styles.tagline}>
+                                    Discover, collect, and manage your games with a polished stack.
+                                </p>
+                            </div>
+                        </div>
+                        <p className={styles.muted}>
+                            Curated catalog, secure checkout, and admin controls in one glassmorphic experience.
+                        </p>
+                    </div>
+
+                    <div className={styles.footerLinks}>
+                        <h4 className={styles.sectionTitle}>Product</h4>
+                        <Link to="/home">{t("nav.home")}</Link>
+                        <Link to="/library">{t("nav.library")}</Link>
+                        <Link to="/admin">Admin</Link>
+                        <Link to="/admin/games">Catalog</Link>
+                    </div>
+
+                    <div className={styles.footerLinks}>
+                        <h4 className={styles.sectionTitle}>Resources</h4>
+                        <Link to="/login">{t("nav.login")}</Link>
+                        <Link to="/register">{t("nav.register")}</Link>
+                        <Link to="/catalog">Catalog</Link>
+                        <a href="mailto:support@gamemanager.dev">Support</a>
+                    </div>
+
+                    <div className={styles.footerLinks}>
+                        <h4 className={styles.sectionTitle}>Community</h4>
+
+                        <div
+                            className={styles.teamList}
+                            style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
+                        >
+                            {/* Alonso */}
+                            <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+                                <div className={styles.socialRow} style={{ gap: "0.5rem" }}>
+                                    <a
+                                        href="https://github.com/AlonsoVine"
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        aria-label="Alonso GitHub"
+                                        className={styles.socialIcon}
+                                        style={{ width: "32px", height: "32px" }}
+                                    >
+                                        <FaGithub />
+                                    </a>
+                                    <a
+                                        href="https://www.linkedin.com/in/alonso-vi%C3%B1%C3%A9-barrancos/"
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        aria-label="Alonso LinkedIn"
+                                        className={styles.socialIcon}
+                                        style={{ width: "32px", height: "32px" }}
+                                    >
+                                        <FaLinkedin />
+                                    </a>
+                                    <a
+                                        href="https://alonsovine.github.io/portfolioR/"
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        aria-label="Alonso Portfolio"
+                                        className={styles.socialIcon}
+                                        style={{ width: "32px", height: "32px" }}
+                                    >
+                                        <FaGlobe />
+                                    </a>
+                                </div>
+                                <span style={{ fontSize: "0.9rem", color: "var(--accent-primary)", fontWeight: 600 }}>
+                                    Alonso Vi&ntilde;&eacute;
+                                </span>
+                            </div>
+
+                            {/* Andres */}
+                            <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+                                <div className={styles.socialRow} style={{ gap: "0.5rem" }}>
+                                    <a
+                                        href="https://github.com/Andy-dev-hack"
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        aria-label="Andres GitHub"
+                                        className={styles.socialIcon}
+                                        style={{ width: "32px", height: "32px" }}
+                                    >
+                                        <FaGithub />
+                                    </a>
+                                    <a
+                                        href="http://www.linkedin.com/in/andres-fernandez-morelli"
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        aria-label="Andres LinkedIn"
+                                        className={styles.socialIcon}
+                                        style={{ width: "32px", height: "32px" }}
+                                    >
+                                        <FaLinkedin />
+                                    </a>
+                                    <a
+                                        href="https://s-fdz-morelli-portfolio.netlify.app/projects"
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        aria-label="Andres Portfolio"
+                                        className={styles.socialIcon}
+                                        style={{ width: "32px", height: "32px" }}
+                                    >
+                                        <FaGlobe />
+                                    </a>
+                                </div>
+                                <span style={{ fontSize: "0.9rem", color: "var(--accent-primary)", fontWeight: 600 }}>
+                                    Andr&eacute;s Fern&aacute;ndez
+                                </span>
+                            </div>
+
+                            {/* Javier */}
+                            <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+                                <div className={styles.socialRow} style={{ gap: "0.5rem" }}>
+                                    <a
+                                        href="https://github.com/javieerca"
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        aria-label="Javier GitHub"
+                                        className={styles.socialIcon}
+                                        style={{ width: "32px", height: "32px" }}
+                                    >
+                                        <FaGithub />
+                                    </a>
+                                    <a
+                                        href="http://www.linkedin.com/in/javier-cortés-albín"
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        aria-label="Javier LinkedIn"
+                                        className={styles.socialIcon}
+                                        style={{ width: "32px", height: "32px" }}
+                                    >
+                                        <FaLinkedin />
+                                    </a>
+                                    <a
+                                        href="https://javieerca.github.io/javier-cortes-portfolio/"
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        aria-label="Javier Portfolio"
+                                        className={styles.socialIcon}
+                                        style={{ width: "32px", height: "32px" }}
+                                    >
+                                        <FaGlobe />
+                                    </a>
+                                </div>
+                                <span style={{ fontSize: "0.9rem", color: "var(--accent-primary)", fontWeight: 600 }}>
+                                    Javier Cort&eacute;s
+                                </span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <p className={styles.tagline}>
-                  Discover, collect, and manage your games with a polished stack.
-                </p>
-              </div>
-            </div>
-            <p className={styles.muted}>
-              Curated catalog, secure checkout, and admin controls in one
-              glassmorphic experience.
-            </p>
-          </div>
-
-          <div className={styles.footerLinks}>
-            <h4 className={styles.sectionTitle}>Product</h4>
-            <Link to="/">{t("nav.home")}</Link>
-            <Link to="/library">{t("nav.library")}</Link>
-            <Link to="/admin">Admin</Link>
-            <Link to="/admin/games">Catalog</Link>
-          </div>
-
-          <div className={styles.footerLinks}>
-            <h4 className={styles.sectionTitle}>Resources</h4>
-            <Link to="/login">{t("nav.login")}</Link>
-            <Link to="/register">{t("nav.register")}</Link>
-            <Link to="/home">Store</Link>
-            <a href="mailto:support@gamemanager.dev">Support</a>
-          </div>
-
-          <div className={styles.footerLinks}>
-            <h4 className={styles.sectionTitle}>Community</h4>
-            
-            <div className={styles.teamList} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              {/* Alonso */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                <div className={styles.socialRow} style={{ gap: '0.5rem' }}>
-                  <a href="https://github.com/AlonsoVine" target="_blank" rel="noreferrer" aria-label="Alonso GitHub" className={styles.socialIcon} style={{ width: '32px', height: '32px' }}>
-                    <FaGithub />
-                  </a>
-                  <a href="https://www.linkedin.com/in/alonso-vi%C3%B1%C3%A9-barrancos/" target="_blank" rel="noreferrer" aria-label="Alonso LinkedIn" className={styles.socialIcon} style={{ width: '32px', height: '32px' }}>
-                    <FaLinkedin />
-                  </a>
-                  <a href="https://alonsovine.github.io/portfolioR/" target="_blank" rel="noreferrer" aria-label="Alonso Portfolio" className={styles.socialIcon} style={{ width: '32px', height: '32px' }}>
-                    <FaGlobe />
-                  </a>
+                <div className={styles.footerBottom}>
+                    <div className={styles.footerText}>
+                        <div>&copy; {new Date().getFullYear()} GameManager.</div>
+                        <div>
+                            Crafted with <span className={styles.heart}>&hearts;</span> by the team.
+                        </div>
+                    </div>
+                    <span className={styles.muted}>Glass UI | React | Vite | TS</span>
                 </div>
-                <span style={{ fontSize: '0.9rem', color: 'var(--accent-primary)', fontWeight: 600 }}>Alonso Vi&ntilde;&eacute;</span>
-              </div>
-
-               {/* Andres */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                <div className={styles.socialRow} style={{ gap: '0.5rem' }}>
-                  <a href="https://github.com/Andy-dev-hack" target="_blank" rel="noreferrer" aria-label="Andres GitHub" className={styles.socialIcon} style={{ width: '32px', height: '32px' }}>
-                    <FaGithub />
-                  </a>
-                  <a href="http://www.linkedin.com/in/andres-fernandez-morelli" target="_blank" rel="noreferrer" aria-label="Andres LinkedIn" className={styles.socialIcon} style={{ width: '32px', height: '32px' }}>
-                    <FaLinkedin />
-                  </a>
-                  <a href="https://s-fdz-morelli-portfolio.netlify.app/projects" target="_blank" rel="noreferrer" aria-label="Andres Portfolio" className={styles.socialIcon} style={{ width: '32px', height: '32px' }}>
-                    <FaGlobe />
-                  </a>
-                </div>
-                <span style={{ fontSize: '0.9rem', color: 'var(--accent-primary)', fontWeight: 600 }}>Andr&eacute;s Fern&aacute;ndez</span>
-              </div>
-
-               {/* Javier */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                <div className={styles.socialRow} style={{ gap: '0.5rem' }}>
-                  <a href="https://github.com/javieerca" target="_blank" rel="noreferrer" aria-label="Javier GitHub" className={styles.socialIcon} style={{ width: '32px', height: '32px' }}>
-                    <FaGithub />
-                  </a>
-                  <a href="http://www.linkedin.com/in/javier-cortés-albín" target="_blank" rel="noreferrer" aria-label="Javier LinkedIn" className={styles.socialIcon} style={{ width: '32px', height: '32px' }}>
-                    <FaLinkedin />
-                  </a>
-                  <a href="https://javieerca.github.io/javier-cortes-portfolio/" target="_blank" rel="noreferrer" aria-label="Javier Portfolio" className={styles.socialIcon} style={{ width: '32px', height: '32px' }}>
-                    <FaGlobe />
-                  </a>
-                </div>
-                 <span style={{ fontSize: '0.9rem', color: 'var(--accent-primary)', fontWeight: 600 }}>Javier Cort&eacute;s</span>
-              </div>
-            </div>
-          </div>
+            </footer>
         </div>
-        <div className={styles.footerBottom}>
-          <div className={styles.footerText}>
-            <div>&copy; {new Date().getFullYear()} GameManager.</div>
-            <div>
-              Crafted with <span className={styles.heart}>&hearts;</span> by the team.
-            </div>
-          </div>
-          <span className={styles.muted}>Glass UI | React | Vite | TS</span>
-        </div>
-      </footer>
-    </div>
-  );
+    );
 };
 
 // Exported to AppRoutes as layout wrapper for all pages
 export default MainLayout;
-
-
-
-
-
-
-
-
-
-
-
-

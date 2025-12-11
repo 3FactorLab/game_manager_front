@@ -39,15 +39,15 @@ export const Navbar = () => {
 
     return (
         <div className={styles.navbar}>
-            <Link to="/" className={styles.logo}>
+            <Link to="/home" className={styles.logo}>
                 <img src="/game_manager_icon.png" alt="GameManager" className={styles.logoIcon} />
                 Game<span>Manager</span>
             </Link>
 
             {/* Desktop Navigation */}
             <div className={styles.navLinks}>
-                <NavItem to="/" label={t("nav.inicio") ?? "Home"} onClick={() => setIsMobileOpen(false)} />
-                <NavItem to="/home" label={t("nav.home") ?? "Store"} onClick={() => setIsMobileOpen(false)} />
+                <NavItem to="/home" label={t("nav.inicio") ?? "Home"} onClick={() => setIsMobileOpen(false)} />
+                <NavItem to="/catalog" label={t("nav.home") ?? "Catalog"} onClick={() => setIsMobileOpen(false)} />
                 {isAuthenticated && (
                     <NavItem to="/library" label={t("nav.library")} onClick={() => setIsMobileOpen(false)} />
                 )}
@@ -115,9 +115,7 @@ export const Navbar = () => {
                     <>
                         <NavLink
                             to="/wishlist"
-                            className={({ isActive }) =>
-                                clsx(styles.wishlistLink, isActive && styles.wishlistActive)
-                            }
+                            className={({ isActive }) => clsx(styles.wishlistLink, isActive && styles.wishlistActive)}
                             title="Wishlist"
                         >
                             <FaHeart className={styles.wishlistIcon} />
@@ -145,8 +143,8 @@ export const Navbar = () => {
 
             {/* Mobile Drawer */}
             <div className={clsx(styles.mobileDrawer, isMobileOpen && styles.open)}>
-                <NavItem to="/" label={t("nav.inicio") ?? "Home"} onClick={() => setIsMobileOpen(false)} />
-                <NavItem to="/home" label={t("nav.home") ?? "Store"} onClick={() => setIsMobileOpen(false)} />
+                <NavItem to="/home" label={t("nav.inicio") ?? "Home"} onClick={() => setIsMobileOpen(false)} />
+                <NavItem to="/catalog" label={t("nav.home") ?? "Catalog"} onClick={() => setIsMobileOpen(false)} />
                 {isAuthenticated && (
                     <NavItem to="/library" label={t("nav.library")} onClick={() => setIsMobileOpen(false)} />
                 )}

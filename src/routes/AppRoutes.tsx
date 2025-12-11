@@ -8,12 +8,11 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { MainLayout } from "../components/layout/MainLayout";
-import LandingPage from "../pages/LandingPage";
-import Home from "../pages/Home";
+import HomePage from "../pages/HomePage";
+import CatalogPage from "../pages/CatalogPage";
 import LoginPage from "../features/auth/pages/LoginPage";
 import RegisterPage from "../features/auth/pages/RegisterPage";
 import StorePage from "../pages/StorePage";
-
 import GameDetails from "../pages/GameDetails";
 
 import LibraryPage from "../pages/LibraryPage";
@@ -50,7 +49,7 @@ const ProtectedRoute = ({ children, requireAdmin = false }: { children: React.Re
     if (requireAdmin && user.role !== "admin") {
         return (
             <div style={{ padding: "2rem", textAlign: "center" }}>
-                <h2>â›” {t("common.access_denied")}</h2>
+                <h2>⛔ {t("common.access_denied")}</h2>
                 <p>{t("common.admin_only")}</p>
             </div>
         );
@@ -77,8 +76,9 @@ const AppRoutes = () => {
         <Routes>
             <Route element={<MainLayout />}>
                 {/* Public Routes */}
-                <Route path="/" element={<LandingPage />} />
-                <Route path="/home" element={<Home />} />
+                <Route path="/" element={<HomePage />} />
+                <Route path="/home" element={<HomePage />} />
+                <Route path="/catalog" element={<CatalogPage />} />
                 <Route path="/store" element={<StorePage />} />
                 <Route path="/game/:id" element={<GameDetails />} />
 
