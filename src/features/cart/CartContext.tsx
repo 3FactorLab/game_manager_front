@@ -49,19 +49,17 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
  * @returns Cart context provider wrapping children
  */
 export const CartProvider = ({ children }: { children: ReactNode }) => {
-  const [items, setItems] = useState<CartItem[]>([]);
-
-  // Load cart from localStorage on mount
-  useEffect(() => {
+  const [items, setItems] = useState<CartItem[]>(() => {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
       try {
-        setItems(JSON.parse(stored));
+        return JSON.parse(stored);
       } catch {
-        setItems([]);
+        return [];
       }
     }
-  }, []);
+    return [];
+  });
 
   // Persist cart to localStorage whenever items change
   useEffect(() => {

@@ -17,10 +17,13 @@ import type {
  * Authentication service
  * Provides methods for user authentication and profile management
  */
+// Key for storing user data in localStorage
+const USER_STORAGE_KEY = "game_manager_user";
+
 export const authService = {
   /**
    * Login user with credentials
-   * Sends credentials to backend and stores JWT token on success
+   * by sending credentials to backend and storing JWT token on success
    * @param {LoginCredentials} credentials - User email and password
    * @returns {Promise<AuthResponse>} Auth response with user data and token
    */
@@ -32,6 +35,8 @@ export const authService = {
     if (data.token) {
       localStorage.setItem("token", data.token); // Store JWT for future requests
       localStorage.setItem("refreshToken", data.refreshToken); // Store refresh token
+      console.log("[DEBUG_AUTH] Login: Saving user to LS", data.user);
+      localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(data.user)); // Store user data
     }
     return data;
   },
@@ -50,18 +55,21 @@ export const authService = {
     if (data.token) {
       localStorage.setItem("token", data.token); // Auto-login after registration
       localStorage.setItem("refreshToken", data.refreshToken); // Store refresh token
+      console.log("[DEBUG_AUTH] Register: Saving user to LS", data.user);
+      localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(data.user)); // Store user data
     }
     return data;
   },
 
   /**
    * Logout current user
-   * Removes JWT token and refresh token from localStorage
-   * Note: Backend token invalidation could be added here if needed
+   * Removes JWT token, refresh token, and user data from localStorage
    */
   async logout(): Promise<void> {
+    console.log("[DEBUG_AUTH] Logout: Clearing LS");
     localStorage.removeItem("token");
     localStorage.removeItem("refreshToken");
+    localStorage.removeItem(USER_STORAGE_KEY);
   },
 
   /**
@@ -71,6 +79,8 @@ export const authService = {
    */
   async getProfile(): Promise<User> {
     const { data } = await apiClient.get<User>("/users/profile");
+    console.log("[DEBUG_AUTH] getProfile: Updating stored user", data);
+    localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(data)); // Update stored user
     return data;
   },
 
@@ -90,6 +100,8 @@ export const authService = {
         },
       }
     );
+    console.log("[DEBUG_AUTH] updateProfile: Updating stored user", data.user);
+    localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(data.user)); // Update stored user
     return data.user;
   },
 
@@ -112,6 +124,15 @@ export const authService = {
     if (data.token) {
       localStorage.setItem("token", data.token);
       localStorage.setItem("refreshToken", data.refreshToken);
+      // Note: Refresh token endpoint might not return the full user object depending on backend implementation.
+      // If it does, we should update it. If not, we keep the existing one.
+      if (data.user) {
+        console.log(
+          "[DEBUG_AUTH] refreshToken: Updating stored user",
+          data.user
+        );
+        localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(data.user));
+      }
     }
 
     return data;
@@ -124,6 +145,23 @@ export const authService = {
    */
   isAuthenticated(): boolean {
     return !!localStorage.getItem("token");
+  },
+
+  /**
+   * Get stored user from localStorage
+   * Used for initializing auth state without waiting for network
+   * @returns {User | null} Stored user or null
+   */
+  getStoredUser(): User | null {
+    const storedUser = localStorage.getItem(USER_STORAGE_KEY);
+    // console.log("[DEBUG_AUTH] Reading stored user raw:", storedUser);
+    if (!storedUser) return null;
+    try {
+      return JSON.parse(storedUser);
+    } catch {
+      console.error("[DEBUG_AUTH] Failed to parse stored user");
+      return null;
+    }
   },
 };
 

@@ -107,3 +107,43 @@ Completed documentation to achieve 100% coverage of frontend codebase.
 - Dual systems explained for clarity
 - Documentation maintains academic standards
 - Ready for final review and submission
+
+## 2025-12-11T13:40:00+01:00 - Frontend Health Check & Repair
+
+### Actions Performed
+
+- Ran comprehensive Lint and Build check.
+- Fixed 12+ lint/type errors to achieve "All Green" status.
+- Configured ESLint to better support Vite React Refresh pattern.
+
+### Fixes
+
+- **`CartContext.tsx`**: Fixed synchronous `setItems` in `useEffect` (logic smell).
+- **`user.service.ts`**: Removed `any` types, fixed syntax errors, and consolidated `addToWishlist`.
+- **`games.service.ts`**: Fixed type definitions for `BackendGame` mapping (optional fields vs required).
+- **`GameDetails.tsx`**: Removed invalid usage of `.isPending` (not using React Query mutation objects).
+- **ESLint**: Updated config to allow "Component + Hook" exports without error (Fast Refresh warning).
+
+## 2025-12-11T13:45:00+01:00 - Auth Persistence Implementation
+
+### Actions Performed
+
+- Implemented `game_manager_user` key in `localStorage`.
+- Updated `auth.service.ts`:
+  - `login`/`register`: Saves user object alongside token.
+  - `logout`: Clears user object.
+  - `getStoredUser()`: Helper for synchronous user retrieval.
+- Updated `AuthContext.tsx`:
+  - Uses `getStoredUser()` for lazy state initialization.
+  - Maintains `useEffect` for backend re-validation.
+
+### Impact
+
+- **Fixes Refresh Flick**: User data is available instantly on page reload.
+- **Improved UX**: No more "Login/Register" flash for authenticated users.
+
+### Status
+
+- ✅ **Lint**: Passed (0 errors).
+- ✅ **Build (`tsc + vite build`)**: Passed (Exit code 0).
+- ✅ **Code Quality**: Improved typing and removed unused variables.

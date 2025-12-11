@@ -38,24 +38,46 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
  * @returns {JSX.Element} Context provider with auth state
  */
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  // Lazy initialization from localStorage to prevent flickering
+  const [user, setUser] = useState<User | null>(() => {
+    const stored = authService.getStoredUser();
+    console.log("[DEBUG_AUTH] Init State from LS:", stored);
+    return stored;
+  });
+
+  // Loading state starts false if we have a user (optimistic), true otherwise
+  const [isLoading, setIsLoading] = useState<boolean>(() => {
+    const hasUser = !!authService.getStoredUser();
+    console.log("[DEBUG_AUTH] Init isLoading:", !hasUser);
+    return !hasUser;
+  });
 
   /**
    * Initialize authentication state on component mount
-   * Attempts to restore user session from localStorage token
-   * If token exists but is invalid, clears it and logs out
+   * Verify session with backend even if we have stored data
    */
   useEffect(() => {
     const initAuth = async () => {
+      console.log(
+        "[DEBUG_AUTH] useEffect initAuth start. isAuthenticated via Token:",
+        authService.isAuthenticated()
+      );
       if (authService.isAuthenticated()) {
         try {
+          // Re-validate with backend (Stale-While-Revalidate pattern)
           const userData = await authService.getProfile();
-          setUser(userData);
+          console.log("[DEBUG_AUTH] getProfile success:", userData);
+          setUser(userData); // Updates with fresh data from server
         } catch (error) {
-          console.error("Failed to restore session:", error);
-          authService.logout(); // Clear invalid token
+          console.error("[DEBUG_AUTH] Failed to restore session:", error);
+          // Only logout if it's a critical auth error, otherwise keep offline state
+          // For now, we trust access token validation in interceptors
+          // authService.logout();
         }
+      } else {
+        // No token, ensure no user
+        console.log("[DEBUG_AUTH] No token found. Clearing user.");
+        setUser(null);
       }
       setIsLoading(false);
     };

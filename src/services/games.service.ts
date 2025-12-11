@@ -53,16 +53,17 @@ export interface GamesQueryParams {
   platform?: string;
 }
 
+export interface BackendGame extends Partial<Omit<Game, "assets">> {
+  assets?: Game["assets"];
+  image?: string;
+  screenshots?: string[];
+  released?: string; // Some endpoints use 'released' instead of 'releaseDate'
+}
+
 export const gamesService = {
   // Public Endpoint: Fetch catalog
   async getCatalog(params: GamesQueryParams): Promise<PaginatedResponse<Game>> {
     // Backend response structure
-    interface BackendGame extends Omit<Game, "assets"> {
-      assets?: Game["assets"];
-      image?: string;
-      screenshots?: string[];
-    }
-
     interface BackendResponse {
       games: BackendGame[];
       total: number;
@@ -81,6 +82,18 @@ export const gamesService = {
     return {
       data: (rawData.games || []).map((game) => ({
         ...game,
+        _id: game._id || "",
+        title: game.title || "Untitled",
+        description: game.description || "",
+        price: game.price || 0,
+        currency: game.currency || "USD",
+        platform: game.platform || "Unknown",
+        genre: game.genre || "Unknown",
+        type: game.type || "game",
+        releaseDate: game.released || game.releaseDate || "",
+        developer: game.developer || "Unknown",
+        publisher: game.publisher || "Unknown",
+        isOffer: !!game.isOffer,
         assets: game.assets || {
           cover:
             game.image ||

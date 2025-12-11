@@ -195,11 +195,7 @@ const GameDetails = () => {
               </Button>
               <Button
                 variant="ghost"
-                disabled={
-                  !isAuthenticated ||
-                  addToWishlist.isPending ||
-                  removeFromWishlist.isPending
-                }
+                disabled={!isAuthenticated}
                 onClick={handleToggleWishlist}
               >
                 {isWishlisted ? (

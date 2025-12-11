@@ -49,6 +49,39 @@
 
 ---
 
+## 2025-12-11 - Maintenance: Code Health & Polish
+
+### Fixed
+
+- **Type Safety**:
+
+  - `games.service.ts`: Correctly typed `BackendGame` to handle optional fields from backend.
+  - `user.service.ts`: Replaced `any` with strict types.
+  - `GameDetails.tsx`: Removed invalid property access on async functions.
+
+- **Logic**:
+
+  - `CartContext.tsx`: Replaced risky `useEffect` state update with lazy initialization.
+  - `user.service.ts`: Fixed duplicate function definitions.
+
+- **Linting**:
+  - Removed unused variables/imports (`useTranslation`, `BsHeartFill`).
+  - Configured ESLint for better Vite compatibility.
+
+### Impact
+
+- ✅ **Build Success**: Project now passes `npm run build` without errors.
+- ✅ **Stability**: Reduced risk of render loops in CartContext.
+- ✅ **Maintainability**: Cleaner code with proper types.
+
+### Fixed
+
+- **Auth State Flicker**: Implemented `localStorage` persistence for User object.
+  - Keeps user logged in visually during page refresh.
+  - Instantly renders Navbar with user data while validting with backend in background.
+
+---
+
 ## 2025-12-10 - Phase 2: Error Boundaries
 
 ### Added
