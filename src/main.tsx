@@ -18,6 +18,7 @@ import { WishlistProvider } from "./features/wishlist/WishlistContext";
 import { queryClient } from "./lib/queryClient"; // React Query client configuration
 import { AuthProvider } from "./features/auth/AuthContext"; // Authentication context
 import App from "./App.tsx";
+import ScrollToTop from "./components/common/ScrollToTop";
 
 /**
  * Provider hierarchy (outer to inner):
@@ -36,6 +37,7 @@ createRoot(document.getElementById("root")!).render(
                     <CartProvider>
                         <WishlistProvider>
                             <BrowserRouter>
+                                <ScrollToTop />
                                 <App />
                             </BrowserRouter>
                         </WishlistProvider>

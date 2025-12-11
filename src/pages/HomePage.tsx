@@ -113,6 +113,10 @@ const HomePage = () => {
 
                 {/* AutoScroll Widget - Added to the right side */}
                 <div className={styles.widgetContainer}>
+                    <div className={styles.widgetHeader}>
+                        <h2 className={`${styles.widgetTitle} text-gradient`}>Trending Now</h2>
+                        <p className={styles.widgetSubtitle}>Discover Your Next Obsession</p>
+                    </div>
                     <AutoScrollGameList />
                 </div>
             </div>

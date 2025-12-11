@@ -30,7 +30,6 @@ export const AutoScrollGameList: React.FC = () => {
 
     return (
         <div className={styles.container}>
-            <h3 className={styles.title}>Discover Your Next Obsession</h3>
             <div className={styles.scrollContainer}>
                 <div className={styles.track}>
                     {rows.map((row, rowIndex) => (
