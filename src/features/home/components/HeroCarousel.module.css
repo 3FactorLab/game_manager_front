@@ -16,11 +16,6 @@
 }
 
 /* Ultrawide / Large Screen Height Adjustment */
-@media (min-width: 1600px) {
-  .carouselContainer {
-    height: 650px; /* Taller banner for high-res impact */
-  }
-}
 
 .slideWrapper {
   position: absolute;
@@ -117,12 +112,6 @@
   line-height: 1;
 }
 
-@media (min-width: 1600px) {
-  .logoText {
-    font-size: 3rem; /* Larger logo for 4K */
-  }
-}
-
 .logoG {
   color: #ffffff;
 }
@@ -159,12 +148,6 @@
   font-weight: 700;
   margin-bottom: 0.25rem;
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
-}
-
-@media (min-width: 1600px) {
-  .gameTitle {
-    font-size: 4rem; /* Massive title for Ultrawide impact */
-  }
 }
 
 .gameGenre {

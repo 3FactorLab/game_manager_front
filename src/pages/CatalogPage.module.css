@@ -57,9 +57,9 @@
   /* Smart Grid: Adapts to available width, min card width 280px */
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 1.5rem;
-  padding: 0 2rem 4rem 2rem; /* Increased horizontal padding */
+  padding: 0 1rem 4rem 1rem; /* Revert padding */
   width: 100%;
-  max-width: none; /* Layout handled by grid-template-columns */
+  max-width: 1280px; /* Revert constraint */
   margin: 0 auto;
 }
 

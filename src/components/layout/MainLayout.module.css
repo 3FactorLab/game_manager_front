@@ -57,7 +57,7 @@
   z-index: 1;
   flex-grow: 1;
   width: 100%;
-  max-width: 100%; /* Ultrawide Unlocked: Let pages decide constraint */
+  max-width: 1280px; /* Revert to constrained width */
   margin: 0 auto;
   padding: 2rem 1rem;
 }
@@ -71,7 +71,7 @@
 }
 
 .footerInner {
-  max-width: 1800px;
+  max-width: 1280px;
   margin: 0 auto;
   padding: 2.5rem 1.5rem 2rem;
   display: grid;
@@ -82,7 +82,7 @@
 /* ... existing styles ... */
 
 .footerBottom {
-  max-width: 1800px;
+  max-width: 1280px;
   margin: 0 auto;
   padding: 1rem 1.5rem 2rem;
   display: flex;
