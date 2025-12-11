@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { createPortal } from "react-dom";
 import { FaTimes, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import styles from "./ImageModal.module.css";
 
@@ -57,7 +58,7 @@ export const ImageModal = ({
     }
   };
 
-  return (
+  return createPortal(
     <div className={styles.overlay} onClick={onClose}>
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
         {/* Close Button */}
@@ -102,6 +103,7 @@ export const ImageModal = ({
           {currentIndex + 1} / {images.length}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };

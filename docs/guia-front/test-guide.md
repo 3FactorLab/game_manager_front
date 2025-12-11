@@ -18,20 +18,32 @@ This guide explains how to validate the functionality of the Game Manager Fronte
 
 ## 🔍 Manual Testing Scenarios
 
-### 1. Authentication Flow
+### 1. Authentication Flow (Advanced)
 
 - [ ] **Registration**:
   - Go to `/register`.
   - Sign up with a new email (e.g., `testuser@example.com`).
-  - Verify redirection to Home/Login.
-- [ ] **Login**:
+  - Verify redirection to Home/Login and **Auto-Login** (Token in `localStorage`).
+- [ ] **Login & Persistence**:
   - Go to `/login`.
   - Enter valid credentials.
   - Verify Navbar changes (User Avatar appears).
-  - **Refresh Page**: Verify you remain logged in (`localStorage` check).
+  - **Refresh Page**: Verify you remain logged in.
+  - **New Tab**: Open app in new tab -> Verify session persists.
+- [ ] **Dual Token System (Critical)**:
+  - **Modify Token**: Manually edit `token` in LocalStorage (make it invalid).
+  - **Trigger Action**: Navigate to `/library` (Protected Route).
+  - **Verify Behavior**:
+    - Should **NOT** log out immediately if refresh token is valid.
+    - Console should show "Refreshing token...".
+    - `token` in LocalStorage should automatically update to a new valid one.
+- [ ] **Session Expiry**:
+  - Delete `refreshToken` from LocalStorage.
+  - Trigger any protected action.
+  - Verify immediate **Automatic Logout** and redirect to `/login`.
 - [ ] **Logout**:
   - Click User Avatar -> Logout.
-  - Verify redirection to Home and Navbar update.
+  - Verify both `token` and `refreshToken` are removed from LocalStorage.
 
 ### 2. Catalog & Search
 
@@ -80,6 +92,30 @@ This guide explains how to validate the functionality of the Game Manager Fronte
 - [ ] **Wishlist Actions**:
   - From Wishlist tab, click "Buy Now" on a game card.
   - Verify flow to Checkout.
+
+### 6. Error Handling & Resilience
+
+- [ ] **404 Not Found**:
+  - Visit non-existent route (e.g., `/random-page`).
+  - Verify redirection to Home or 404 Page (if implemented).
+- [ ] **Error Boundary (Crash Test)**:
+  - Temporarily throw an error in a component (e.g., `throw new Error("Test")`).
+  - Verify app DOES NOT turn white blank screen.
+  - Verify "Something went wrong" Glassmorphism UI appears.
+  - Click "Refresh Page" -> Verify recovery.
+
+### 7. Admin Panel (Role Based)
+
+- [ ] **Access Control**:
+  - Login as **Standard User**.
+  - Try to visit `/admin`.
+  - Verify "Access Denied" message or redirection.
+- [ ] **Admin Features** (Login as Admin):
+  - **User Management**:
+    - Delete a user -> Verify confirmation modal -> Verify deletion.
+  - **Game Management**:
+    - Import Game from RAWG -> Verify it appears in main catalog.
+    - Delete Game -> Verify it disappears from Store.
 
 ---
 
