@@ -39,18 +39,14 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
  */
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   // Lazy initialization from localStorage to prevent flickering
-  const [user, setUser] = useState<User | null>(() => {
-    const stored = authService.getStoredUser();
-    console.log("[DEBUG_AUTH] Init State from LS:", stored);
-    return stored;
-  });
+  const [user, setUser] = useState<User | null>(() =>
+    authService.getStoredUser()
+  );
 
   // Loading state starts false if we have a user (optimistic), true otherwise
-  const [isLoading, setIsLoading] = useState<boolean>(() => {
-    const hasUser = !!authService.getStoredUser();
-    console.log("[DEBUG_AUTH] Init isLoading:", !hasUser);
-    return !hasUser;
-  });
+  const [isLoading, setIsLoading] = useState<boolean>(
+    !authService.getStoredUser()
+  );
 
   /**
    * Initialize authentication state on component mount
@@ -58,25 +54,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
    */
   useEffect(() => {
     const initAuth = async () => {
-      console.log(
-        "[DEBUG_AUTH] useEffect initAuth start. isAuthenticated via Token:",
-        authService.isAuthenticated()
-      );
       if (authService.isAuthenticated()) {
         try {
           // Re-validate with backend (Stale-While-Revalidate pattern)
           const userData = await authService.getProfile();
-          console.log("[DEBUG_AUTH] getProfile success:", userData);
           setUser(userData); // Updates with fresh data from server
         } catch (error) {
-          console.error("[DEBUG_AUTH] Failed to restore session:", error);
+          console.error("Failed to restore session:", error);
           // Only logout if it's a critical auth error, otherwise keep offline state
           // For now, we trust access token validation in interceptors
           // authService.logout();
         }
       } else {
         // No token, ensure no user
-        console.log("[DEBUG_AUTH] No token found. Clearing user.");
         setUser(null);
       }
       setIsLoading(false);

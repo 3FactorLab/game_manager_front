@@ -35,7 +35,6 @@ export const authService = {
     if (data.token) {
       localStorage.setItem("token", data.token); // Store JWT for future requests
       localStorage.setItem("refreshToken", data.refreshToken); // Store refresh token
-      console.log("[DEBUG_AUTH] Login: Saving user to LS", data.user);
       localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(data.user)); // Store user data
     }
     return data;
@@ -55,7 +54,6 @@ export const authService = {
     if (data.token) {
       localStorage.setItem("token", data.token); // Auto-login after registration
       localStorage.setItem("refreshToken", data.refreshToken); // Store refresh token
-      console.log("[DEBUG_AUTH] Register: Saving user to LS", data.user);
       localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(data.user)); // Store user data
     }
     return data;
@@ -66,7 +64,6 @@ export const authService = {
    * Removes JWT token, refresh token, and user data from localStorage
    */
   async logout(): Promise<void> {
-    console.log("[DEBUG_AUTH] Logout: Clearing LS");
     localStorage.removeItem("token");
     localStorage.removeItem("refreshToken");
     localStorage.removeItem(USER_STORAGE_KEY);
@@ -78,10 +75,11 @@ export const authService = {
    * @returns {Promise<User>} Current user profile data
    */
   async getProfile(): Promise<User> {
-    const { data } = await apiClient.get<User>("/users/profile");
-    console.log("[DEBUG_AUTH] getProfile: Updating stored user", data);
-    localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(data)); // Update stored user
-    return data;
+    const { data } = await apiClient.get<{ message: string; user: User }>(
+      "/users/profile"
+    );
+    localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(data.user)); // Update stored user
+    return data.user;
   },
 
   /**
@@ -100,7 +98,6 @@ export const authService = {
         },
       }
     );
-    console.log("[DEBUG_AUTH] updateProfile: Updating stored user", data.user);
     localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(data.user)); // Update stored user
     return data.user;
   },
@@ -127,10 +124,6 @@ export const authService = {
       // Note: Refresh token endpoint might not return the full user object depending on backend implementation.
       // If it does, we should update it. If not, we keep the existing one.
       if (data.user) {
-        console.log(
-          "[DEBUG_AUTH] refreshToken: Updating stored user",
-          data.user
-        );
         localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(data.user));
       }
     }
@@ -154,12 +147,15 @@ export const authService = {
    */
   getStoredUser(): User | null {
     const storedUser = localStorage.getItem(USER_STORAGE_KEY);
-    // console.log("[DEBUG_AUTH] Reading stored user raw:", storedUser);
     if (!storedUser) return null;
     try {
-      return JSON.parse(storedUser);
+      const parsed = JSON.parse(storedUser);
+      // Safety check: if we accidentally stored the wrapper, try to recover or fail
+      if (parsed && parsed.user && !parsed.username) {
+        return parsed.user;
+      }
+      return parsed;
     } catch {
-      console.error("[DEBUG_AUTH] Failed to parse stored user");
       return null;
     }
   },
