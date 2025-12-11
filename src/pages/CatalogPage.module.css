@@ -1,94 +1,98 @@
 /* Container wrapper */
 .container {
-    position: relative;
+  position: relative;
+  min-height: 100vh;
 }
 
 .hero {
-    position: relative;
-    z-index: 1;
-    margin-bottom: 3rem;
-    padding: 2rem 1rem;
-    background: radial-gradient(circle at center, rgba(30, 41, 59, 0.5) 0%, transparent 70%);
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-    align-items: center;
-    text-align: center;
+  position: relative;
+  z-index: 1;
+  margin-bottom: 2rem;
+  padding: 3rem 1.5rem;
+  background: radial-gradient(
+    circle at center,
+    rgba(30, 41, 59, 0.5) 0%,
+    transparent 70%
+  );
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  align-items: center;
+  text-align: center;
 }
 
 @media (min-width: 1024px) {
-    .hero {
-        padding: 4rem 2rem;
-    }
+  .hero {
+    padding: 5rem 2rem;
+    margin-bottom: 3rem;
+  }
 }
 
 .introContent {
-    width: 100%;
-    max-width: 800px;
+  width: 100%;
+  max-width: 800px;
 }
 
 .title {
-    font-size: 3rem;
-    font-weight: 800;
-    margin-bottom: 1rem;
-    line-height: 1.1;
+  /* Fluid typography: 2rem on mobile -> 3.5rem on desktop */
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 800;
+  margin-bottom: 1rem;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
 }
 
 .subtitle {
-    font-size: 1.25rem;
-    color: var(--text-secondary);
-    max-width: 600px;
-    margin: 0 auto;
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  color: var(--text-secondary);
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
 }
 
 .grid {
-    position: relative;
-    z-index: 1;
-    display: grid;
-    grid-template-columns: repeat(1, 1fr);
-    gap: 1.5rem;
-    padding-bottom: 2rem;
+  position: relative;
+  z-index: 1;
+  display: grid;
+  /* Smart Grid: Adapts to available width, min card width 280px */
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  padding: 0 2rem 4rem 2rem; /* Increased horizontal padding */
+  width: 100%;
+  max-width: none; /* Layout handled by grid-template-columns */
+  margin: 0 auto;
+}
+
+/* On very small screens, allow 1 column naturally via minmax, 
+   but ensure it doesn't overflow */
+@media (max-width: 380px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .loadMoreContainer {
-    display: flex;
-    justify-content: center;
-    margin-top: 3rem;
-    padding-bottom: 2rem;
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+  padding-bottom: 4rem;
 }
 
 /* Loading state */
 .loadingState {
-    text-align: center;
-    padding: 4rem;
+  text-align: center;
+  padding: 4rem 1rem;
 }
 
 /* Error state */
 .errorState {
-    text-align: center;
-    color: var(--error);
-    padding: 4rem;
+  text-align: center;
+  color: var(--error);
+  padding: 4rem 1rem;
 }
 
 /* End of list message */
 .endMessage {
-    color: var(--text-muted);
-}
-
-@media (min-width: 640px) {
-    .grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (min-width: 1024px) {
-    .grid {
-        grid-template-columns: repeat(3, 1fr);
-    }
-}
-
-@media (min-width: 1280px) {
-    .grid {
-        grid-template-columns: repeat(4, 1fr);
-    }
+  color: var(--text-muted);
+  font-weight: 500;
 }

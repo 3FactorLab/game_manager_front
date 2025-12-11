@@ -8,6 +8,7 @@
  */
 
 import axios from "axios";
+import { authEvents, AUTH_LOGOUT } from "../utils/auth-events";
 
 /**
  * Configured axios instance for API requests
@@ -69,7 +70,9 @@ apiClient.interceptors.response.use(
       // No refresh token available, logout user
       if (!refreshToken) {
         localStorage.removeItem("token");
-        window.location.href = "/login";
+        // Soft logout instead of hard reload
+        authEvents.emit(AUTH_LOGOUT);
+        // window.location.href = "/login";
         return Promise.reject(error);
       }
 
@@ -93,7 +96,9 @@ apiClient.interceptors.response.use(
         console.error("[Auth] Token refresh failed:", refreshError);
         localStorage.removeItem("token");
         localStorage.removeItem("refreshToken");
-        window.location.href = "/login";
+        // Soft logout instead of hard reload
+        authEvents.emit(AUTH_LOGOUT);
+        // window.location.href = "/login";
         return Promise.reject(refreshError);
       }
     }
