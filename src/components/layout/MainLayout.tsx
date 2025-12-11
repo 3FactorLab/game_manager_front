@@ -7,7 +7,7 @@
 
 import { Outlet, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { FaDiscord, FaTwitter, FaGithub } from "react-icons/fa";
+import { FaGithub, FaLinkedin, FaGlobe } from "react-icons/fa";
 import styles from "./MainLayout.module.css";
 import { Navbar } from "./Navbar";
 
@@ -74,33 +74,63 @@ export const MainLayout = () => {
 
           <div className={styles.footerLinks}>
             <h4 className={styles.sectionTitle}>Community</h4>
-            <div className={styles.socialRow}>
-              <a href="#" aria-label="Discord" className={styles.socialIcon}>
-                <FaDiscord />
-              </a>
-              <a href="#" aria-label="Twitter" className={styles.socialIcon}>
-                <FaTwitter />
-              </a>
-              <a href="#" aria-label="GitHub" className={styles.socialIcon}>
-                <FaGithub />
-              </a>
+            
+            <div className={styles.teamList} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              {/* Alonso */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                <div className={styles.socialRow} style={{ gap: '0.5rem' }}>
+                  <a href="https://github.com/AlonsoVine" target="_blank" rel="noreferrer" aria-label="Alonso GitHub" className={styles.socialIcon} style={{ width: '32px', height: '32px' }}>
+                    <FaGithub />
+                  </a>
+                  <a href="https://www.linkedin.com/in/alonso-vi%C3%B1%C3%A9-barrancos/" target="_blank" rel="noreferrer" aria-label="Alonso LinkedIn" className={styles.socialIcon} style={{ width: '32px', height: '32px' }}>
+                    <FaLinkedin />
+                  </a>
+                  <a href="https://alonsovine.github.io/portfolioR/" target="_blank" rel="noreferrer" aria-label="Alonso Portfolio" className={styles.socialIcon} style={{ width: '32px', height: '32px' }}>
+                    <FaGlobe />
+                  </a>
+                </div>
+                <span style={{ fontSize: '0.9rem', color: 'var(--accent-primary)', fontWeight: 600 }}>Alonso Vi&ntilde;&eacute;</span>
+              </div>
+
+               {/* Andres */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                <div className={styles.socialRow} style={{ gap: '0.5rem' }}>
+                  <a href="https://github.com/Andy-dev-hack" target="_blank" rel="noreferrer" aria-label="Andres GitHub" className={styles.socialIcon} style={{ width: '32px', height: '32px' }}>
+                    <FaGithub />
+                  </a>
+                  <a href="http://www.linkedin.com/in/andres-fernandez-morelli" target="_blank" rel="noreferrer" aria-label="Andres LinkedIn" className={styles.socialIcon} style={{ width: '32px', height: '32px' }}>
+                    <FaLinkedin />
+                  </a>
+                  <a href="https://s-fdz-morelli-portfolio.netlify.app/projects" target="_blank" rel="noreferrer" aria-label="Andres Portfolio" className={styles.socialIcon} style={{ width: '32px', height: '32px' }}>
+                    <FaGlobe />
+                  </a>
+                </div>
+                <span style={{ fontSize: '0.9rem', color: 'var(--accent-primary)', fontWeight: 600 }}>Andr&eacute;s Fern&aacute;ndez</span>
+              </div>
+
+               {/* Javier */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                <div className={styles.socialRow} style={{ gap: '0.5rem' }}>
+                  <a href="https://github.com/javieerca" target="_blank" rel="noreferrer" aria-label="Javier GitHub" className={styles.socialIcon} style={{ width: '32px', height: '32px' }}>
+                    <FaGithub />
+                  </a>
+                  <a href="http://www.linkedin.com/in/javier-cortés-albín" target="_blank" rel="noreferrer" aria-label="Javier LinkedIn" className={styles.socialIcon} style={{ width: '32px', height: '32px' }}>
+                    <FaLinkedin />
+                  </a>
+                  <a href="https://javieerca.github.io/javier-cortes-portfolio/" target="_blank" rel="noreferrer" aria-label="Javier Portfolio" className={styles.socialIcon} style={{ width: '32px', height: '32px' }}>
+                    <FaGlobe />
+                  </a>
+                </div>
+                 <span style={{ fontSize: '0.9rem', color: 'var(--accent-primary)', fontWeight: 600 }}>Javier Cort&eacute;s</span>
+              </div>
             </div>
-            <p className={styles.muted}>
-              Feedback? Drop us a line and help shape the roadmap.
-            </p>
           </div>
         </div>
-                                                        <div className={styles.footerBottom}>
+        <div className={styles.footerBottom}>
           <div className={styles.footerText}>
             <div>&copy; {new Date().getFullYear()} GameManager.</div>
             <div>
-              Crafted with <span className={styles.heart}>&hearts;</span> by the team (
-              <a href="https://s-fdz-morelli-portfolio.netlify.app/projects" target="_blank" rel="noreferrer">Andr&eacute;s Fern&aacute;ndez</a>
-              {" "}&middot;{" "}
-              <a href="https://alonsovine.github.io/portfolioR/" target="_blank" rel="noreferrer">Alonso Vi&ntilde;e</a>
-              {" "}&middot;{" "}
-              <a href="https://javieerca.github.io/javier-cortes-portfolio/" target="_blank" rel="noreferrer">Javier Cort&eacute;s</a>
-              ).
+              Crafted with <span className={styles.heart}>&hearts;</span> by the team.
             </div>
           </div>
           <span className={styles.muted}>Glass UI | React | Vite | TS</span>

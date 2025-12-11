@@ -95,7 +95,11 @@
   width: 56px;
   height: 56px;
   border-radius: 16px;
-  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+  background: linear-gradient(
+    135deg,
+    var(--accent-primary),
+    var(--accent-secondary)
+  );
   padding: 8px;
   box-shadow: 0 10px 30px rgba(239, 68, 68, 0.35);
 }
@@ -161,12 +165,17 @@
   background: rgba(255, 255, 255, 0.06);
   color: var(--text-primary);
   border: 1px solid var(--glass-border);
-  transition: background var(--transition-fast), color var(--transition-fast), transform var(--transition-fast);
+  transition: background var(--transition-fast), color var(--transition-fast),
+    transform var(--transition-fast);
 }
 
 .socialIcon:hover {
-  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-  color: #fff;
+  background: linear-gradient(
+    135deg,
+    var(--accent-primary),
+    var(--accent-secondary)
+  );
+  color: var(--bg-primary) !important;
   transform: translateY(-2px);
 }
 
@@ -214,5 +223,3 @@
 .footerText a:hover {
   text-decoration: underline;
 }
-
-

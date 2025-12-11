@@ -113,9 +113,15 @@ export const Navbar = () => {
 
                 {isAuthenticated ? (
                     <>
-                        <Link to="/wishlist" className={styles.wishlistLink} title="Wishlist">
+                        <NavLink
+                            to="/wishlist"
+                            className={({ isActive }) =>
+                                clsx(styles.wishlistLink, isActive && styles.wishlistActive)
+                            }
+                            title="Wishlist"
+                        >
                             <FaHeart className={styles.wishlistIcon} />
-                        </Link>
+                        </NavLink>
                         <UserDropdown />
                     </>
                 ) : (
