@@ -18,11 +18,17 @@ import {
   FaBook,
   FaSignOutAlt,
   FaLock,
+  FaUser,
+  FaChevronDown,
+  FaChevronUp,
+  FaUserEdit,
 } from "react-icons/fa";
 import { useAuth } from "../../features/auth/AuthContext";
 import { AvatarUploadModal } from "../../features/profile/components/AvatarUploadModal";
 import { ChangePasswordModal } from "../../features/profile/components/ChangePasswordModal";
+import { EditProfileModal } from "../../features/profile/components/EditProfileModal";
 import styles from "./UserDropdown.module.css";
+import { clsx } from "clsx";
 
 /**
  * UserDropdown component
@@ -37,6 +43,8 @@ export const UserDropdown = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
+  const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState(false);
+  const [isProfileExpanded, setIsProfileExpanded] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   /**
@@ -130,18 +138,58 @@ export const UserDropdown = () => {
               <div className={styles.divider} />
 
               {/* Menu Items */}
-              <button className={styles.menuItem} onClick={handleChangeAvatar}>
-                <FaCamera />
-                <span>Change Avatar</span>
+              
+              {/* My Profile Toggle */}
+              <button 
+                className={styles.menuItem} 
+                onClick={() => setIsProfileExpanded(!isProfileExpanded)}
+                style={{ justifyContent: "space-between" }}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+                  <FaUser />
+                  <span>My Profile</span>
+                </div>
+                {isProfileExpanded ? <FaChevronUp size={12} /> : <FaChevronDown size={12} />}
               </button>
 
-              <button
-                className={styles.menuItem}
-                onClick={handleChangePassword}
-              >
-                <FaLock />
-                <span>Change Password</span>
-              </button>
+              <AnimatePresence>
+                {isProfileExpanded && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                    style={{ overflow: "hidden" }}
+                  >
+                     <button 
+                        className={clsx(styles.menuItem, styles.subMenuItem)} 
+                        onClick={() => {
+                          setIsOpen(false);
+                          setIsEditProfileModalOpen(true);
+                        }}
+                    >
+                      <FaUserEdit />
+                      <span>Edit Profile</span>
+                    </button>
+
+                    <button 
+                        className={clsx(styles.menuItem, styles.subMenuItem)} 
+                        onClick={handleChangeAvatar}
+                    >
+                      <FaCamera />
+                      <span>Change Avatar</span>
+                    </button>
+
+                    <button
+                      className={clsx(styles.menuItem, styles.subMenuItem)}
+                      onClick={handleChangePassword}
+                    >
+                      <FaLock />
+                      <span>Change Password</span>
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
 
               <Link
                 to="/library"
@@ -177,6 +225,12 @@ export const UserDropdown = () => {
       <ChangePasswordModal
         isOpen={isPasswordModalOpen}
         onClose={() => setIsPasswordModalOpen(false)}
+      />
+
+      {/* Edit Profile Modal */}
+      <EditProfileModal
+        isOpen={isEditProfileModalOpen}
+        onClose={() => setIsEditProfileModalOpen(false)}
       />
     </>
   );
