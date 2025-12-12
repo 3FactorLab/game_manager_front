@@ -10,6 +10,12 @@
     "access_denied": "Acceso Denegado",
     "admin_only": "Solo los administradores pueden acceder a esta sección."
   },
+  "search": {
+    "placeholder": "Buscar juegos...",
+    "searching": "Buscando...",
+    "noResults": "No se encontraron resultados para \"{query}\"",
+    "viewAll": "Ver todos los resultados para \"{query}\""
+  },
   "nav": {
     "inicio": "Inicio",
     "home": "Catálogo",

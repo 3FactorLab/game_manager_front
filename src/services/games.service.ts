@@ -50,8 +50,11 @@ export interface PaginatedResponse<T> {
 export interface GamesQueryParams {
   page?: number;
   limit?: number;
-  search?: string;
+  query?: string; // Changed from 'search' to match backend
+  genre?: string;
   platform?: string;
+  sortBy?: string;
+  order?: "asc" | "desc";
 }
 
 export interface BackendGame extends Partial<Omit<Game, "assets">> {
@@ -148,7 +151,16 @@ export const gamesService = {
 
   // Protected: Fetch my library (User)
   async getMyLibrary(): Promise<Game[]> {
-    const { data } = await apiClient.get<Game[]>("/games/library"); // Adjust endpoint based on backend
+    const { data } = await apiClient.get<Game[]>("/games/library");
+    return data;
+  },
+
+  // Public: Get filters
+  async getFilters(): Promise<{ genres: string[]; platforms: string[] }> {
+    const { data } = await apiClient.get<{
+      genres: string[];
+      platforms: string[];
+    }>("/public/games/filters");
     return data;
   },
 };

@@ -30,6 +30,7 @@ Este documento define las reglas y expectativas para la IA asistente integrada e
 - Al realizar cambios, reinicia el servidor de desarrollo para verificar los cambios en el navegador.
 - Cierra instancias previas del dev server antes de iniciar uno nuevo.
 - Escribe codigo que contemple los entornos de desarrollo, staging y produccion.
+- **NUNCA WIPEAR LA BASE DE DATOS**: No realices acciones que puedan comprometer la persistencia de datos en el backend.
 - Verifica que los cambios funcionen correctamente en el navegador y sean responsive.
 
 ## 3. Validacion y pruebas

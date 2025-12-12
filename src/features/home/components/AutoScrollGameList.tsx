@@ -7,9 +7,8 @@ export const AutoScrollGameList: React.FC = () => {
   // Fetch a good amount of games to populate the list
   const { data, isLoading } = useGames({ limit: 15 });
   // Derived state (no useState/useEffect needed)
-  const allGames = data?.pages?.[0]?.data
-    ? data.pages.flatMap((page) => page.data)
-    : [];
+  // Derived state (no useState/useEffect needed)
+  const allGames = data?.data || [];
 
   // Duplicate for infinite scroll effect
   const games = [...allGames, ...allGames];

@@ -14,11 +14,13 @@ import {
   FaShoppingCart,
   FaHeart,
 } from "react-icons/fa";
+import { FiSearch } from "react-icons/fi";
+import { motion, AnimatePresence } from "framer-motion";
 import { clsx } from "clsx";
 import { useAuth } from "../../features/auth/AuthContext";
 import { useCart } from "../../features/cart/CartContext";
 import { Button } from "../ui/Button";
-import { SearchBar } from "../ui/SearchBar";
+import { NavbarSearch } from "../../features/games/components/NavbarSearch";
 import { UserDropdown } from "./UserDropdown";
 import { LanguageToggle } from "../ui/LanguageToggle";
 import styles from "./Navbar.module.css";
@@ -30,26 +32,53 @@ export const Navbar = () => {
   const navigate = useNavigate();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isSearchExpanded, setIsSearchExpanded] = useState(false);
   const cartRef = useRef<HTMLDivElement>(null);
+  const searchRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (cartRef.current && !cartRef.current.contains(event.target as Node)) {
         setIsCartOpen(false);
       }
+      if (
+        searchRef.current &&
+        !searchRef.current.contains(event.target as Node)
+      ) {
+        setIsSearchExpanded(false);
+      }
     };
 
-    if (isCartOpen) {
+    if (isCartOpen || isSearchExpanded) {
       document.addEventListener("mousedown", handleClickOutside);
     }
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isCartOpen]);
+  }, [isCartOpen, isSearchExpanded]);
+
+  // Handle Escape key to close search
+  useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && isSearchExpanded) {
+        setIsSearchExpanded(false);
+      }
+    };
+
+    if (isSearchExpanded) {
+      document.addEventListener("keydown", handleEscape);
+    }
+
+    return () => {
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, [isSearchExpanded]);
 
   const toggleMobile = () => setIsMobileOpen(!isMobileOpen);
   const toggleCart = () => setIsCartOpen((open) => !open);
+  const toggleSearch = () => setIsSearchExpanded((open) => !open);
+  const closeSearch = () => setIsSearchExpanded(false);
 
   const handleLogout = () => {
     logout();
@@ -75,34 +104,57 @@ export const Navbar = () => {
 
       {/* Desktop Navigation */}
       <div className={styles.navLinks}>
-        <NavItem
-          to="/home"
-          label={t("nav.inicio") ?? "Home"}
-          onClick={() => setIsMobileOpen(false)}
-        />
-        <NavItem
-          to="/catalog"
-          label={t("nav.home") ?? "Catalog"}
-          onClick={() => setIsMobileOpen(false)}
-        />
-        {isAuthenticated && (
-          <NavItem
-            to="/library"
-            label={t("nav.library")}
-            onClick={() => setIsMobileOpen(false)}
-          />
-        )}
-        {isAuthenticated && user?.role === "admin" && (
-          <NavItem
-            to="/admin"
-            label="Admin Panel"
-            onClick={() => setIsMobileOpen(false)}
-          />
-        )}
-      </div>
+        <AnimatePresence mode="wait">
+          {!isSearchExpanded ? (
+            <motion.div
+              key="nav-links"
+              className={styles.navLinksContent}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              {/* Search Icon Button */}
+              <button
+                className={styles.searchIconButton}
+                onClick={toggleSearch}
+                title="Search"
+              >
+                <FiSearch />
+              </button>
 
-      <div className={`${styles.desktopParams} ${styles.searchContainer}`}>
-        <SearchBar />
+              <NavItem
+                to="/home"
+                label={t("nav.inicio") ?? "Home"}
+                onClick={() => setIsMobileOpen(false)}
+              />
+              <NavItem
+                to="/catalog"
+                label={t("nav.home") ?? "Catalog"}
+                onClick={() => setIsMobileOpen(false)}
+              />
+              {isAuthenticated && (
+                <NavItem
+                  to="/library"
+                  label={t("nav.library")}
+                  onClick={() => setIsMobileOpen(false)}
+                />
+              )}
+            </motion.div>
+          ) : (
+            <motion.div
+              key="search-expanded"
+              ref={searchRef}
+              className={styles.expandedSearchContainer}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.2 }}
+            >
+              <NavbarSearch onClose={closeSearch} autoFocus />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* Desktop Actions */}
@@ -218,13 +270,6 @@ export const Navbar = () => {
           <NavItem
             to="/library"
             label={t("nav.library")}
-            onClick={() => setIsMobileOpen(false)}
-          />
-        )}
-        {isAuthenticated && user?.role === "admin" && (
-          <NavItem
-            to="/admin"
-            label="Admin Panel"
             onClick={() => setIsMobileOpen(false)}
           />
         )}

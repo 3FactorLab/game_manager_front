@@ -1,99 +1,221 @@
-/**
- * Home.tsx
- * Main games catalog page with infinite scroll pagination.
- * Displays game grid with search functionality and React Query for data fetching.
- * Supports search via URL query parameters.
- */
-
-import React from "react";
-import { useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useGames } from "../features/games/hooks/useGames";
+import { useCatalogUrl } from "../features/games/hooks/useCatalogUrl";
 import { GameCard } from "../features/games/components/GameCard";
-import type { Game } from "../services/games.service";
+import { CatalogControls } from "../features/games/components/CatalogControls";
 import { Button } from "../components/ui/Button";
+import type { Game } from "../services/games.service";
 import styles from "./CatalogPage.module.css";
+import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import { clsx } from "clsx";
 
-/**
- * CatalogPage component
- * Displays paginated game catalog with search and infinite scroll.
- * Uses React Query's useInfiniteQuery for efficient data fetching and caching.
- *
- * @returns {JSX.Element} Home page with game grid
- */
 const CatalogPage = () => {
   const { t } = useTranslation();
-  const [searchParams] = useSearchParams();
-  const searchQuery = searchParams.get("search") || "";
 
-  // Fetch games with infinite scroll pagination (12 games per page)
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status } =
-    useGames({
-      limit: 12,
-      search: searchQuery,
-    });
+  // Use URL params for state
+  const { query, genre, platform, sortBy, order, page, setPage } =
+    useCatalogUrl();
+
+  // Fetch games with standard pagination
+  const { data, isLoading, isError, isPlaceholderData } = useGames({
+    page,
+    limit: 12, // Consistent 12 items per page
+    query, // Changed from 'search' to match backend
+    genre,
+    platform,
+    sortBy,
+    order,
+  });
+
+  // Wait, useGames uses gamesService.getCatalog which returns { data, pagination }.
+  // Wait, I need to double check useGames return type.
+  // gamesService.getCatalog returns { data: Game[], pagination: ... } ?
+  // Let's check games.service.ts again quickly.
+
+  // Actually, I should assume standard service structure.
+  // If useGames returns `useQuery` result, then `data` is the result of `gamesService.getCatalog`.
+
+  // Code fix plan: Check structure in next step if needed, but standardizing:
+  // gamesService used to return { games, total, ... } from backend, BUT mapped in service?
+  // I viewed games.service.ts in step 223:
+  // return { data: rawData.games, pagination: { ... } };
+
+  // So data structure is:
+  // data.data (Array of games)
+  // data.pagination (Pagination info)
+
+  const gamesList = data?.data || [];
+  const pagination = data?.pagination || { page: 1, pages: 1, total: 0 };
+
+  const handlePrevPage = () => {
+    if (page > 1) setPage(page - 1);
+  };
+
+  const handleNextPage = () => {
+    if (!isPlaceholderData && page < pagination.pages) {
+      setPage(page + 1);
+    }
+  };
+
+  /**
+   * Get smart page numbers for pagination
+   * Shows: first, last, current, nearby pages with ellipsis for gaps
+   */
+  const getPageNumbers = (
+    currentPage: number,
+    totalPages: number
+  ): (number | "ellipsis")[] => {
+    if (totalPages <= 7) {
+      // Show all pages if 7 or fewer
+      return Array.from({ length: totalPages }, (_, i) => i + 1);
+    }
+
+    const pages: (number | "ellipsis")[] = [];
+
+    // Always show first page
+    pages.push(1);
+
+    // Calculate range around current page
+    const start = Math.max(2, currentPage - 1);
+    const end = Math.min(totalPages - 1, currentPage + 1);
+
+    // Add ellipsis if gap between 1 and start
+    if (start > 2) {
+      pages.push("ellipsis");
+    }
+
+    // Add pages around current
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
+
+    // Add ellipsis if gap between end and last
+    if (end < totalPages - 1) {
+      pages.push("ellipsis");
+    }
+
+    // Always show last page
+    if (totalPages > 1) {
+      pages.push(totalPages);
+    }
+
+    return pages;
+  };
 
   return (
     <div className={styles.container}>
-      {/* Hero section with title */}
-      {/* Hero section with title */}
+      {/* Hero section */}
       <section className={styles.hero}>
         <div className={styles.introContent}>
           <h1 className={`${styles.title} text-gradient`}>
-            {searchQuery
-              ? `Results for "${searchQuery}"`
-              : t("home.hero_title")}
+            <h1 className={`${styles.title} text-gradient`}>
+              {t("home.hero_title") || "Discover Your Next Adventure"}
+            </h1>
           </h1>
           <p className={styles.subtitle}>{t("home.hero_subtitle")}</p>
         </div>
-
-        {/* Only show the widget if not searching, to keep focus on results when searching */}
       </section>
 
-      {/* Loading state */}
-      {status === "pending" ? (
-        <div className={styles.loadingState}>
-          <span className={`text-gradient ${styles.loadingText}`}>
-            Loading Games...
-          </span>
-        </div>
-      ) : status === "error" ? (
-        /* Error state */
-        <div className={styles.errorState}>
-          Error loading games. Please try again later.
-        </div>
-      ) : (
-        <>
-          {/* Game grid with infinite scroll */}
-          <div className={styles.grid}>
-            {data.pages.map((group, i) => (
-              <React.Fragment key={i}>
-                {group.data.map((game: Game) => (
-                  <GameCard key={game._id} game={game} />
-                ))}
-              </React.Fragment>
-            ))}
-          </div>
+      <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "0 1rem" }}>
+        {/* Controls (Search, Filter, Sort) */}
+        <CatalogControls />
 
-          {/* Load more button */}
-          <div className={styles.loadMoreContainer}>
-            {hasNextPage ? (
-              <Button
-                onClick={() => fetchNextPage()}
-                disabled={isFetchingNextPage}
-                size="lg"
-              >
-                {isFetchingNextPage ? "Loading more..." : "Load More Games"}
-              </Button>
-            ) : (
-              <span className={styles.endMessage}>You've reached the end!</span>
-            )}
+        {/* Loading / Error / Grid */}
+        {isLoading ? (
+          <div style={{ textAlign: "center", padding: "4rem" }}>
+            <span
+              className="text-gradient"
+              style={{ fontSize: "1.5rem", fontWeight: "bold" }}
+            >
+              Loading Games...
+            </span>
           </div>
-        </>
-      )}
+        ) : isError ? (
+          <div
+            style={{
+              textAlign: "center",
+              color: "var(--error)",
+              padding: "4rem",
+            }}
+          >
+            Error loading catalog.
+          </div>
+        ) : gamesList.length === 0 ? (
+          <div
+            style={{
+              textAlign: "center",
+              padding: "4rem",
+              color: "var(--text-muted)",
+            }}
+          >
+            <h3>No games found</h3>
+            <p>Try adjusting your search or filters.</p>
+          </div>
+        ) : (
+          <>
+            {/* Sticky Pagination - Above Grid */}
+            {pagination.pages > 1 && (
+              <div className={styles.stickyPaginationWrapper}>
+                <div className={styles.stickyPagination}>
+                  <Button
+                    onClick={handlePrevPage}
+                    disabled={page === 1}
+                    variant="secondary"
+                    size="sm"
+                  >
+                    <FiChevronLeft />
+                  </Button>
+
+                  {/* Page Numbers */}
+                  <div className={styles.pageNumbers}>
+                    {getPageNumbers(page, pagination.pages).map(
+                      (pageNum, idx) =>
+                        pageNum === "ellipsis" ? (
+                          <span
+                            key={`ellipsis-${idx}`}
+                            className={styles.ellipsis}
+                          >
+                            ...
+                          </span>
+                        ) : (
+                          <button
+                            key={pageNum}
+                            onClick={() => setPage(pageNum)}
+                            className={clsx(
+                              styles.pageButton,
+                              page === pageNum && styles.pageButtonActive
+                            )}
+                            disabled={isPlaceholderData}
+                          >
+                            {pageNum}
+                          </button>
+                        )
+                    )}
+                  </div>
+
+                  <Button
+                    onClick={handleNextPage}
+                    disabled={page === pagination.pages || isPlaceholderData}
+                    variant="secondary"
+                    size="sm"
+                  >
+                    <FiChevronRight />
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {/* Game Grid */}
+            <div className={styles.grid}>
+              {gamesList.map((game: Game) => (
+                <GameCard key={game._id} game={game} />
+              ))}
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 };
 
-// Exported to AppRoutes as main games catalog page
 export default CatalogPage;

@@ -16,7 +16,7 @@ export const HeroCarousel = () => {
   const { data, isLoading } = useGames({ limit: 6 });
 
   // Safe access to data
-  const games = data?.pages?.[0]?.data || [];
+  const games = data?.data || [];
 
   // Auto-rotation logic
   useEffect(() => {

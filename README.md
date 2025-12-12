@@ -109,20 +109,85 @@ We maintain detailed documentation for the codebase. Please review these files t
 ## 📂 Project Structure
 
 ```
-src/
-├── features/        # Feature-based modules (THE CORE)
-│   ├── auth/        # Login, Register, Context
-│   ├── games/       # Catalog, Details
-│   ├── cart/        # Shopping Cart logic
-│   └── wishlist/    # Wishlist logic
-├── components/      # Shared UI components
-│   ├── ui/          # Buttons, Cards, Inputs
-│   └── layout/      # Navbar, Footer
-├── pages/           # Page orchestration
-├── services/        # API communication layer
-├── hooks/           # Shared custom hooks
-├── lib/             # 3rd party config (axios, i18n, query)
-└── types/           # Global TypeScript definitions
+frontend/
+├── src/
+│   ├── features/          # Módulos autocontenidos por dominio
+│   │   ├── auth/          # Autenticación (Context + Pages)
+│   │   ├── cart/          # Carrito (Context + localStorage)
+│   │   ├── wishlist/      # Lista de deseos (Context + Optimistic Updates)
+│   │   ├── games/         # Catálogo (Hooks + Components)
+│   │   ├── collection/    # Biblioteca del usuario
+│   │   ├── checkout/      # Proceso de compra
+│   │   ├── profile/       # Gestión de perfil
+│   │   ├── home/          # Componentes de homepage
+│   │   └── orders/        # Historial de pedidos
+│   │
+│   ├── components/        # Componentes reutilizables
+│   │   ├── ui/            # Sistema de diseño base
+│   │   │   ├── Button, Card, Input, Loader
+│   │   │   ├── ImageModal, LanguageToggle
+│   │   │   └── SearchBar
+│   │   ├── layout/        # Estructura de la app
+│   │   │   ├── MainLayout, Navbar
+│   │   │   └── UserDropdown
+│   │   ├── common/        # Utilidades comunes
+│   │   │   └── ScrollToTop
+│   │   └── ErrorBoundary  # Manejo global de errores
+│   │
+│   ├── pages/             # Páginas de la aplicación
+│   │   ├── HomePage, CatalogPage, GameDetails
+│   │   ├── LibraryPage, WishlistPage, CheckoutPage
+│   │   ├── OrdersPage, StorePage
+│   │   └── admin/         # Panel de administración
+│   │       ├── AdminDashboard
+│   │       ├── UserManagement
+│   │       ├── GameManagement
+│   │       └── RAWGImport
+│   │
+│   ├── services/          # Capa de comunicación API
+│   │   ├── api.client.ts  # Cliente Axios configurado
+│   │   ├── auth.service.ts
+│   │   ├── games.service.ts
+│   │   ├── user.service.ts
+│   │   ├── admin.service.ts
+│   │   └── checkout.service.ts
+│   │
+│   ├── hooks/             # Custom hooks globales
+│   │   └── useAdmin.ts
+│   │
+│   ├── routes/            # Configuración de rutas
+│   │   ├── AppRoutes.tsx
+│   │   └── ProtectedRoute.tsx
+│   │
+│   ├── lib/               # Configuración de librerías
+│   │   ├── queryClient.ts
+│   │   ├── i18n.ts
+│   │   └── test-setup.ts
+│   │
+│   ├── types/             # Definiciones TypeScript
+│   │   ├── api.types.ts
+│   │   └── rawg.types.ts
+│   │
+│   ├── utils/             # Utilidades helper
+│   │   ├── format.ts
+│   │   ├── error.util.ts
+│   │   └── auth-events.ts
+│   │
+│   ├── locales/           # Traducciones i18n
+│   │   ├── en.json
+│   │   └── es.json
+│   │
+│   ├── assets/            # Recursos estáticos
+│   ├── index.css          # Estilos globales + variables CSS
+│   ├── main.tsx           # Punto de entrada
+│   └── App.tsx            # Componente raíz
+│
+├── docs/                  # Documentación técnica
+│   ├── architecture-front.md
+│   ├── tutorial-front.md
+│   └── pendientes.md
+│
+└── public/                # Archivos estáticos
 ```
 
 ---

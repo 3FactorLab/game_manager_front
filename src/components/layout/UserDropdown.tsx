@@ -6,7 +6,8 @@
  * - Click-outside detection to close menu
  * - Avatar upload modal integration
  * - Password change modal integration
- * - Quick access to library and logout
+ * - Quick access to library, orders, and logout
+ * - Admin Panel access (visible only for admin users)
  */
 
 import { useState, useRef, useEffect } from "react";
@@ -23,6 +24,7 @@ import {
   FaChevronUp,
   FaUserEdit,
   FaList,
+  FaCog,
 } from "react-icons/fa";
 import { useAuth } from "../../features/auth/AuthContext";
 import { AvatarUploadModal } from "../../features/profile/components/AvatarUploadModal";
@@ -212,6 +214,18 @@ export const UserDropdown = () => {
                 <FaList />
                 <span>My Orders</span>
               </Link>
+
+              {/* Admin Panel - Only visible for admins */}
+              {user.role === "admin" && (
+                <Link
+                  to="/admin"
+                  className={styles.menuItem}
+                  onClick={() => setIsOpen(false)}
+                >
+                  <FaCog />
+                  <span>Admin Panel</span>
+                </Link>
+              )}
 
               <div className={styles.divider} />
 
