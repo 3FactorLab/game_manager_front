@@ -33,7 +33,8 @@ export const collectionService = {
    */
   async getLibrary(): Promise<CollectionItem[]> {
     const { data } = await apiClient.get<{ items: CollectionItem[] }>(
-      "/collection"
+      "/collection",
+      { params: { limit: 50 } }
     );
     return data.items;
   },

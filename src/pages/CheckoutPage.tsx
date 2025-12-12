@@ -1,5 +1,6 @@
 ﻿import { useState, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import { clsx } from "clsx";
 import { useGameDetails } from "../features/games/hooks/useGameDetails";
 import { Card } from "../components/ui/Card";
@@ -12,6 +13,7 @@ import styles from "./CheckoutPage.module.css";
 const CheckoutPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { data: game, isLoading } = useGameDetails(id);
   const { items: cartItems, clear: clearCart } = useCart();
   const { mutate: purchase, isPending } = useCheckout();
@@ -62,6 +64,9 @@ const CheckoutPage = () => {
     purchase(ids, {
       onSuccess: () => {
         if (!id) clearCart();
+        // Invalidate queries to refetch data
+        queryClient.invalidateQueries({ queryKey: ["library"] });
+        queryClient.invalidateQueries({ queryKey: ["orders"] }); // Also refresh orders
         setShowSuccessModal(true);
       },
       onError: (error) => {

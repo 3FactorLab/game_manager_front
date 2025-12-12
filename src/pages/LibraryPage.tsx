@@ -67,45 +67,11 @@ const LibraryPage = () => {
       </div>
 
       {!hasItems ? (
-        <div className={styles.emptyState}>
-          <h2 className={`${styles.emptyTitle} text-gradient`}>
-            Your library is empty
-          </h2>
-          <p className={styles.emptyText}>Go explore and find some games!</p>
-          <Link to="/" className={styles.browseLink}>
-            Browse Store
-          </Link>
-        </div>
+        renderEmptyState()
       ) : (
         <div className={styles.grid}>
           {libraryItems?.map((item) => (
-            <Card
-              key={item._id}
-              hoverable
-              className={styles.libraryCard}
-              onClick={() => navigate(`/game/${item.game._id}`)}
-              padding="md"
-            >
-              <div className={styles.imageWrapper}>
-                <img
-                  src={
-                    item.game.assets?.cover ||
-                    "https://placehold.co/200x112/101010/FFF?text=Game"
-                  }
-                  alt={item.game.title}
-                  className={styles.image}
-                />
-              </div>
-              <div className={styles.cardContent}>
-                <h3 className={styles.gameTitle}>{item.game.title}</h3>
-                <div className={styles.metaRow}>
-                  <StatusBadge status={item.status} />
-                  <span className={styles.purchaseDate}>
-                    Purchased on {new Date(item.addedAt).toLocaleDateString()}
-                  </span>
-                </div>
-              </div>
-            </Card>
+            <GameCard key={item._id} game={item.game} />
           ))}
         </div>
       )}
