@@ -43,12 +43,18 @@ const LibraryPage = () => {
           marginBottom: "2rem",
         }}
       >
-        <div style={{ display: "flex", alignItems: "baseline", gap: "1rem", marginRight: "auto" }}>
-          <h1 className="text-gradient">
-            {t("nav.library")}
-          </h1>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "baseline",
+            gap: "1rem",
+            marginRight: "auto",
+          }}
+        >
+          <h1 className="text-gradient">{t("nav.library")}</h1>
           <span style={{ color: "var(--text-secondary)", fontSize: "1.1rem" }}>
-            {libraryItems?.length || 0} {(libraryItems?.length || 0) === 1 ? "Game" : "Games"}
+            {libraryItems?.length || 0}{" "}
+            {(libraryItems?.length || 0) === 1 ? "Game" : "Games"}
           </span>
         </div>
 
