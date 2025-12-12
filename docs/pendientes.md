@@ -22,6 +22,16 @@
 
 ---
 
+### 📡 Backend Refactoring (Tech Debt)
+
+- [ ] **Validación Zod Unificada**: Migrar de `express-validator` a `Zod` en el backend.
+  - **Beneficio Principal**: _Code Sharing_. Permite compartir schemas con el frontend, evitando duplicidad de reglas (ej: "password min 8 chars").
+  - **Beneficio Secundario**: _Type Inference_. Zod genera automáticamente los tipos TS (`z.infer`), garantizando que la validación y el tipo de dato siempre coincidan.
+  - **Nota**: Requiere crear un middleware adaptador para Express.
+- [ ] **Tests Unitarios**: Extender la cobertura de tests unitarios (con Mocks) para lógica de negocio compleja.
+
+---
+
 ## ✅ Completado Recientemente
 
 ### Fase 5: Rutas de Archivos Estáticos
