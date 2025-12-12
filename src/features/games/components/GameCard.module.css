@@ -72,6 +72,13 @@
   overflow: hidden;
   position: relative;
   z-index: 1;
+  background-color: rgba(
+    255,
+    255,
+    255,
+    0.05
+  ); /* Placeholder color during load */
+  border-bottom: 1px solid var(--glass-border);
 }
 
 .coverImage {
@@ -79,6 +86,18 @@
   height: 100%;
   object-fit: cover;
   transition: transform var(--transition-normal);
+
+  /* Smooth fade-in on load */
+  animation: imageFadeIn 0.4s ease-out forwards;
+}
+
+@keyframes imageFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .gameCard:hover .coverImage {

@@ -20,7 +20,7 @@ const GameManagement = () => {
   } = useInfiniteQuery({
     queryKey: ["admin", "games", search],
     queryFn: ({ pageParam = 1 }) =>
-      gamesService.getCatalog({ page: pageParam, limit: 20, search }),
+      gamesService.getCatalog({ page: pageParam, limit: 20, query: search }),
     getNextPageParam: (lastPage) => {
       const { page, pages } = lastPage.pagination;
       return page < pages ? page + 1 : undefined;

@@ -62,7 +62,6 @@ export const GameCard = ({ game }: GameCardProps) => {
           }
           alt={game.title}
           className={styles.coverImage}
-          loading="lazy"
         />
         <button
           className={styles.addToCart}
