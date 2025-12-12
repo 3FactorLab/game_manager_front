@@ -39,15 +39,12 @@ export const WishlistPage = () => {
   }
 
   const renderEmptyState = () => (
-    <div style={{ textAlign: "center", padding: "4rem" }}>
+    <div className={styles.emptyStateContainer}>
       <h2 className="text-gradient">Your wishlist is empty</h2>
-      <p style={{ color: "var(--text-secondary)", marginBottom: "2rem" }}>
+      <p className={styles.emptyStateText}>
         Save games you're interested in to track their price or play them later.
       </p>
-      <Link
-        to="/home"
-        style={{ color: "var(--accent-primary)", fontWeight: "bold" }}
-      >
+      <Link to="/home" className={styles.browseLink}>
         Browse Store
       </Link>
     </div>
@@ -57,22 +54,15 @@ export const WishlistPage = () => {
 
   return (
     <div className={styles.page}>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          marginBottom: "2rem",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "baseline", gap: "1rem" }}>
+      <div className={styles.header}>
+        <div className={styles.titleArea}>
           <h1 className="text-gradient">My Wishlist</h1>
           <span className={styles.count}>
             {wishlist.length} {wishlist.length === 1 ? "Game" : "Games"}
           </span>
         </div>
 
-        <div style={{ display: "flex", gap: "0.5rem" }}>
+        <div className={styles.actionsArea}>
           <Button
             variant="ghost"
             onClick={() => navigate("/library")}

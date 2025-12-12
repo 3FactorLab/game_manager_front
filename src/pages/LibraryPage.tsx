@@ -11,21 +11,13 @@ const LibraryPage = () => {
 
   const { data: libraryItems, isLoading } = useLibrary();
 
-  if (isLoading)
-    return (
-      <div style={{ padding: "4rem", textAlign: "center" }}>Loading...</div>
-    );
+  if (isLoading) return <div className={styles.loadingState}>Loading...</div>;
 
   const renderEmptyState = () => (
-    <div style={{ textAlign: "center", padding: "4rem" }}>
+    <div className={styles.emptyState}>
       <h2 className="text-gradient">Your library is empty</h2>
-      <p style={{ color: "var(--text-secondary)", marginBottom: "2rem" }}>
-        Go explore and find some games!
-      </p>
-      <Link
-        to="/"
-        style={{ color: "var(--accent-primary)", fontWeight: "bold" }}
-      >
+      <p className={styles.emptyStateText}>Go explore and find some games!</p>
+      <Link to="/" className={styles.browseLink}>
         Browse Store
       </Link>
     </div>
@@ -35,24 +27,10 @@ const LibraryPage = () => {
 
   return (
     <div className={styles.container}>
-      <div
-        style={{
-          display: "flex",
-          gap: "1rem",
-          alignItems: "center",
-          marginBottom: "2rem",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "baseline",
-            gap: "1rem",
-            marginRight: "auto",
-          }}
-        >
+      <div className={styles.header}>
+        <div className={styles.titleSection}>
           <h1 className="text-gradient">{t("nav.library")}</h1>
-          <span style={{ color: "var(--text-secondary)", fontSize: "1.1rem" }}>
+          <span className={styles.gameCount}>
             {libraryItems?.length || 0}{" "}
             {(libraryItems?.length || 0) === 1 ? "Game" : "Games"}
           </span>

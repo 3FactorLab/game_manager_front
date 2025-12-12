@@ -2,6 +2,16 @@
   padding-bottom: 4rem;
 }
 
+.loadingState,
+.errorState {
+  padding: 4rem;
+  text-align: center;
+}
+
+.errorState {
+  color: var(--error);
+}
+
 .hero {
   position: relative;
   /* Adaptive height */
@@ -74,6 +84,12 @@
   flex-wrap: wrap;
 }
 
+.platformTag {
+  background: var(--bg-secondary);
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+}
+
 .content {
   display: grid;
   grid-template-columns: 1fr;
@@ -96,6 +112,10 @@
   font-size: 1.1rem;
   line-height: 1.8;
   color: var(--text-secondary);
+}
+
+.sectionTitle {
+  margin-bottom: 1rem;
 }
 
 .sidebar {
@@ -139,6 +159,24 @@
   color: var(--text-muted);
 }
 
+.priceColumn {
+  display: flex;
+  flex-direction: column;
+}
+
+.originalPrice {
+  text-decoration: line-through;
+  color: var(--text-muted);
+}
+
+.discountBadge {
+  background: var(--accent-primary);
+  color: white;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
 .genreValue {
   font-weight: 700;
   color: #34d399;
@@ -148,6 +186,21 @@
   font-weight: 700;
   color: #fbbf24;
   font-size: 1.1rem;
+}
+
+.userScore {
+  border-bottom: none !important;
+}
+
+.userScoreValue {
+  color: var(--success);
+  font-weight: bold;
+}
+
+.loginPrompt {
+  font-size: 0.8rem;
+  text-align: center;
+  color: var(--text-muted);
 }
 
 /* Cover Image */

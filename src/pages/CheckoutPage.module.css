@@ -4,6 +4,22 @@
   padding: 2rem 1rem;
 }
 
+.pageTitle {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.loadingState,
+.emptyState,
+.errorState {
+  padding: 4rem;
+  text-align: center;
+}
+
+.emptyState button {
+  margin-top: 1rem;
+}
+
 .summary {
   margin-bottom: 2rem;
 }
@@ -16,6 +32,17 @@
   border-bottom: 1px solid var(--glass-border);
 }
 
+.productInfo {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.productImage {
+  width: 80px;
+  border-radius: 4px;
+}
+
 .totalRow {
   display: flex;
   justify-content: space-between;
@@ -25,6 +52,9 @@
   font-weight: 800;
 }
 
+.totalPrice {
+  color: var(--accent-primary);
+}
 .paymentMethods {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -46,6 +76,15 @@
 .method.selected {
   border-color: var(--accent-primary);
   background: rgba(99, 102, 241, 0.1);
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.confirmButton {
+  flex-grow: 1;
 }
 
 /* Success Modal */
@@ -136,4 +175,3 @@
   flex-direction: column;
   gap: 0.75rem;
 }
-

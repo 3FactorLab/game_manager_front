@@ -9,6 +9,7 @@ import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 
 import en from "../locales/en.json";
+import es from "../locales/es.json";
 
 // Initialize i18next with React integration
 i18n.use(initReactI18next).init({
@@ -16,14 +17,20 @@ i18n.use(initReactI18next).init({
     en: {
       translation: en, // English translations
     },
-    // TODO: Add Spanish translations
-    // es: { translation: es }
+    es: {
+      translation: es, // Spanish translations
+    },
   },
-  lng: "en", // Default language
+  lng: localStorage.getItem("i18nextLng") || "en", // Load from storage or default
   fallbackLng: "en", // Fallback if translation missing
   interpolation: {
     escapeValue: false, // React already protects from XSS
   },
+});
+
+// Save language preference on change
+i18n.on("languageChanged", (lng) => {
+  localStorage.setItem("i18nextLng", lng);
 });
 
 // Exported to main.tsx for application-wide i18n support

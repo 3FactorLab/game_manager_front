@@ -23,6 +23,7 @@ Este documento define las reglas y expectativas para la IA asistente integrada e
   - Todos los comentarios en ingles
   - Comenta decisiones de diseño importantes o logica no obvia
   - Usa nombres descriptivos, pero aun asi documenta el "por que"
+  - no queremos inline styles css , todo en sus archivos o modules css correspondientes, ya que usamos css puro.
 
 ## 2. Gestion del entorno de desarrollo
 

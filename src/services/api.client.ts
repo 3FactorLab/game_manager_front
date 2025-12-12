@@ -78,7 +78,9 @@ apiClient.interceptors.response.use(
 
       try {
         // Attempt to refresh the access token
-        console.log("[Auth] Access token expired, attempting refresh...");
+        if (import.meta.env.DEV) {
+          console.log("[Auth] Access token expired, attempting refresh...");
+        }
         const { data } = await axios.post("/api/users/refresh-token", {
           token: refreshToken,
         });
@@ -86,7 +88,9 @@ apiClient.interceptors.response.use(
         // Store new tokens
         localStorage.setItem("token", data.token);
         localStorage.setItem("refreshToken", data.refreshToken);
-        console.log("[Auth] Token refreshed successfully");
+        if (import.meta.env.DEV) {
+          console.log("[Auth] Token refreshed successfully");
+        }
 
         // Update the failed request with new token and retry
         originalRequest.headers.Authorization = `Bearer ${data.token}`;

@@ -5,6 +5,7 @@
  * Will be replaced with actual store implementation in future iterations.
  */
 import { useTranslation } from "react-i18next";
+import styles from "./StorePage.module.css";
 
 /**
  * StorePage Component
@@ -17,19 +18,9 @@ import { useTranslation } from "react-i18next";
 const StorePage = () => {
   const { t } = useTranslation();
   return (
-    <div
-      className="glass-panel"
-      style={{
-        padding: "2rem",
-        textAlign: "center",
-        minHeight: "50vh",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-      }}
-    >
+    <div className={`glass-panel ${styles.storeContainer}`}>
       <h1 className="text-gradient">Store</h1>
-      <p style={{ marginTop: "1rem", color: "var(--text-muted)" }}>
+      <p className={styles.comingSoonText}>
         {t("common.loading", "Coming Soon...")}
       </p>
     </div>

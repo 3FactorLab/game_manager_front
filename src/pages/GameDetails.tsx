@@ -12,6 +12,7 @@
 
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { clsx } from "clsx";
 // import { useTranslation } from "react-i18next";
 import { BsCartPlus, BsHeart, BsHeartFill } from "react-icons/bs";
 import { useGameDetails } from "../features/games/hooks/useGameDetails";
@@ -56,19 +57,9 @@ const GameDetails = () => {
     }
   };
 
-  if (isLoading)
-    return (
-      <div style={{ padding: "4rem", textAlign: "center" }}>Loading...</div>
-    );
+  if (isLoading) return <div className={styles.loadingState}>Loading...</div>;
   if (error || !game)
-    return (
-      <div
-        style={{ padding: "4rem", textAlign: "center", color: "var(--error)" }}
-      >
-        Game not found
-      </div>
-    );
-
+    return <div className={styles.errorState}>Game not found</div>;
   const hasOffer = game.isOffer && game.offerPrice !== undefined;
   const currentPrice = hasOffer ? game.offerPrice : game.price;
 
@@ -87,15 +78,7 @@ const GameDetails = () => {
         <div className={styles.heroContent}>
           <h1 className={`${styles.title} text-gradient`}>{game.title}</h1>
           <div className={styles.meta}>
-            <span
-              style={{
-                background: "var(--bg-secondary)",
-                padding: "0.2rem 0.5rem",
-                borderRadius: "4px",
-              }}
-            >
-              {game.platform}
-            </span>
+            <span className={styles.platformTag}>{game.platform}</span>
             <span>{game.developer}</span>
           </div>
         </div>
@@ -104,14 +87,14 @@ const GameDetails = () => {
       <div className={styles.content}>
         <div className={styles.mainInfo}>
           <Card>
-            <h2 style={{ marginBottom: "1rem" }}>About this game</h2>
+            <h2 className={styles.sectionTitle}>About this game</h2>
             <p className={styles.description}>{game.description}</p>
           </Card>
 
           {/* Screenshot Gallery */}
           {game.assets?.screenshots && game.assets.screenshots.length > 0 && (
             <Card>
-              <h2 style={{ marginBottom: "1rem" }}>Screenshots</h2>
+              <h2 className={styles.sectionTitle}>Screenshots</h2>
               <div className={styles.gallery}>
                 {game.assets.screenshots.slice(0, 6).map((screenshot, i) => (
                   <img
@@ -145,14 +128,9 @@ const GameDetails = () => {
 
           <Card className={styles.priceCard} padding="lg">
             <div className={styles.priceRow}>
-              <div style={{ display: "flex", flexDirection: "column" }}>
+              <div className={styles.priceColumn}>
                 {hasOffer && (
-                  <span
-                    style={{
-                      textDecoration: "line-through",
-                      color: "var(--text-muted)",
-                    }}
-                  >
+                  <span className={styles.originalPrice}>
                     {formatCurrency(game.price, game.currency)}
                   </span>
                 )}
@@ -162,19 +140,7 @@ const GameDetails = () => {
                     : formatCurrency(currentPrice || 0, game.currency)}
                 </span>
               </div>
-              {hasOffer && (
-                <span
-                  style={{
-                    background: "var(--accent-primary)",
-                    color: "white",
-                    padding: "0.2rem 0.5rem",
-                    borderRadius: "4px",
-                    fontWeight: "bold",
-                  }}
-                >
-                  OFFER
-                </span>
-              )}
+              {hasOffer && <span className={styles.discountBadge}>OFFER</span>}
             </div>
 
             <div className={styles.actions}>
@@ -206,15 +172,7 @@ const GameDetails = () => {
                 {isWishlisted ? "In Wishlist" : "Add to Wishlist"}
               </Button>
               {!isAuthenticated && (
-                <p
-                  style={{
-                    fontSize: "0.8rem",
-                    textAlign: "center",
-                    color: "var(--text-muted)",
-                  }}
-                >
-                  Login to purchase
-                </p>
+                <p className={styles.loginPrompt}>Login to purchase</p>
               )}
             </div>
           </Card>
@@ -253,14 +211,9 @@ const GameDetails = () => {
               </div>
             )}
             {game.score && (
-              <div
-                className={styles.detailRow}
-                style={{ borderBottom: "none" }}
-              >
+              <div className={clsx(styles.detailRow, styles.userScore)}>
                 <span className={styles.detailLabel}>User Score</span>
-                <span style={{ color: "var(--success)", fontWeight: "bold" }}>
-                  {game.score}/10
-                </span>
+                <span className={styles.userScoreValue}>{game.score}/10</span>
               </div>
             )}
           </Card>

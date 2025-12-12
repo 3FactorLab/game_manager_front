@@ -2,6 +2,46 @@
   padding: 2rem 1rem;
 }
 
+.header {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.titleSection {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  margin-right: auto;
+}
+
+.gameCount {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+}
+
+.headerActions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.loadingState,
+.emptyState {
+  padding: 4rem;
+  text-align: center;
+}
+
+.emptyStateText {
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+}
+
+.browseLink {
+  color: var(--accent-primary);
+  font-weight: bold;
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(1, 1fr);

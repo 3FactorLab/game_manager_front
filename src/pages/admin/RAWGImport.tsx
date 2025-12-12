@@ -100,12 +100,14 @@ const RAWGImport = () => {
               <div key={game.id} className={styles.card}>
                 <div
                   className={styles.cardImage}
-                  style={{
-                    backgroundImage: `url(${
-                      game.background_image ||
-                      "https://placehold.co/300x200/1a1a1a/666"
-                    })`,
-                  }}
+                  style={
+                    {
+                      "--bg-image": `url(${
+                        game.background_image ||
+                        "https://placehold.co/300x200/1a1a1a/666"
+                      })`,
+                    } as React.CSSProperties
+                  }
                 />
                 <div className={styles.cardContent}>
                   <h3 className={styles.cardTitle}>{game.name}</h3>

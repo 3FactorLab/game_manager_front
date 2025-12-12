@@ -26,7 +26,7 @@ Si cada set viniera con sus propios bloques únicos que no puedes reusar, sería
 Aquí viven las configuraciones globales de la aplicación.
 
 - **`queryClient.ts`**: Configura React Query con políticas de caché, reintento y refetch. **Estrategia**: Datos frescos por 5 minutos, caché por 30 minutos.
-- **`i18n.ts`**: Configura internacionalización con i18next. Actualmente carga solo inglés (español existe pero está desactivado).
+- **`i18n.ts`**: Configura internacionalización con i18next. Carga traducciones de inglés (`en`) y español (`es`) con persistencia en localStorage.
 
 ### 1.1. Tipos (`src/types/`)
 
@@ -88,6 +88,9 @@ Componentes reutilizables sin lógica de negocio:
   - Captura errores de React en toda la aplicación
   - UI fallback amigable con glassmorphism
   - Botones de refresh y retry
+- **`LanguageToggle.tsx`**: Selector de idioma (EN | ES)
+  - Persistencia de preferencia de usuario
+  - Integrado en Navbar (Desktop y Mobile)
 
 ### 4. Pages (`src/pages/`)
 
@@ -156,71 +159,94 @@ Este diagrama muestra la relación macro entre las capas del sistema.
 ```mermaid
 flowchart TB
     %% ============================================
-    %% EXTERNOS
+    %% ESTILOS GLOBALES
     %% ============================================
+    style User fill:#FFF9C4,stroke:#F57F17,stroke-width:3px,color:#000
+    style Backend fill:#C8E6C9,stroke:#2E7D32,stroke-width:3px,color:#000
+
+    %% Nodos Externos
     User([👤 Usuario])
     Backend[(🔌 Backend API)]
 
     %% ============================================
-    %% CAPA 0: PROTECCIÓN
+    %% SUBSISTEMAS (CAJAS LÓGICAS)
     %% ============================================
-    ErrorBoundary[🛡️ Error Boundary]
+
+    subgraph Infrastructura [Capas de Infraestructura]
+        direction TB
+        style Infrastructura fill:#F5F5F5,stroke:#9E9E9E,stroke-width:1px
+        ErrorBoundary[🛡️ Error Boundary]
+        Router[🛣️ App Router]
+    end
+
+    subgraph Presentacion [Capa de Presentación]
+        direction TB
+        style Presentacion fill:#E3F2FD40,stroke:#1976D2,stroke-width:2px
+        Pages[📄 Pages]
+        Layout[🏗️ Layout]
+        UI[🧩 UI Components]
+        Forms[📝 React Hook Form]
+    end
+
+    subgraph Logica [Capa de Lógica & Estado]
+        direction TB
+        style Logica fill:#FCE4EC40,stroke:#D32F2F,stroke-width:2px
+        Hooks[🪝 Custom Hooks]
+        ReactQuery[⚡ React Query]
+        AuthContext[🔐 Auth Context]
+        WishlistContext[❤️ Wishlist Context]
+        CartContext[🛒 Cart Context]
+    end
+
+    subgraph Datos [Capa de Datos & Servicios]
+        direction TB
+        style Datos fill:#F3E5F540,stroke:#7B1FA2,stroke-width:2px
+        Services[📦 Services]
+        APIClient[🔧 Axios Client]
+        Types[📐 Types]
+        ErrorUtils[⚠️ Error Utils]
+    end
 
     %% ============================================
-    %% CAPA 1: PRESENTACIÓN
+    %% CONEXIONES Y FLUJO
     %% ============================================
-    Pages[📄 Pages]
-    Layout[🏗️ Layout]
-    UI[🧩 UI Components]
 
-    %% ============================================
-    %% CAPA 2: LÓGICA
-    %% ============================================
-    Hooks[🪝 Custom Hooks]
-    ReactQuery[⚡ React Query]
-    AuthContext[🔐 Auth Context]
-    WishlistContext[❤️ Wishlist Context]
-    CartContext[🛒 Cart Context]
-
-    %% ============================================
-    %% CAPA 3: DATOS
-    %% ============================================
-    Services[📦 Services]
-    APIClient[🔧 Axios Client]
-
-    %% ============================================
-    %% CAPA 4: TYPES & UTILIDADES
-    %% ============================================
-    Types[📐 Types]
-    ErrorUtils[⚠️ Error Utils]
-    Router[🛣️ Router]
-    Forms[📝 Forms]
-
-    %% ============================================
-    %% FLUJO DE DATOS
-    %% ============================================
-    User -->|1. Interacción| ErrorBoundary
+    %% 1. Entrada
+    User -->|1. Interacción| Router
+    Router -->|1. Ruta| ErrorBoundary
     ErrorBoundary --> Pages
+
+    %% 2. Composición UI
     Pages --> Layout
     Pages --> UI
+    Pages --> Forms
+    Layout --> UI
+
+    %% 3. Consumo de Lógica (Hooks & Context)
     Pages -->|2. Usa| Hooks
+    Forms -->|Submit| Hooks
     UI -->|2. Usa| Hooks
 
-    Hooks -->|3a. Query| ReactQuery
-    Hooks -->|3b. Auth| AuthContext
     Pages -->|3c. Wishlist| WishlistContext
     Pages -->|3d. Cart| CartContext
 
+    %% 4. Orquestación de Lógica
+    Hooks -->|3a. Query| ReactQuery
+    Hooks -->|3b. Auth| AuthContext
+
+    %% 5. Capa de Servicios
     ReactQuery -->|4a. Fetch| Services
     AuthContext -->|4b. Login| Services
     WishlistContext -->|4c. Optimistic| Services
     CartContext -->|4d. Items| Services
 
+    %% 6. Salida a Backend
     Services -->|5. Request| APIClient
     APIClient -->|+ Token| Backend
     Services -.->|Type Check| Types
     APIClient -.->|Error| ErrorUtils
 
+    %% 7. Retorno
     Backend -->|6. Response| APIClient
     APIClient -.->|401 Auto-Refresh| AuthContext
     APIClient -->|7. Data| Services
@@ -229,19 +255,39 @@ flowchart TB
     Hooks -->|10. Render| Pages
     Pages -->|11. UI| User
 
-    %% ESTILOS
-    style User fill:#FFF9C4,stroke:#F57F17,stroke-width:3px,color:#000
-    style Backend fill:#C8E6C9,stroke:#2E7D32,stroke-width:3px,color:#000
-    style ErrorBoundary fill:#E0E0E099,stroke:#424242,stroke-width:2px,color:#000
-    style Pages fill:#E3F2FD99,stroke:#1976D2,stroke-width:2px,color:#000
-    style Layout fill:#E3F2FD99,stroke:#1976D2,stroke-width:2px,color:#000
-    style UI fill:#E3F2FD99,stroke:#1976D2,stroke-width:2px,color:#000
-    style Hooks fill:#FCE4EC99,stroke:#D32F2F,stroke-width:2px,color:#000
-    style ReactQuery fill:#FF6B6B,stroke:#C92A2A,stroke-width:3px,color:#FFF
-    style AuthContext fill:#4ECDC499,stroke:#0B7285,stroke-width:2px,color:#000
-    style Services fill:#F3E5F599,stroke:#7B1FA2,stroke-width:2px,color:#000
-    style APIClient fill:#F3E5F599,stroke:#512DA8,stroke-width:2px,color:#000
+    %% ============================================
+    %% ESTILOS DE NODOS
+    %% ============================================
+    style ErrorBoundary fill:#E0E0E0,color:#000
+    style Router fill:#E0E0E0,color:#000
+
+    style Pages fill:#BBDEFB,color:#000
+    style Layout fill:#BBDEFB,color:#000
+    style UI fill:#BBDEFB,color:#000
+    style Forms fill:#BBDEFB,color:#000
+
+    style Hooks fill:#FFCDD2,color:#000
+    style ReactQuery fill:#EF5350,color:#FFF
+    style AuthContext fill:#B2DFDB,color:#000
+    style WishlistContext fill:#B2DFDB,color:#000
+    style CartContext fill:#B2DFDB,color:#000
+
+    style Services fill:#E1BEE7,color:#000
+    style APIClient fill:#D1C4E9,color:#000
+    style Types fill:#FFF,stroke-dasharray: 5 5
+    style ErrorUtils fill:#FFF,stroke-dasharray: 5 5
 ```
+
+### 🎨 Leyenda de Colores
+
+| Color           | Capa / Responsabilidad     | Ejemplo                      |
+| :-------------- | :------------------------- | :--------------------------- |
+| 🟨 **Amarillo** | **Usuario**                | Interacción humana           |
+| 🟦 **Azul**     | **Presentación**           | Pages, Layout, UI Components |
+| 🟥 **Rojo**     | **Lógica / Estado Server** | React Query, Custom Hooks    |
+| 🟩 **Verde**    | **Backend / Externo**      | API, Base de Datos           |
+| 🟪 **Morado**   | **Datos / Servicios**      | Axios Client, Services       |
+| ⬜ **Gris**     | **Infraestructura**        | Error Boundary               |
 
 ---
 
@@ -439,18 +485,24 @@ No usamos una "bala de plata" para el estado. Usamos la herramienta correcta par
 | **Auth State**   | Context API      | Usuario, Tokens           |
 | **UI State**     | useState / Props | Formularios, Pestañas     |
 
+### 5. Styling Strategy (Clean Code)
+
+- **CSS Modules**: Usamos `*.module.css` para estilos locales. **Zero Inline Styles**.
+- **Variables CSS**: `index.css` define el sistema de diseño (colores, espacios) con variables.
+- **Glassmorphism**: Estilo visual unificado mediante clases utilitarias y variables.
+
 ---
 
 ## 🔐 Seguridad y Autenticación (Detalle Técnico)
 
-1.  **Dual Token**:
-    - **Access Token**: 15 min de vida. Se envía en header `Authorization`.
-    - **Refresh Token**: 7 días de vida. Se usa solo para obtener nuevos access tokens.
-2.  **Protección de Rutas**:
-    - Wrapper `<ProtectedRoute>` verifica existencia de token valido.
-    - Prop `requireAdmin` verifica `user.role === 'admin'`.
-3.  **Auto-Refresh**:
-    - Implementado via Axios Interceptors(`src/services/api.client.ts`).
+1. **Dual Token**:
+   - **Access Token**: 15 min de vida. Se envía en header `Authorization`.
+   - **Refresh Token**: 7 días de vida. Se usa solo para obtener nuevos access tokens.
+2. **Protección de Rutas**:
+   - Wrapper `<ProtectedRoute>` verifica existencia de token valido.
+   - Prop `requireAdmin` verifica `user.role === 'admin'`.
+3. **Auto-Refresh**:
+   - Implementado via Axios Interceptors (`src/services/api.client.ts`).
 
 ---
 
@@ -461,11 +513,12 @@ No usamos una "bala de plata" para el estado. Usamos la herramienta correcta par
 - [x] ~~Implementar lógica de refresh token~~ ✅ Completado
 - [x] ~~Error Boundaries para manejo robusto de errores~~ ✅ Completado
 - [x] ~~Type safety al 95%~~ ✅ Completado
-- [x] ~~Cargar traducciones al español~~ ✅ Implementado (Listo para activar)
-- [ ] Mover estilos inline restantes a CSS modules
+- [x] ~~Cargar traducciones al español~~ ✅ Completado
+- [x] ~~Mover estilos inline restantes a CSS modules~~ ✅ Completado (100% Clean Code)
 
 ### Medio Plazo
 
+- [ ] Implementar Buscador Avanzado (Search Engine) 🔍
 - [ ] Optimistic Updates en mutations (Wishlist ✅)
 - [ ] Service Workers para PWA
 - [ ] Integración con Sentry para tracking

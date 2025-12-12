@@ -67,11 +67,6 @@ El módulo de autenticación completo.
   - Proporciona funciones: `login`, `register`, `logout`, `refreshUser`
   - Inicializa la sesión al cargar la app (verifica si hay token guardado)
 
-#### `hooks/useUpdateProfile.ts`
-
-- **Qué hace**: Hook para actualizar perfil de usuario (incluye avatar).
-- **Lógica**: Usa React Query mutation + FormData para subir archivos.
-
 #### `pages/LoginPage.tsx` y `RegisterPage.tsx`
 
 - **Qué hacen**: Formularios de autenticación.
@@ -277,7 +272,8 @@ Componentes de estructura de la aplicación.
 - **Qué hace**: Layout principal con header, main y footer.
 - **Detalle**: Usa `<Outlet />` de React Router para renderizar páginas anidadas.
 - **Estructura**:
-  ```
+
+  ```jsx
   <header> → Navbar
   <main> → Outlet (páginas)
   <footer> → Copyright
@@ -500,7 +496,9 @@ Utilidades centralizadas para manejo de errores.
 ### CSS Modules (`*.module.css`)
 
 - **Qué hacen**: Estilos con scope local para cada componente.
-- **Por qué**: Evita conflictos de nombres y facilita mantenimiento.
+- **Por qué**: Evita conflictos de nombres, facilita mantenimiento y mejora performance.
+- **Regla de Oro**: 🚫 **Prohibido usar Inline Styles** (`style={{...}}`).
+- **Excepción**: Valores dinámicos estrictamente necesarios (ej: imágenes de fondo user-generated) mediante CSS Variables.
 - **Ejemplo**: `Button.module.css` solo afecta a `Button.tsx`.
 
 ---
@@ -634,8 +632,14 @@ Todos los archivos críticos incluyen documentación estilo académico:
 ### UI/UX
 
 - Botón con spinner animado ⏳
-- Estilos inline movidos a CSS modules
+- **100% Styles Clean Code**: Migración total a CSS Modules (70+ archivos refactorizados)
 - Diseño glassmorphism consistente
+
+### Clean Code Architecture
+
+- **Separación estricta**: Logic (Hooks) vs UI (Components) vs Styles (Modules)
+- **Zero Inline Styles**: Política estricta implementada globalmente
+- **Dev Experience**: Logs de autenticación filtrados por entorno (dev-only)
 
 ---
 

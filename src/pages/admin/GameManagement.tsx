@@ -83,12 +83,14 @@ const GameManagement = () => {
               <div key={game._id} className={styles.card}>
                 <div
                   className={styles.cardImage}
-                  style={{
-                    backgroundImage: `url(${
-                      game.assets?.cover ||
-                      "https://placehold.co/300x400/1a1a1a/666?text=No+Image"
-                    })`,
-                  }}
+                  style={
+                    {
+                      "--bg-image": `url(${
+                        game.assets?.cover ||
+                        "https://placehold.co/300x400/1a1a1a/666?text=No+Image"
+                      })`,
+                    } as React.CSSProperties
+                  }
                 />
                 <div className={styles.cardContent}>
                   <h3 className={styles.cardTitle}>{game.title}</h3>

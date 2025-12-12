@@ -18,10 +18,11 @@ const OrdersPage: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      <div style={{ display: "flex", alignItems: "baseline", gap: "1rem", marginBottom: "2rem" }}>
-        <h1 className="text-gradient" style={{ marginBottom: 0 }}>My Orders</h1>
-        <span style={{ color: "var(--text-secondary)", fontSize: "1.1rem" }}>
-          {orders?.length || 0} {(orders?.length || 0) === 1 ? "Order" : "Orders"}
+      <div className={styles.header}>
+        <h1 className={`text-gradient ${styles.headerTitle}`}>My Orders</h1>
+        <span className={styles.headerCount}>
+          {orders?.length || 0}{" "}
+          {(orders?.length || 0) === 1 ? "Order" : "Orders"}
         </span>
       </div>
 
@@ -34,15 +35,12 @@ const OrdersPage: React.FC = () => {
       )}
 
       {!isLoading && !orders?.length && (
-        <div style={{ textAlign: "center", padding: "4rem" }}>
+        <div className={styles.emptyStateContainer}>
           <h2 className="text-gradient">No orders yet</h2>
-          <p style={{ color: "var(--text-secondary)", marginBottom: "2rem" }}>
+          <p className={styles.emptyStateText}>
             You haven't purchased any games yet.
           </p>
-          <Link
-            to="/catalog"
-            style={{ color: "var(--accent-primary)", fontWeight: "bold" }}
-          >
+          <Link to="/catalog" className={styles.browseLink}>
             Browse Store
           </Link>
         </div>
@@ -57,7 +55,9 @@ const OrdersPage: React.FC = () => {
                   <div className={styles.orderDate}>
                     {formatDateString(order.createdAt)}
                   </div>
-                  <div className={styles.orderId}>Order #{order._id.slice(-6).toUpperCase()}</div>
+                  <div className={styles.orderId}>
+                    Order #{order._id.slice(-6).toUpperCase()}
+                  </div>
                 </div>
                 <div className={styles.orderTotal}>
                   ${order.totalAmount.toFixed(2)}
@@ -69,7 +69,7 @@ const OrdersPage: React.FC = () => {
                   <tr>
                     <th>Game</th>
                     <th>Activation Key</th>
-                    <th style={{ textAlign: "right" }}>Price</th>
+                    <th className={styles.alignRight}>Price</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -81,7 +81,7 @@ const OrdersPage: React.FC = () => {
                           {item.licenseKey}
                         </span>
                       </td>
-                      <td style={{ textAlign: "right" }}>
+                      <td className={styles.alignRight}>
                         ${item.price.toFixed(2)}
                       </td>
                     </tr>

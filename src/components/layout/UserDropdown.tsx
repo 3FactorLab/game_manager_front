@@ -139,18 +139,21 @@ export const UserDropdown = () => {
               <div className={styles.divider} />
 
               {/* Menu Items */}
-              
+
               {/* My Profile Toggle */}
-              <button 
-                className={styles.menuItem} 
+              <button
+                className={`${styles.menuItem} ${styles.menuItemBetween}`}
                 onClick={() => setIsProfileExpanded(!isProfileExpanded)}
-                style={{ justifyContent: "space-between" }}
               >
-                <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+                <div className={styles.menuItemContent}>
                   <FaUser />
                   <span>My Profile</span>
                 </div>
-                {isProfileExpanded ? <FaChevronUp size={12} /> : <FaChevronDown size={12} />}
+                {isProfileExpanded ? (
+                  <FaChevronUp size={12} />
+                ) : (
+                  <FaChevronDown size={12} />
+                )}
               </button>
 
               <AnimatePresence>
@@ -160,22 +163,22 @@ export const UserDropdown = () => {
                     animate={{ height: "auto", opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
                     transition={{ duration: 0.2 }}
-                    style={{ overflow: "hidden" }}
+                    className={styles.subMenuContainer}
                   >
-                     <button 
-                        className={clsx(styles.menuItem, styles.subMenuItem)} 
-                        onClick={() => {
-                          setIsOpen(false);
-                          setIsEditProfileModalOpen(true);
-                        }}
+                    <button
+                      className={clsx(styles.menuItem, styles.subMenuItem)}
+                      onClick={() => {
+                        setIsOpen(false);
+                        setIsEditProfileModalOpen(true);
+                      }}
                     >
                       <FaUserEdit />
                       <span>Edit Profile</span>
                     </button>
 
-                    <button 
-                        className={clsx(styles.menuItem, styles.subMenuItem)} 
-                        onClick={handleChangeAvatar}
+                    <button
+                      className={clsx(styles.menuItem, styles.subMenuItem)}
+                      onClick={handleChangeAvatar}
                     >
                       <FaCamera />
                       <span>Change Avatar</span>

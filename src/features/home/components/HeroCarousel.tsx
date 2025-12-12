@@ -57,11 +57,13 @@ export const HeroCarousel = () => {
             {/* Background: Blurred Cover for atmosphere */}
             <div
               className={styles.blurBackground}
-              style={{
-                backgroundImage: `url(${
-                  game.assets?.cover || "/placeholder.jpg"
-                })`,
-              }}
+              style={
+                {
+                  "--bg-image": `url(${
+                    game.assets?.cover || "/placeholder.jpg"
+                  })`,
+                } as React.CSSProperties
+              }
             />
 
             {/* Foreground: The actual Cover (Contained) to show full art */}

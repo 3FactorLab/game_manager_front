@@ -36,27 +36,26 @@ const CheckoutPage = () => {
     return cartItems;
   }, [id, game, cartItems]);
 
-  const totalAmount = itemsToCheckout.reduce((acc, item) => acc + (item.price || 0), 0);
+  const totalAmount = itemsToCheckout.reduce(
+    (acc, item) => acc + (item.price || 0),
+    0
+  );
 
   if (isLoading && id) {
-    return (
-      <div style={{ padding: "4rem", textAlign: "center" }}>Loading Checkout...</div>
-    );
+    return <div className={styles.loadingState}>Loading Checkout...</div>;
   }
 
   if (!id && cartItems.length === 0) {
     return (
-      <div style={{ padding: "4rem", textAlign: "center" }}>
+      <div className={styles.emptyState}>
         <h2 className="text-gradient">Your cart is empty</h2>
-        <Button onClick={() => navigate("/")} style={{ marginTop: "1rem" }}>
-          Browse games
-        </Button>
+        <Button onClick={() => navigate("/")}>Browse games</Button>
       </div>
     );
   }
 
   if (id && !game) {
-    return <div style={{ padding: "4rem", textAlign: "center" }}>Game not found</div>;
+    return <div className={styles.errorState}>Game not found</div>;
   }
 
   const handlePurchase = () => {
@@ -83,12 +82,7 @@ const CheckoutPage = () => {
 
   return (
     <div className={styles.container}>
-      <h1
-        className="text-gradient"
-        style={{ marginBottom: "2rem", textAlign: "center" }}
-      >
-        Checkout
-      </h1>
+      <h1 className={clsx("text-gradient", styles.pageTitle)}>Checkout</h1>
 
       <Card>
         <div className={styles.summary}>
@@ -96,11 +90,11 @@ const CheckoutPage = () => {
           <div className={styles.productList}>
             {itemsToCheckout.map((item) => (
               <div key={item._id} className={styles.productRow}>
-                <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
+                <div className={styles.productInfo}>
                   <img
                     src={item.cover || "https://placehold.co/100x60/101010/FFF"}
                     alt={item.title}
-                    style={{ width: "80px", borderRadius: "4px" }}
+                    className={styles.productImage}
                   />
                   <span>{item.title}</span>
                 </div>
@@ -115,35 +109,52 @@ const CheckoutPage = () => {
 
           <div className={styles.totalRow}>
             <span>Total</span>
-            <span style={{ color: "var(--accent-primary)" }}>
+            <span className={styles.totalPrice}>
               {totalAmount === 0
                 ? "Free"
-                : formatCurrency(totalAmount, itemsToCheckout[0]?.currency || "USD")}
+                : formatCurrency(
+                    totalAmount,
+                    itemsToCheckout[0]?.currency || "USD"
+                  )}
             </span>
           </div>
         </div>
 
-        <h3 style={{ marginBottom: "1rem" }}>Payment Method</h3>
+        <h3 className={styles.sectionTitle}>Payment Method</h3>
         <div className={styles.paymentMethods}>
           <div
-            className={clsx(styles.method, selectedMethod === "card" && styles.selected)}
+            className={clsx(
+              styles.method,
+              selectedMethod === "card" && styles.selected
+            )}
             onClick={() => setSelectedMethod("card")}
           >
             Credit Card
           </div>
           <div
-            className={clsx(styles.method, selectedMethod === "paypal" && styles.selected)}
+            className={clsx(
+              styles.method,
+              selectedMethod === "paypal" && styles.selected
+            )}
             onClick={() => setSelectedMethod("paypal")}
           >
             PayPal
           </div>
         </div>
 
-        <div style={{ display: "flex", gap: "1rem" }}>
-          <Button variant="ghost" onClick={() => navigate(-1)} disabled={isPending}>
+        <div className={styles.actions}>
+          <Button
+            variant="ghost"
+            onClick={() => navigate(-1)}
+            disabled={isPending}
+          >
             Cancel
           </Button>
-          <Button style={{ flexGrow: 1 }} onClick={handlePurchase} isLoading={isPending}>
+          <Button
+            className={styles.confirmButton}
+            onClick={handlePurchase}
+            isLoading={isPending}
+          >
             Confirm Purchase
           </Button>
         </div>
@@ -152,19 +163,22 @@ const CheckoutPage = () => {
       {/* Success Modal */}
       {showSuccessModal && (
         <div className={styles.modalOverlay} onClick={handleCloseModal}>
-          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+          <div
+            className={styles.modalContent}
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className={styles.successIcon}>✔</div>
             <h2>Purchase Successful!</h2>
             <p>
               {itemsToCheckout.length === 1 ? (
                 <>
-                  <strong>{itemsToCheckout[0].title}</strong> has been added to your
-                  library.
+                  <strong>{itemsToCheckout[0].title}</strong> has been added to
+                  your library.
                 </>
               ) : (
                 <>
-                  <strong>{itemsToCheckout.length}</strong> games have been added to your
-                  library.
+                  <strong>{itemsToCheckout.length}</strong> games have been
+                  added to your library.
                 </>
               )}
             </p>

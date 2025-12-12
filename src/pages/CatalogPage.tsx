@@ -53,7 +53,7 @@ const CatalogPage = () => {
       {/* Loading state */}
       {status === "pending" ? (
         <div className={styles.loadingState}>
-          <span className="text-gradient" style={{ fontSize: "1.5rem" }}>
+          <span className={`text-gradient ${styles.loadingText}`}>
             Loading Games...
           </span>
         </div>

@@ -24,7 +24,7 @@ function App() {
     <ErrorBoundary>
       <Helmet>
         <title>GameManager</title>
-        <link rel="icon" href="/public/game_manager_icon.png" />
+        <link rel="icon" href="/game_manager_icon.png" />
       </Helmet>
       {/* Application routing system with error protection */}
       <AppRoutes />

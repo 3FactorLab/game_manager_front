@@ -17,6 +17,7 @@ import { loginSchema, type LoginSchemaType } from "../schemas";
 import { Button } from "../../../components/ui/Button";
 import { Input } from "../../../components/ui/Input";
 import { Card } from "../../../components/ui/Card";
+import styles from "./LoginPage.module.css";
 
 /**
  * LoginPage component
@@ -59,26 +60,11 @@ const LoginPage = () => {
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        minHeight: "60vh",
-      }}
-    >
-      <Card padding="lg" style={{ width: "100%", maxWidth: "400px" }}>
-        <h1
-          className="text-gradient"
-          style={{ textAlign: "center", marginBottom: "1.5rem" }}
-        >
-          {t("nav.login")}
-        </h1>
+    <div className={styles.pageContainer}>
+      <Card padding="lg" className={styles.loginCard}>
+        <h1 className={`text-gradient ${styles.title}`}>{t("nav.login")}</h1>
 
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
-        >
+        <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
           <Input
             label="Email"
             type="email"
@@ -96,35 +82,20 @@ const LoginPage = () => {
           />
 
           {errors.root && (
-            <div
-              style={{
-                color: "var(--error)",
-                fontSize: "0.9rem",
-                textAlign: "center",
-              }}
-            >
-              {errors.root.message}
-            </div>
+            <div className={styles.errorMessage}>{errors.root.message}</div>
           )}
 
           <Button
             type="submit"
             isLoading={isLoading}
-            style={{ marginTop: "0.5rem" }}
+            className={styles.submitButton}
           >
             {t("nav.login")}
           </Button>
 
-          <div
-            style={{
-              textAlign: "center",
-              fontSize: "0.9rem",
-              color: "var(--text-secondary)",
-              marginTop: "1rem",
-            }}
-          >
+          <div className={styles.footer}>
             Don't have an account?{" "}
-            <Link to="/register" style={{ color: "var(--accent-primary)" }}>
+            <Link to="/register" className={styles.link}>
               {t("nav.register")}
             </Link>
           </div>
