@@ -15,19 +15,29 @@
 
 ---
 
-### 🔍 Search & Sort (Alta Prioridad)
-
-- [ ] **Buscador Avanzado (Search Engine)**: Implementar búsqueda por texto en tiempo real con debouncing y highlighting de resultados.
-- [ ] **Ordenación (Sorting)**: Implementar filtros de ordenación en el catálogo (Precio ASC/DESC, Fecha, Alfabético).
-
----
-
 ### 📡 Backend Refactoring (Tech Debt)
 
-- [ ] **Validación Zod Unificada**: Migrar de `express-validator` a `Zod` en el backend.
-  - **Beneficio Principal**: _Code Sharing_. Permite compartir schemas con el frontend, evitando duplicidad de reglas (ej: "password min 8 chars").
-  - **Beneficio Secundario**: _Type Inference_. Zod genera automáticamente los tipos TS (`z.infer`), garantizando que la validación y el tipo de dato siempre coincidan.
-  - **Nota**: Requiere crear un middleware adaptador para Express.
+- [ ] **Refactorización de Arquitectura (PROMPT_AI Compliance)**:
+  - [ ] **Controladores**: Eliminar lógica de negocio y dependencias de Mongoose Models.
+  - [ ] **Servicios**: Centralizar toda la lógica (User Wishlist, Payment Simulation).
+  - [ ] **Async/Error**: Implementar `asyncHandler` en `user`, `payment`, `order` controllers.
+  - [ ] **DTOs**: Estandarizar entradas en controladores faltantes.
+- [x] **Tests Unitarios (Prioridad Alta)**: Extender cobertura con Mocks. ✅
+  - _Nota_: Cubierto por tests de integración y servicios clave (Auth, Payment, RAWG).
+  - _Objetivo_: Crear red de seguridad antes de refactorizar.
+
+### 🔮 Visión Futura (Monorepo Transition)
+
+Cuando el proyecto escale, esta preparación permitirá una transición fluida al **Monorepo**:
+
+1.  **Beneficios**:
+    - Eliminación de la "copia manual" de schemas.
+    - Tipado automático end-to-end (`z.infer<Type>`).
+2.  **Hoja de Ruta**:
+    - Mover `frontend` y `backend` a raíz común.
+    - Crear `packages/shared`.
+    - Configurar NPM Workspaces.
+
 - [ ] **Tests Unitarios**: Extender la cobertura de tests unitarios (con Mocks) para lógica de negocio compleja.
 
 ---
@@ -67,6 +77,19 @@
 - ✅ Internacionalización (i18n) activada con toggle EN/ES
 - ✅ Rutas estáticas corregidas (`/public` prefix removed)
 
+### Fase 6: Search & Filter (Advanced)
+
+- ✅ Buscador Global con debounce y dropdown
+- ✅ Filtros por Género y Plataforma
+- ✅ Ordenamiento dinámico (Precio, Fecha, Nombre)
+
+### Fase 7: Migración Backend a Zod (Backend Hardening)
+
+- ✅ Reemplazo total de `express-validator` por `Zod`.
+- ✅ Paridad de schemas Frontend/Backend (Auth, Games, Collection).
+- ✅ Middleware `validateZod` implementado con formato de error compatible.
+- ✅ Limpieza de código legacy.
+
 ---
 
 ## 📝 Notas Técnicas
@@ -87,4 +110,4 @@
 
 ---
 
-**Última actualización:** 2025-12-12
+**Última actualización:** 2025-12-13
