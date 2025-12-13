@@ -17,11 +17,11 @@
 
 ### 📡 Backend Refactoring (Tech Debt)
 
-- [ ] **Refactorización de Arquitectura (PROMPT_AI Compliance)**:
-  - [ ] **Controladores**: Eliminar lógica de negocio y dependencias de Mongoose Models.
-  - [ ] **Servicios**: Centralizar toda la lógica (User Wishlist, Payment Simulation).
-  - [ ] **Async/Error**: Implementar `asyncHandler` en `user`, `payment`, `order` controllers.
-  - [ ] **DTOs**: Estandarizar entradas en controladores faltantes.
+- [x] **Refactorización de Arquitectura (PROMPT_AI Compliance)**:
+  - [x] **Controladores**: Eliminar lógica de negocio y dependencias de Mongoose Models.
+  - [x] **Servicios**: Centralizar toda la lógica (User Wishlist, Payment Simulation).
+  - [x] **Async/Error**: Implementar `asyncHandler` en `user`, `payment`, `order` controllers.
+  - [x] **DTOs**: Estandarizar entradas en controladores faltantes.
 - [x] **Tests Unitarios (Prioridad Alta)**: Extender cobertura con Mocks. ✅
   - _Nota_: Cubierto por tests de integración y servicios clave (Auth, Payment, RAWG).
   - _Objetivo_: Crear red de seguridad antes de refactorizar.
@@ -90,13 +90,29 @@ Cuando el proyecto escale, esta preparación permitirá una transición fluida a
 - ✅ Middleware `validateZod` implementado con formato de error compatible.
 - ✅ Limpieza de código legacy.
 
+### Fase 9: Backend Architecture (PROMPT_AI Compliance)
+
+- ✅ **Controllers**: Refactorizados para ser "HTTP-Only" (Delegación a Servicios).
+- ✅ **Async/Error**: Uso universal de `asyncHandler`.
+- ✅ **Separation of Concerns**: User/Auth/Collection claramente separados.
+
+### Fase 8: Testing Strategy (Quality Assurance)
+
+- ✅ **Fase 1 (Core)**: AuthContext, CartContext, WishlistContext (Unit Tests).
+- ✅ **Fase 2 (Interactions)**: CheckoutPage, RegisterPage, GameDetails (Integration Tests).
+- ✅ **Fase 3 (Contracts)**: MSW Setup & API Contract Validation.
+- ✅ **Fase 4 (E2E)**: Evaluada y descartada por regla de "No Delete" y coste/beneficio académicos.
+
 ---
 
 ## 📝 Notas Técnicas
 
 ### Errores de Lint Restantes
 
-- **1 error:** Fast refresh warning en `AuthContext.tsx` (no crítico, issue conocido de React)
+- **3 warnings:** Fast refresh warning (`react-refresh/only-export-components`) en `AuthContext.tsx`, `CartContext.tsx`, `WishlistContext.tsx`.
+  - **Causa**: Exportar hooks (`useAuth`) y componentes (`AuthProvider`) en el mismo archivo.
+  - **Impacto**: Solo afecta a la experiencia de desarrollo (Hot Reload recarga la página completa en lugar de mantener estado). Nulo en producción.
+  - **Decisión**: Pospuesto. La refactorización (dividir en 3 archivos por Context) añade complejidad innecesaria por ahora.
 
 ### Build Status
 

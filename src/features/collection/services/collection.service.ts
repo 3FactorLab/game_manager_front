@@ -72,7 +72,7 @@ export const collectionService = {
    * @param {string} gameId - Game ID to add
    */
   async addToWishlist(gameId: string): Promise<void> {
-    await apiClient.post("/users/wishlist", { gameId });
+    await apiClient.post(`/users/wishlist/${gameId}`);
   },
 
   /**

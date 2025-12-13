@@ -44,17 +44,17 @@ vi.mock("react-i18next", () => ({
     t: (key: string) => {
       const trans: Record<string, string> = {
         "search.placeholder": "Search...",
-        genre: "Genre",
-        platform: "Platform",
-        all: "All",
-        allPlatforms: "All Platforms",
-        orderBy: "Order By",
-        priceLowHigh: "Price: Low-High",
-        priceHighLow: "Price: High-Low",
-        nameAZ: "Name: A-Z",
-        nameZA: "Name: Z-A",
-        newest: "Newest",
-        clear: "Clear",
+        "catalog.genre": "Genre",
+        "catalog.platform": "Platform",
+        "catalog.all": "All",
+        "catalog.allPlatforms": "All Platforms",
+        "catalog.orderBy": "Order By",
+        "catalog.priceLowHigh": "Price: Low-High",
+        "catalog.priceHighLow": "Price: High-Low",
+        "catalog.nameAZ": "Name: A-Z",
+        "catalog.nameZA": "Name: Z-A",
+        "catalog.newest": "Newest",
+        "catalog.clear": "Clear",
       };
       return trans[key] || key;
     },

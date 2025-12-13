@@ -149,12 +149,6 @@ export const gamesService = {
     };
   },
 
-  // Protected: Fetch my library (User)
-  async getMyLibrary(): Promise<Game[]> {
-    const { data } = await apiClient.get<Game[]>("/games/library");
-    return data;
-  },
-
   // Public: Get filters
   async getFilters(): Promise<{ genres: string[]; platforms: string[] }> {
     const { data } = await apiClient.get<{

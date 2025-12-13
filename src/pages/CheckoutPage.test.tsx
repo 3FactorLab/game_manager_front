@@ -1,91 +1,85 @@
 /**
- * CheckoutPage.test.tsx
- * Integration tests for the Checkout flow.
- * Verifies that the checkout page renders games and processes purchases via the service.
+ * @file CheckoutPage.test.tsx
+ * @description Integration tests for CheckoutPage verifying purchase flow, cart processing, and redirections.
  */
 
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import CheckoutPage from "./CheckoutPage";
 import { BrowserRouter } from "react-router-dom";
+import * as cartContext from "../features/cart/CartContext";
+import * as gameHooks from "../features/games/hooks/useGameDetails";
+import * as checkoutHooks from "../features/checkout/hooks/useCheckout";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-// Mock Hooks
-const mockUseCart = vi.fn();
-const mockUseCheckout = vi.fn();
+// -----------------------------------------------------------------------------
+// Mocks
+// -----------------------------------------------------------------------------
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: false,
-    },
-  },
-});
+// -----------------------------------------------------------------------------
+// Mocks
+// -----------------------------------------------------------------------------
 
-vi.mock("../features/cart/CartContext", () => ({
-  useCart: () => mockUseCart(),
-}));
-
-vi.mock("../features/checkout/hooks/useCheckout", () => ({
-  useCheckout: () => mockUseCheckout(),
-}));
-
-const mockUseGameDetails = vi.fn();
-vi.mock("../features/games/hooks/useGameDetails", () => ({
-  useGameDetails: (id: string) => mockUseGameDetails(id),
-}));
-
-// Mock useNavigate
 const mockNavigate = vi.fn();
+// Fix 1: Properly type mutable mock params
+const mockParams: { id: string | undefined } = { id: undefined };
+
 vi.mock("react-router-dom", async () => {
   const actual = await vi.importActual("react-router-dom");
   return {
     ...actual,
     useNavigate: () => mockNavigate,
+    useParams: () => mockParams,
   };
 });
 
+vi.mock("../features/cart/CartContext");
+vi.mock("../features/games/hooks/useGameDetails");
+vi.mock("../features/checkout/hooks/useCheckout");
+
+// Mock window.alert
+window.alert = vi.fn();
+
+const mockGame = {
+  _id: "game-1",
+  title: "Elden Ring",
+  price: 60,
+  currency: "USD",
+  assets: { cover: "cover.jpg" },
+  isOffer: false,
+};
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: { retry: false },
+  },
+});
+
 describe("CheckoutPage", () => {
+  const mockPurchase = vi.fn();
+  const mockClearCart = vi.fn();
+
   beforeEach(() => {
     vi.clearAllMocks();
-    mockUseGameDetails.mockReturnValue({ data: null, isLoading: false });
-  });
+    mockParams.id = undefined;
 
-  it("renders empty state when cart is empty", () => {
-    mockUseCart.mockReturnValue({
+    vi.mocked(checkoutHooks.useCheckout).mockReturnValue({
+      mutate: mockPurchase,
+      isPending: false,
+    } as any);
+
+    vi.mocked(cartContext.useCart).mockReturnValue({
       items: [],
-      total: 0,
-      clear: vi.fn(),
-    });
-    mockUseCheckout.mockReturnValue({
-      mutate: vi.fn(),
-      isPending: false,
-    });
+      clear: mockClearCart,
+    } as any);
 
-    render(
-      <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
-          <CheckoutPage />
-        </BrowserRouter>
-      </QueryClientProvider>
-    );
-
-    expect(screen.getByText(/Your cart is empty/i)).toBeInTheDocument();
+    vi.mocked(gameHooks.useGameDetails).mockReturnValue({
+      data: null,
+      isLoading: false,
+    } as any);
   });
 
-  it("renders games and total amount", () => {
-    mockUseCart.mockReturnValue({
-      items: [
-        { _id: "1", title: "Game 1", price: 10, image: "img1.jpg" },
-        { _id: "2", title: "Game 2", price: 20, image: "img2.jpg" },
-      ],
-      total: 30,
-    });
-    mockUseCheckout.mockReturnValue({
-      mutate: vi.fn(),
-      isPending: false,
-    });
-
+  const renderComponent = () =>
     render(
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
@@ -94,34 +88,108 @@ describe("CheckoutPage", () => {
       </QueryClientProvider>
     );
 
-    expect(screen.getByText("Game 1")).toBeInTheDocument();
-    expect(screen.getByText("Game 2")).toBeInTheDocument();
-    expect(screen.getByText("$30.00")).toBeInTheDocument();
+  it("should render single game checkout when ID is present", () => {
+    // Setup scenarios
+    mockParams.id = "game-1";
+    vi.mocked(gameHooks.useGameDetails).mockReturnValue({
+      data: mockGame,
+      isLoading: false,
+    } as any);
+
+    renderComponent();
+
+    expect(screen.getByText("Elden Ring")).toBeInTheDocument();
+    expect(screen.getAllByText("$60.00").length).toBeGreaterThan(0); // Appears in list and total
   });
 
-  it("calls processCheckout when Buy Now is clicked", async () => {
-    const processCheckoutMock = vi.fn();
-    mockUseCart.mockReturnValue({
-      items: [{ _id: "1", title: "Game 1", price: 10 }],
-      total: 10,
-      clear: vi.fn(),
+  it("should render cart checkout when ID is missing", () => {
+    mockParams.id = undefined;
+    vi.mocked(cartContext.useCart).mockReturnValue({
+      items: [mockGame, { ...mockGame, _id: "game-2", title: "Sekiro" }],
+      clear: mockClearCart,
+    } as any);
+
+    renderComponent();
+
+    expect(screen.getByText("Elden Ring")).toBeInTheDocument();
+    expect(screen.getByText("Sekiro")).toBeInTheDocument();
+    expect(screen.getByText("$120.00")).toBeInTheDocument(); // Total
+  });
+
+  it("should handle purchase success and redirect", async () => {
+    mockParams.id = "game-1";
+    vi.mocked(gameHooks.useGameDetails).mockReturnValue({
+      data: mockGame,
+      isLoading: false,
+    } as any);
+
+    // Mock implementation of mutate calling onSuccess immediately
+    mockPurchase.mockImplementation((_ids, options) => {
+      options.onSuccess();
     });
-    mockUseCheckout.mockReturnValue({
-      mutate: processCheckoutMock,
-      isPending: false,
+
+    renderComponent();
+
+    const confirmBtn = screen.getByText("Confirm Purchase");
+    fireEvent.click(confirmBtn);
+
+    await waitFor(() => {
+      expect(mockPurchase).toHaveBeenCalledWith(["game-1"], expect.any(Object));
     });
 
-    render(
-      <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
-          <CheckoutPage />
-        </BrowserRouter>
-      </QueryClientProvider>
-    );
+    // Modal Should Appear
+    expect(screen.getByText("Purchase Successful!")).toBeInTheDocument();
 
-    const buyBtn = screen.getByRole("button", { name: /Confirm Purchase/i });
-    fireEvent.click(buyBtn);
+    // Click Go to Library
+    const libraryBtn = screen.getByText("Go to Library");
+    fireEvent.click(libraryBtn);
 
-    expect(processCheckoutMock).toHaveBeenCalled();
+    expect(mockNavigate).toHaveBeenCalledWith("/library");
+  });
+
+  it("should clear cart on successful cart purchase", async () => {
+    mockParams.id = undefined;
+    vi.mocked(cartContext.useCart).mockReturnValue({
+      items: [mockGame],
+      clear: mockClearCart,
+    } as any);
+
+    mockPurchase.mockImplementation((_ids, options) => {
+      options.onSuccess();
+    });
+
+    renderComponent();
+
+    const confirmBtn = screen.getByText("Confirm Purchase");
+    fireEvent.click(confirmBtn);
+
+    await waitFor(() => {
+      expect(mockClearCart).toHaveBeenCalled();
+    });
+  });
+
+  it("should handle purchase failure", async () => {
+    mockParams.id = "game-1";
+    vi.mocked(gameHooks.useGameDetails).mockReturnValue({
+      data: mockGame,
+      isLoading: false,
+    } as any);
+
+    mockPurchase.mockImplementation((_ids, options) => {
+      options.onError(new Error("Failed"));
+    });
+
+    renderComponent();
+
+    const confirmBtn = screen.getByText("Confirm Purchase");
+    fireEvent.click(confirmBtn);
+
+    await waitFor(() => {
+      expect(window.alert).toHaveBeenCalledWith(
+        "Purchase failed. Please try again."
+      );
+    });
+
+    expect(screen.queryByText("Purchase Successful!")).not.toBeInTheDocument();
   });
 });
