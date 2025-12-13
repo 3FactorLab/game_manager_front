@@ -57,5 +57,19 @@
     "release": "Lanzamiento",
     "import_btn": "Importar",
     "no_results": "No se encontraron resultados para"
+  },
+  "catalog": {
+    "title": "Catálogo",
+    "genre": "Género",
+    "platform": "Plataforma",
+    "all": "Todos",
+    "allPlatforms": "Todas las Plataformas",
+    "orderBy": "Ordenar por",
+    "newest": "Más Recientes",
+    "priceLowHigh": "Precio: Bajo a Alto",
+    "priceHighLow": "Precio: Alto a Bajo",
+    "nameAZ": "Nombre: A-Z",
+    "nameZA": "Nombre: Z-A",
+    "clear": "Limpiar Filtros"
   }
 }

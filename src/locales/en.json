@@ -55,5 +55,19 @@
     "release": "Released",
     "import_btn": "Import",
     "no_results": "No results found for"
+  },
+  "catalog": {
+    "title": "Catalog",
+    "genre": "Genre",
+    "platform": "Platform",
+    "all": "All",
+    "allPlatforms": "All Platforms",
+    "orderBy": "Order By",
+    "newest": "Newest",
+    "priceLowHigh": "Price: Low to High",
+    "priceHighLow": "Price: High to Low",
+    "nameAZ": "Name: A-Z",
+    "nameZA": "Name: Z-A",
+    "clear": "Clear Filters"
   }
 }

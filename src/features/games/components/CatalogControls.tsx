@@ -61,15 +61,15 @@ export const CatalogControls = () => {
     else if (value === "price_desc") setSort("price", "desc");
     else if (value === "date_desc") setSort("releaseDate", "desc");
     else if (value === "title_asc") setSort("title", "asc");
-    else if (value === "relevance") setSort("", "desc"); // Default relevance when custom sort cleared? Or just empty.
+    else if (value === "title_desc") setSort("title", "desc");
   };
 
   // Helper to get current sort string
   const getCurrentSortValue = () => {
     if (sortBy === "price") return order === "asc" ? "price_asc" : "price_desc";
     if (sortBy === "releaseDate") return "date_desc";
-    if (sortBy === "title") return "title_asc";
-    return "relevance"; // Assuming default is relevance/date
+    if (sortBy === "title") return order === "asc" ? "title_asc" : "title_desc";
+    return "date_desc"; // Default to newest
   };
 
   return (
@@ -107,14 +107,14 @@ export const CatalogControls = () => {
       <div className={styles.filtersRow}>
         {/* Genre Filter */}
         <div className={styles.filterGroup}>
-          <label className={styles.label}>{t("genre") ?? "Genre"}</label>
+          <label className={styles.label}>{t("catalog.genre")}</label>
           <select
             className={styles.select}
             value={genre}
             onChange={(e) => setFilter("genre", e.target.value)}
             disabled={isLoading}
           >
-            <option value="">{t("all") ?? "All"}</option>
+            <option value="">{t("catalog.all")}</option>
             {filterOptions?.genres.map((g) => (
               <option key={g} value={g}>
                 {g}
@@ -125,14 +125,14 @@ export const CatalogControls = () => {
 
         {/* Platform Filter */}
         <div className={styles.filterGroup}>
-          <label className={styles.label}>{t("platform") ?? "Platform"}</label>
+          <label className={styles.label}>{t("catalog.platform")}</label>
           <select
             className={styles.select}
             value={platform}
             onChange={(e) => setFilter("platform", e.target.value)}
             disabled={isLoading}
           >
-            <option value="">{t("allPlatforms") ?? "All"}</option>
+            <option value="">{t("catalog.allPlatforms")}</option>
             {filterOptions?.platforms.map((p) => (
               <option key={p} value={p}>
                 {p}
@@ -143,23 +143,17 @@ export const CatalogControls = () => {
 
         {/* Sort */}
         <div className={styles.filterGroup}>
-          <label className={styles.label}>{t("orderBy") ?? "Order by"}</label>
+          <label className={styles.label}>{t("catalog.orderBy")}</label>
           <select
             className={styles.select}
             value={getCurrentSortValue()}
             onChange={handleSortChange}
           >
-            <option value="relevance">
-              {t("mostRecent") ?? "Most recent"}
-            </option>
-            <option value="price_asc">
-              {t("priceLowHigh") ?? "Price: Low-High"}
-            </option>
-            <option value="price_desc">
-              {t("priceHighLow") ?? "Price: High-Low"}
-            </option>
-            <option value="title_asc">{t("nameAZ") ?? "Name: A-Z"}</option>
-            <option value="date_desc">{t("newest") ?? "Newest"}</option>
+            <option value="date_desc">{t("catalog.newest")}</option>
+            <option value="price_asc">{t("catalog.priceLowHigh")}</option>
+            <option value="price_desc">{t("catalog.priceHighLow")}</option>
+            <option value="title_asc">{t("catalog.nameAZ")}</option>
+            <option value="title_desc">{t("catalog.nameZA")}</option>
           </select>
         </div>
 
@@ -169,10 +163,10 @@ export const CatalogControls = () => {
             variant="secondary"
             className={styles.resetButton}
             onClick={clearAll}
-            title="Clear all filters"
+            title={t("catalog.clear")}
           >
-            <FiFilter style={{ marginRight: "0.5rem" }} />
-            {t("clear") ?? "Clear"}
+            <FiFilter className={styles.filterIcon} />
+            {t("catalog.clear")}
           </Button>
         </div>
       </div>
