@@ -103,6 +103,13 @@ Cuando el proyecto escale, esta preparación permitirá una transición fluida a
 - ✅ **Fase 3 (Contracts)**: MSW Setup & API Contract Validation.
 - ✅ **Fase 4 (E2E)**: Evaluada y descartada por regla de "No Delete" y coste/beneficio académicos.
 
+### Fase 10 & 11: Backend Modernization & Hardening
+
+- ✅ **Test Colocation**: Migración de `tests/` a `src/` completada.
+- ✅ **Cron Services**: Limpieza automática de Tokens y Órdenes (04:00 AM).
+- ✅ **Resilience**: Fallbacks en Aggregator y Pagos (Email Service Down).
+- ✅ **Maintenance**: Script manual `manual-cleanup.ts` entregado.
+
 ---
 
 ## 📝 Notas Técnicas
