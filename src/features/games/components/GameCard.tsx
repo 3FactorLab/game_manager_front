@@ -107,7 +107,7 @@ export const GameCard = ({ game }: GameCardProps) => {
             <span className={styles.developerBadge}>{game.developer}</span>
           )}
           {game.score && (
-            <span className={styles.scoreBadge}>ѓр? {game.score}/10</span>
+            <span className={styles.scoreBadge}>⭐ {game.score}/10</span>
           )}
         </div>
 

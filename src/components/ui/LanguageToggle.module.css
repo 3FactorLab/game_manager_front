@@ -20,8 +20,15 @@
 }
 
 .activeLang {
-  color: var(--primary);
-  font-weight: 700;
+  background: linear-gradient(
+    to right,
+    var(--accent-primary),
+    var(--accent-secondary)
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-weight: 800;
 }
 
 .separator {
