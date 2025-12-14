@@ -1,5 +1,27 @@
 # Frontend Changelog
 
+## 2025-12-15 - Phase 2: Frontend Performance Optimization
+
+### Added
+
+- **Lazy Loading**: `AppRoutes.tsx` uses `React.lazy` and `Suspense` for all pages.
+- **Interaction Prefetching**: `GameCard` prefetches details on hover.
+- **LazyImage Component**: Reusable component with skeleton loader.
+- **Validation Script**: `validate-phase2.js` ensures optimization standards.
+
+### Changed
+
+- **AppRoutes.tsx**: Fully lazy-loaded route configuration.
+- **GameCard.tsx**: Integrated `LazyImage` and `useQueryClient` for prefetching.
+
+### Impact
+
+- ✅ **Initial Load**: Reduced bundle size via code splitting.
+- ✅ **Navigation**: Near-instant transition to Game Details.
+- ✅ **UX**: Improved image loading experience.
+
+---
+
 ## 2025-12-14 - Phase 16: Fast Refresh Optimization (DX Improvement)
 
 ### Added

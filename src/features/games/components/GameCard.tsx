@@ -12,6 +12,9 @@ import type { Game } from "../../../services/games.service";
 import { formatCurrency } from "../../../utils/format";
 import { useCart } from "../../cart/CartContext";
 import { useWishlist } from "../../wishlist/WishlistContext";
+import { useQueryClient } from "@tanstack/react-query";
+import { gamesService } from "../../../services/games.service";
+import { LazyImage } from "../../../components/common/LazyImage";
 import styles from "./GameCard.module.css";
 
 /**
@@ -33,12 +36,25 @@ export const GameCard = ({ game }: GameCardProps) => {
   const navigate = useNavigate();
   const { addItem } = useCart();
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
+  const queryClient = useQueryClient();
 
   /**
    * Navigate to game details page
    */
   const handleCardClick = () => {
     navigate(`/game/${game._id}`);
+  };
+
+  /**
+   * Prefetch game details on hover
+   * Improves perceived performance by loading data before click
+   */
+  const handleMouseEnter = () => {
+    queryClient.prefetchQuery({
+      queryKey: ["game", game._id],
+      queryFn: () => gamesService.getGameById(game._id),
+      staleTime: 1000 * 60 * 5, // 5 minutes
+    });
   };
 
   // Calculate offer pricing
@@ -51,17 +67,18 @@ export const GameCard = ({ game }: GameCardProps) => {
       padding="none"
       hoverable
       onClick={handleCardClick}
+      onMouseEnter={handleMouseEnter}
     >
       {/* Game cover image */}
       <div className={styles.coverImageWrapper}>
-        <img
+        <LazyImage
           src={
             game.assets?.cover ||
             game.image ||
             "https://placehold.co/600x400/101010/FFF?text=No+Cover"
           }
           alt={game.title}
-          className={styles.coverImage}
+          imageClassName={styles.coverImage}
         />
         <button
           className={styles.addToCart}

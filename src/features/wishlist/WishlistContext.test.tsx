@@ -199,8 +199,10 @@ describe("WishlistContext", () => {
       addButton.click();
     });
 
-    // OPTIMISTIC: Should generally show 1 immediately
-    expect(screen.getByTestId("count")).toHaveTextContent("1");
+    // OPTIMISTIC: Should generally show 1 immediately (wrapped in waitFor due to async onMutate)
+    await waitFor(() => {
+      expect(screen.getByTestId("count")).toHaveTextContent("1");
+    });
     expect(screen.getByTestId("is-in-wishlist")).toHaveTextContent("Yes");
 
     // Resolve API

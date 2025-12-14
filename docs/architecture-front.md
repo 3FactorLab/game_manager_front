@@ -341,6 +341,10 @@ Componentes reutilizables sin lógica de negocio:
 - **`LanguageToggle.tsx`**: Selector de idioma (EN | ES)
   - Persistencia de preferencia de usuario
   - Integrado en Navbar (Desktop y Mobile)
+- **`LazyImage.tsx`**: Componente de imagen optimizado
+  - Carga diferida (`loading="lazy"`)
+  - Skeleton loader animado durante la carga
+  - Manejo de estado de error visual (placeholder)
 
 ### 4. Pages (`src/pages/`)
 
@@ -384,9 +388,14 @@ Encapsulan lógica reutilizable con React Query:
 ### 7. Routing (`src/routes/`)
 
 - **`AppRoutes.tsx`**: Configuración de rutas con React Router v7
-  - Rutas públicas: `/`, `/home`, `/store`, `/catalog`, `/game/:id`
-  - Rutas protegidas: `/library`, `/wishlist`, `/orders`, `/checkout/:id`
-  - Rutas admin: `/admin/*`
+  - **Code Splitting (Lazy Loading)**:
+    - Todas las páginas principales se importan con `React.lazy()`
+    - Envueltas en `<Suspense fallback={<Loader />}>`
+    - Vite genera chunks separados (`HomePage`, `GameDetails`, etc.) para reducir bundle inicial
+  - **Estructura**:
+    - Rutas públicas: `/`, `/home`, `/store`, `/catalog`, `/game/:id`
+    - Rutas protegidas: `/library`, `/wishlist`, `/orders`, `/checkout/:id`
+    - Rutas admin: `/admin/*`
   - Componente `ProtectedRoute` para control de acceso
 
 ### 8. Utilities (`src/utils/`)
@@ -768,7 +777,7 @@ sequenceDiagram
 
 **Concepto**: Importación de juegos desde RAWG API al catálogo local.
 
-```mermaid
+````mermaid
 sequenceDiagram
     participant Admin as 👤 Admin
     participant UI as ⚛️ RAWGImport Page
@@ -798,6 +807,37 @@ sequenceDiagram
     Backend->>RAWG: GET /games/123 (Full details)
     RAWG-->>Backend: Complete game data
 
+### 9. Flujo de Navegación Zero-Latency (Prefetching)
+
+**Concepto**: Anticipación a la intención del usuario para eliminar tiempos de carga.
+
+```mermaid
+sequenceDiagram
+    participant User as 👤 Usuario
+    participant Card as ⚛️ GameCard
+    participant QC as ⚡ QueryClient (Cache)
+    participant API as 🔧 API Client
+    participant Detail as ⚛️ GameDetails
+
+    User->>Card: Hover (Mouse Enter) 🖱️
+    Card->>QC: prefetchQuery(['game', id])
+
+    alt Datos ya en caché (StaleTime valid)
+        QC-->>Card: Do nothing (Cache Hit)
+    else Datos no existen o expirados
+        QC->>API: Fetch details (Background)
+        API->>QC: Store Data
+    end
+
+    User->>Card: Click (Navegar)
+    Card->>Detail: Navigation to /game/:id
+
+    Detail->>QC: useQuery(['game', id])
+    Note right of QC: ¡Datos disponibles inmediatamente!
+    QC-->>Detail: Return Data (Status: Success)
+    Detail-->>User: Render Instantáneo (0ms Spinner)
+````
+
     Backend->>Backend: Transform to local schema
     Backend->>DB: Save game document
     DB-->>Backend: Success
@@ -806,7 +846,8 @@ sequenceDiagram
     Service-->>Hook: Invalidate ["games"] cache
     Hook-->>UI: Toast "Game imported ✅"
     UI-->>Admin: Refresh catalog
-```
+
+````
 
 ### 9. Flujo de Infinite Scroll (Paginación)
 
@@ -842,7 +883,7 @@ sequenceDiagram
     Service-->>Query: Cache page 2
     Query-->>Hook: { pages: [page1, page2] }
     Hook-->>Home: Display 24 games total
-```
+````
 
 ### 10. Flujo de Profile Update
 

@@ -20,9 +20,30 @@
   - Configurar `npm workspaces`.
   - Crear `packages/shared-types` y `packages/shared-utils`.
 
+### Performance Upgrade (Elite Status)
+
+- [ ] **[PLAN] Performance Upgrade (Phases 3 & 4)**
+  - **Documento Maestro**: [`performance-upgrade.md`](file:///Users/andydev/game%20manager%20v0/frontend/docs/plans/performance-upgrade.md)
+  - **Objetivo**: LCP < 2.5s (3G) y 60fps scrolling constante.
+  - **Scope**:
+    1.  **Imágenes Responsivas**: Integración de CDN y `srcSet` en `LazyImage` (sin refactor backend).
+    2.  **Virtualización**: Implementar `react-window` para el Grid del Catálogo (rendimiento de memoria constante).
+    3.  **Bundle Tuning**: Tree-shaking agresivo de iconos no utilizados.
+
 ---
 
 ## ✅ Historial de Completados
+
+### Phase 17: End-to-End Performance (2025-12-14)
+
+- **Backend Optimization**:
+  - ✅ **Gzip Compression**: Activada en `server.ts` (~70% reducción payload).
+  - ✅ **SafetyNet**: Script `validate-phase1.js` para asegurar integridad del backend.
+- **Frontend Optimization**:
+  - ✅ **Lazy Loading**: Migración a `React.lazy` + `Suspense` en todas las rutas.
+  - ✅ **Smart Prefetching**: Datos de juego precargados al hacer hover (`Zero-latency`).
+  - ✅ **UX Elements**: Componente `LazyImage` con Skeleton y soporte nativo.
+  - ✅ **Strict QA**: Script `validate-phase2.js` y tests E2E para flujos críticos.
 
 ### Phase 16: Fast Refresh & Optimizations (2025-12-14)
 

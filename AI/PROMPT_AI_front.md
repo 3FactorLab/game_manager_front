@@ -181,3 +181,13 @@ npm run validate:phase16
 - **Context Legacy**: Si encuentras un Context que mezcla Provider y Hook en el mismo archivo, refactorízalo usando el patrón 2-file con los scripts disponibles.
 - **Seguridad**: No comprometer la seguridad del cliente (XSS, datos sensibles en localStorage).
 - **Monorepo Readiness**: Mantener la estructura `features/` limpia y desacoplada para facilitar la futura migración.
+
+## 7. Validation Driven Development (VDD) - OBLIGATORIO
+
+- **Scripts de Validación**:
+  - Para cualquier "Fase" o "Plan" de refactorización mayor, **es obligatorio crear un script `validate-phaseX.js`**.
+  - **Responsabilidades del Script**:
+    1. **Integridad**: Verificar que la estructura de archivos es correcta.
+    2. **Prohibiciones**: Escanear código buscando `console.log`, `any`, o imports circulares.
+    3. **Tests**: Ejecutar tests específicos de la feature (`vitest run path/to/test`).
+  - **Ejecución**: El plan no se marca como "Completado" hasta que este script pase en verde (`exit code 0`).

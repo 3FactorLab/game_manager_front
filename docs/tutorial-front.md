@@ -280,6 +280,10 @@ Componentes base del sistema de diseño.
 - **Qué hace**: Modal para galería de imágenes (lightbox).
 - **Props**: `images`, `currentIndex`, `onClose`, `onNavigate`
 - **Detalle**: Navegación con flechas, cierre con ESC o click fuera.
+- **`LazyImage.tsx`**: Componente de imagen inteligente.
+  - **Qué hace**: Carga imágenes solo cuando entran en pantalla (`loading="lazy"`).
+  - **UX**: Muestra skeleton loader animado mientras descarga.
+  - **Fallback**: Maneja errores 404 mostrando un placeholder.
 
 ### `src/components/ErrorBoundary.tsx`
 
@@ -638,6 +642,8 @@ Todos los archivos críticos incluyen documentación estilo académico:
 - `npm run preview`: Previsualiza build de producción
 - `npm run lint`: Ejecuta ESLint
 - `npm run test`: Ejecuta tests con Vitest
+- **`npm run validate:phaseX`**: Scripts de integridad (VDD).
+  - Estandarizan la validación de features. Checkean logs prohibidos, imports correctos y tests críticos antes de dar una tarea por cerrada.
 
 ---
 
@@ -672,6 +678,15 @@ Todos los archivos críticos incluyen documentación estilo académico:
 - **Separación estricta**: Logic (Hooks) vs UI (Components) vs Styles (Modules)
 - **Zero Inline Styles**: Política estricta implementada globalmente
 - **Dev Experience**: Logs de autenticación filtrados por entorno (dev-only)
+
+### Performance & Validation
+
+- **End-to-End Speed**:
+  - **Lazy Loading**: Code splitting por ruta (`React.lazy`) reduce bundle inicial.
+  - **Prefetching**: Datos de juego se cargan al hacer hover -> Navegación instantánea.
+  - **Optimized Assets**: `LazyImage` y compresión Gzip en backend.
+- **Validation Driven Development (VDD)**:
+  - Scripts `validate-phaseX.js` aseguran que la teoría (docs) coincide con la práctica (código).
 
 ---
 
