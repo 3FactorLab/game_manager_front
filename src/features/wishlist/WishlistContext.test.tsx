@@ -8,7 +8,7 @@ import { render, screen, act, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WishlistProvider } from "./WishlistProvider";
-import { useWishlist } from "./WishlistContext";;
+import { useWishlist } from "./WishlistContext";
 import * as userService from "../../services/user.service";
 import * as authContext from "../auth/AuthContext";
 import type { User } from "../auth/types";
@@ -173,7 +173,7 @@ describe("WishlistContext", () => {
     // Initial fetch empty
     vi.mocked(userService.getWishlist).mockResolvedValue([]);
     // API Call pending to simulate optimistic update
-    let resolveApi: any;
+    let resolveApi: (value: void | PromiseLike<void>) => void;
     const apiPromise = new Promise<void>((resolve) => {
       resolveApi = resolve;
     });
@@ -205,6 +205,10 @@ describe("WishlistContext", () => {
 
     // Resolve API
     await act(async () => {
+      // Update mock to return 1 item so the refetch matches optimistic state
+      vi.mocked(userService.getWishlist).mockResolvedValue([
+        { ...mockGame, _id: "game-1" },
+      ]);
       resolveApi();
     });
 

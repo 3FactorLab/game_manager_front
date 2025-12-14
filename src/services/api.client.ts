@@ -9,6 +9,7 @@
 
 import axios from "axios";
 import { authEvents, AUTH_LOGOUT } from "../utils/auth-events";
+import { logger } from "../utils/error.util";
 
 /**
  * Configured axios instance for API requests
@@ -99,7 +100,7 @@ apiClient.interceptors.response.use(
         return apiClient(originalRequest);
       } catch (refreshError) {
         // Refresh failed, logout user and redirect to login
-        console.error("[Auth] Token refresh failed:", refreshError);
+        logger.error("[Auth] Token refresh failed:", refreshError);
         localStorage.removeItem("token");
         localStorage.removeItem("refreshToken");
         // Soft logout instead of hard reload

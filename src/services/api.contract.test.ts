@@ -16,11 +16,14 @@ describe("API Contracts", () => {
   });
 
   it("Auth: Login sends correct payload", async () => {
-    let capturedBody: any;
+    let capturedBody: { email?: string; password?: string } | undefined;
 
     server.use(
       http.post("/api/users/login", async ({ request }) => {
-        capturedBody = await request.json();
+        capturedBody = (await request.json()) as {
+          email?: string;
+          password?: string;
+        };
         return HttpResponse.json({
           token: "mock-token",
           refreshToken: "mock-refresh",
@@ -41,11 +44,11 @@ describe("API Contracts", () => {
   });
 
   it("Auth: Register sends correct payload", async () => {
-    let capturedBody: any;
+    let capturedBody: Record<string, unknown> | undefined;
 
     server.use(
       http.post("/api/users/register", async ({ request }) => {
-        capturedBody = await request.json();
+        capturedBody = (await request.json()) as Record<string, unknown>;
         return HttpResponse.json({
           token: "mock-token",
           refreshToken: "mock-refresh",

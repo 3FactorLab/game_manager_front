@@ -65,17 +65,17 @@ describe("GameDetails Page", () => {
       data: mockGame,
       isLoading: false,
       error: null,
-    } as any);
+    } as unknown as ReturnType<typeof gameHooks.useGameDetails>);
 
     vi.mocked(cartContext.useCart).mockReturnValue({
       addItem: mockAddItem,
-    } as any);
+    } as unknown as ReturnType<typeof cartContext.useCart>);
 
     vi.mocked(wishlistContext.useWishlist).mockReturnValue({
       addToWishlist: mockAddToWishlist,
       removeFromWishlist: mockRemoveFromWishlist,
       isInWishlist: () => false,
-    } as any);
+    } as unknown as ReturnType<typeof wishlistContext.useWishlist>);
   });
 
   const renderComponent = () =>
@@ -88,7 +88,7 @@ describe("GameDetails Page", () => {
   it("should render game details correctly", () => {
     vi.mocked(authContext.useAuth).mockReturnValue({
       isAuthenticated: true,
-    } as any);
+    } as unknown as ReturnType<typeof authContext.useAuth>);
     renderComponent();
 
     expect(screen.getByText("Cyberpunk 2077")).toBeInTheDocument();
@@ -99,7 +99,7 @@ describe("GameDetails Page", () => {
   it("should disable actions in Guest Mode", () => {
     vi.mocked(authContext.useAuth).mockReturnValue({
       isAuthenticated: false,
-    } as any);
+    } as unknown as ReturnType<typeof authContext.useAuth>);
     renderComponent();
 
     const buyBtn = screen.getByRole("button", { name: /buy now/i });
@@ -117,7 +117,7 @@ describe("GameDetails Page", () => {
   it("should enable actions in User Mode", () => {
     vi.mocked(authContext.useAuth).mockReturnValue({
       isAuthenticated: true,
-    } as any);
+    } as unknown as ReturnType<typeof authContext.useAuth>);
     renderComponent();
 
     const buyBtn = screen.getByRole("button", { name: /buy now/i });
@@ -134,7 +134,7 @@ describe("GameDetails Page", () => {
   it("should handle cart addition", () => {
     vi.mocked(authContext.useAuth).mockReturnValue({
       isAuthenticated: true,
-    } as any);
+    } as unknown as ReturnType<typeof authContext.useAuth>);
     renderComponent();
 
     const cartBtn = screen.getByRole("button", { name: /add to cart/i });
@@ -146,7 +146,7 @@ describe("GameDetails Page", () => {
   it("should handle wishlist toggle", () => {
     vi.mocked(authContext.useAuth).mockReturnValue({
       isAuthenticated: true,
-    } as any);
+    } as unknown as ReturnType<typeof authContext.useAuth>);
     renderComponent();
 
     const wishlistBtn = screen.getByRole("button", {

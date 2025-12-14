@@ -66,17 +66,17 @@ describe("CheckoutPage", () => {
     vi.mocked(checkoutHooks.useCheckout).mockReturnValue({
       mutate: mockPurchase,
       isPending: false,
-    } as any);
+    } as unknown as ReturnType<typeof checkoutHooks.useCheckout>);
 
     vi.mocked(cartContext.useCart).mockReturnValue({
       items: [],
       clear: mockClearCart,
-    } as any);
+    } as unknown as ReturnType<typeof cartContext.useCart>);
 
     vi.mocked(gameHooks.useGameDetails).mockReturnValue({
       data: null,
       isLoading: false,
-    } as any);
+    } as unknown as ReturnType<typeof gameHooks.useGameDetails>);
   });
 
   const renderComponent = () =>
@@ -94,7 +94,7 @@ describe("CheckoutPage", () => {
     vi.mocked(gameHooks.useGameDetails).mockReturnValue({
       data: mockGame,
       isLoading: false,
-    } as any);
+    } as unknown as ReturnType<typeof gameHooks.useGameDetails>);
 
     renderComponent();
 
@@ -107,7 +107,7 @@ describe("CheckoutPage", () => {
     vi.mocked(cartContext.useCart).mockReturnValue({
       items: [mockGame, { ...mockGame, _id: "game-2", title: "Sekiro" }],
       clear: mockClearCart,
-    } as any);
+    } as unknown as ReturnType<typeof cartContext.useCart>);
 
     renderComponent();
 
@@ -121,7 +121,7 @@ describe("CheckoutPage", () => {
     vi.mocked(gameHooks.useGameDetails).mockReturnValue({
       data: mockGame,
       isLoading: false,
-    } as any);
+    } as unknown as ReturnType<typeof gameHooks.useGameDetails>);
 
     // Mock implementation of mutate calling onSuccess immediately
     mockPurchase.mockImplementation((_ids, options) => {
@@ -152,7 +152,7 @@ describe("CheckoutPage", () => {
     vi.mocked(cartContext.useCart).mockReturnValue({
       items: [mockGame],
       clear: mockClearCart,
-    } as any);
+    } as unknown as ReturnType<typeof cartContext.useCart>);
 
     mockPurchase.mockImplementation((_ids, options) => {
       options.onSuccess();
@@ -173,7 +173,7 @@ describe("CheckoutPage", () => {
     vi.mocked(gameHooks.useGameDetails).mockReturnValue({
       data: mockGame,
       isLoading: false,
-    } as any);
+    } as unknown as ReturnType<typeof gameHooks.useGameDetails>);
 
     mockPurchase.mockImplementation((_ids, options) => {
       options.onError(new Error("Failed"));
