@@ -6,6 +6,7 @@
 
 import { render, screen, act, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WishlistProvider, useWishlist } from "./WishlistContext";
 import * as userService from "../../services/user.service";
 import * as authContext from "../auth/AuthContext";
@@ -73,6 +74,23 @@ const TestComponent = () => {
   );
 };
 
+// Helper to render with QueryClient
+const createTestQueryClient = () =>
+  new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false, // Disable retries for testing
+      },
+    },
+  });
+
+const renderWithClient = (ui: React.ReactNode) => {
+  const testQueryClient = createTestQueryClient();
+  return render(
+    <QueryClientProvider client={testQueryClient}>{ui}</QueryClientProvider>
+  );
+};
+
 describe("WishlistContext", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -89,7 +107,7 @@ describe("WishlistContext", () => {
       refreshUser: vi.fn(),
     });
 
-    render(
+    renderWithClient(
       <WishlistProvider>
         <TestComponent />
       </WishlistProvider>
@@ -120,7 +138,7 @@ describe("WishlistContext", () => {
 
     vi.mocked(userService.getWishlist).mockResolvedValue([mockGame]);
 
-    render(
+    renderWithClient(
       <WishlistProvider>
         <TestComponent />
       </WishlistProvider>
@@ -160,7 +178,7 @@ describe("WishlistContext", () => {
     });
     vi.mocked(userService.addToWishlist).mockReturnValue(apiPromise);
 
-    render(
+    renderWithClient(
       <WishlistProvider>
         <TestComponent />
       </WishlistProvider>
@@ -180,7 +198,7 @@ describe("WishlistContext", () => {
       addButton.click();
     });
 
-    // OPTIMISTIC: Should generally show 1 immediately (although React state update is async, inside act it flushes)
+    // OPTIMISTIC: Should generally show 1 immediately
     expect(screen.getByTestId("count")).toHaveTextContent("1");
     expect(screen.getByTestId("is-in-wishlist")).toHaveTextContent("Yes");
 
@@ -218,7 +236,7 @@ describe("WishlistContext", () => {
       new Error("API Error")
     );
 
-    render(
+    renderWithClient(
       <WishlistProvider>
         <TestComponent />
       </WishlistProvider>
@@ -230,7 +248,6 @@ describe("WishlistContext", () => {
       addButton.click();
     });
 
-    // Initial Optimistic Update (might flicker, but error handling handles rollback)
     // Wait for rollback
     await waitFor(() => {
       expect(screen.getByTestId("count")).toHaveTextContent("0");

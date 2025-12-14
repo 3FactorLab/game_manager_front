@@ -277,7 +277,7 @@ export const Navbar = () => {
         <div className={styles.mobileDivider} />
 
         {/* Mobile Language Toggle */}
-        <div style={{ padding: "0 1rem 1rem" }}>
+        <div className={styles.languageToggleWrapper}>
           <LanguageToggle />
         </div>
 

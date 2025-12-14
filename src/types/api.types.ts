@@ -31,11 +31,13 @@ export function isApiError(
   );
 }
 
+import type { Game } from "../services/games.service";
+
 /**
  * Games API paginated response
  */
 export interface GamesApiResponse {
-  games: unknown[]; // Will be typed by the service
+  games: Game[];
   currentPage: number;
   totalPages: number;
   totalGames: number;

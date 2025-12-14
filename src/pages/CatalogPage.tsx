@@ -116,38 +116,21 @@ const CatalogPage = () => {
         </div>
       </section>
 
-      <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "0 1rem" }}>
+      <div className={styles.contentWrapper}>
         {/* Controls (Search, Filter, Sort) */}
         <CatalogControls />
 
         {/* Loading / Error / Grid */}
         {isLoading ? (
-          <div style={{ textAlign: "center", padding: "4rem" }}>
-            <span
-              className="text-gradient"
-              style={{ fontSize: "1.5rem", fontWeight: "bold" }}
-            >
+          <div className={styles.loadingState}>
+            <span className={`text-gradient ${styles.loadingText}`}>
               Loading Games...
             </span>
           </div>
         ) : isError ? (
-          <div
-            style={{
-              textAlign: "center",
-              color: "var(--error)",
-              padding: "4rem",
-            }}
-          >
-            Error loading catalog.
-          </div>
+          <div className={styles.errorState}>Error loading catalog.</div>
         ) : gamesList.length === 0 ? (
-          <div
-            style={{
-              textAlign: "center",
-              padding: "4rem",
-              color: "var(--text-muted)",
-            }}
-          >
+          <div className={styles.emptyState}>
             <h3>No games found</h3>
             <p>Try adjusting your search or filters.</p>
           </div>

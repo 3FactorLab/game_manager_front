@@ -4,7 +4,7 @@
  * Adheres to "Logic over UI" philosophy by mocking external services.
  */
 
-import { render, screen, act, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, act } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { AuthProvider, useAuth } from "./AuthContext";
 import { authService } from "../../services/auth.service";

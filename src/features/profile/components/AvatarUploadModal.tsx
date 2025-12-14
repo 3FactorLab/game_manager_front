@@ -3,6 +3,7 @@ import { useDropzone } from "react-dropzone";
 import { FaUpload, FaTimes, FaUserCircle } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import { useUpdateProfile } from "../hooks/useUpdateProfile";
+import { useAuth } from "../../auth/AuthContext";
 import { Button } from "../../../components/ui/Button";
 import styles from "./AvatarUploadModal.module.css";
 

@@ -7,7 +7,7 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import RegisterPage from "./RegisterPage";
 import { BrowserRouter } from "react-router-dom";
-import * as authContext from "../AuthContext"; // Import to mock useAuth
+import * as authContext from "../AuthContext";
 
 // -----------------------------------------------------------------------------
 // Mocks

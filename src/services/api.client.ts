@@ -17,7 +17,11 @@ import { authEvents, AUTH_LOGOUT } from "../utils/auth-events";
  * - Sends credentials (cookies) with requests
  */
 const apiClient = axios.create({
-  baseURL: "/api", // Proxied to backend server
+  // In DEV, always use /api to leverage Vite Proxy (avoids CORS)
+  // In PROD, use VITE_API_URL if defined, or fallback to /api
+  baseURL: import.meta.env.DEV
+    ? "/api"
+    : import.meta.env.VITE_API_URL || "/api",
   headers: {
     "Content-Type": "application/json",
   },
@@ -78,9 +82,8 @@ apiClient.interceptors.response.use(
 
       try {
         // Attempt to refresh the access token
-        if (import.meta.env.DEV) {
-          console.log("[Auth] Access token expired, attempting refresh...");
-        }
+        // Log removal for poduction
+        // console.log("[Auth] Access token expired, attempting refresh...");
         const { data } = await axios.post("/api/users/refresh-token", {
           token: refreshToken,
         });
@@ -88,9 +91,8 @@ apiClient.interceptors.response.use(
         // Store new tokens
         localStorage.setItem("token", data.token);
         localStorage.setItem("refreshToken", data.refreshToken);
-        if (import.meta.env.DEV) {
-          console.log("[Auth] Token refreshed successfully");
-        }
+        // Log removal for production
+        // console.log("[Auth] Token refreshed successfully");
 
         // Update the failed request with new token and retry
         originalRequest.headers.Authorization = `Bearer ${data.token}`;

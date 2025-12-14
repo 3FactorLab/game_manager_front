@@ -26,133 +26,242 @@ Este diagrama muestra la relación macro entre las capas del sistema.
 ```mermaid
 flowchart TD
     %% ============================================
-    %% ESTILOS GLOBALES & Nodos Externos
+    %% NODOS EXTERNOS
     %% ============================================
     User([👤 Usuario])
     Backend[(🔌 Backend API)]
 
     %% ============================================
-    %% CAPAS DEL FRONTEND (Jerarquía Vertical)
+    %% PROVIDERS (Composition Hierarchy)
     %% ============================================
-
-    subgraph Infra ["1. Infraestructura & Routing"]
-        style Infra fill:#FFF,stroke:#333,stroke-width:1px,stroke-dasharray: 5 5
-        Router["🛣️ App Router (React Router v7)<br/>(Entry Point)"]
-        ErrorBoundary["🛡️ Error Boundary<br/>(Global Trap)"]
-    end
-
-    subgraph Presentacion ["2. Capa de Presentación (UI)"]
-        style Presentacion fill:#E3F2FD,stroke:#1565C0,stroke-width:2px
-        Pages["📄 Pages<br/>(Home/Catalog/Library)"]
-        Components["🧩 UI Components<br/>(Cards/Buttons/Modals)"]
-    end
-
-    subgraph StateLayer ["3. Middleware de Estado (Contexts)"]
-        style StateLayer fill:#E1F5FE,stroke:#0277BD,stroke-width:2px
-        AuthContext["🔐 Auth Context<br/>(Session & Tokens)"]
-        GloblContext["🌍 Global Contexts<br/>(Wishlist/Cart/Theme)"]
-    end
-
-    subgraph Orchestration ["4. Orquestación (Custom Hooks)"]
-        style Orchestration fill:#FFEBEE,stroke:#C62828,stroke-width:2px
-        Hooks["🪝 Logic Hooks<br/>(useGames, useAuth, useCheckout)"]
-        ReactQuery["⚡ React Query<br/>(Server State Cache)"]
-    end
-
-    subgraph DataLayer ["5. Capa de Datos (Services)"]
-        style DataLayer fill:#F3E5F5,stroke:#7B1FA2,stroke-width:2px
-        Services["📦 Services<br/>(Auth/Games/User)"]
-        APIClient["🔧 Axios Client<br/>(Interceptors)"]
-    end
-
-    subgraph SideEffects ["6. Efectos Laterales"]
-        style SideEffects fill:#FFF3E0,stroke:#EF6C00,stroke-width:2px
-        Storage[(💾 LocalStorage)]
-        Toaster[🔔 Toaster]
-        EventBus((📢 EventBus))
-    end
+    ErrorBoundary["🛡️ ErrorBoundary"]
+    QueryProvider["⚡ QueryClientProvider"]
+    AuthProvider["🔐 AuthProvider"]
+    CartProvider["🛒 CartProvider"]
+    WishlistProvider["❤️ WishlistProvider"]
+    Router["🛣️ BrowserRouter"]
+    i18n["📚 i18n (global)"]
 
     %% ============================================
-    %% FLUJO PRINCIPAL (Numbered Flow)
+    %% COMPONENTES Y HOOKS
     %% ============================================
+    Pages["📄 Pages<br/>(Routes)"]
+    Components["🧩 UI Components"]
 
-    %% 1. Entrada
-    User -->|1. Interacción/URL| Router
-    Router -->|2. Renderiza| ErrorBoundary
-    ErrorBoundary --> Pages
-
-    %% 2. Construcción UI
-    Pages --> Components
-    Pages -.->|Lee Estado| AuthContext
-    Pages -.->|Lee Estado| GloblContext
-
-    %% 3. Disparo de Lógica
-    Components -->|3. User Action| Hooks
-    Pages -->|3. Lifecycle Event| Hooks
-
-    %% 4. Proceso de Lógica
-    Hooks -->|4. Verifica/Actualiza| AuthContext
-    Hooks -->|5. Gestiona Cache| ReactQuery
-
-    %% 5. Petición de Datos
-    ReactQuery -->|6. Fetch| Services
-    AuthContext -->|6. Login/Refresh| Services
-
-    %% 6. Salida a Red
-    Services -->|7. Request| APIClient
-    APIClient <-->|8. HTTP| Backend
-
-    %% 7. Retorno y Actualización
-    Services -->|9. Response Data| ReactQuery
-    ReactQuery -->|10. Re-Render| Hooks
-    Hooks -->|11. Update UI| Pages
-    Pages -->|12. Feedback| User
+    %% Hooks individuales
+    useAuth["🪝 useAuth()"]
+    useCart["𪝰 useCart()"]
+    useWishlist["𪝰 useWishlist()"]
+    useGames["𪝰 useGames()"]
+    useTranslation["𪝰 useTranslation()"]
 
     %% ============================================
-    %% CONEXIONES DE SIDE EFFECTS
+    %% SERVICIOS
     %% ============================================
-    AuthContext -.->|Persist Token| Storage
-    GloblContext -.->|Persist Cart| Storage
-    Services -.->|Show Success/Error| Toaster
+    AuthService["📦 AuthService"]
+    GamesService["📦 GamesService"]
+    UserService["📦 UserService"]
+    APIClient["🔧 Axios Client<br/>(Interceptors)"]
+
+    %% ============================================
+    %% SIDE EFFECTS
+    %% ============================================
+    Storage[(💾 LocalStorage)]
+    Toaster[🔔 Toaster]
+    EventBus((📢 EventBus))
+
+    %% ============================================
+    %% FLUJO PRINCIPAL
+    %% ============================================
+
+    %% 1. Usuario → Router
+    User -->|1. URL/Click| Router
+
+    %% 2. Provider Hierarchy (Composition)
+    Router -->|2. Wrap| ErrorBoundary
+    ErrorBoundary -->|3. Wrap| QueryProvider
+    QueryProvider -->|4. Wrap| AuthProvider
+    AuthProvider -->|5. Wrap| CartProvider
+    CartProvider -->|6. Wrap| WishlistProvider
+    WishlistProvider -->|7. Render| Pages
+
+    %% 3. Pages renderiza Components
+    Pages -->|8. Render| Components
+
+    %% 4. Components usan Hooks
+    Pages -.->|usa| useAuth
+    Pages -.->|usa| useCart
+    Pages -.->|usa| useWishlist
+    Pages -.->|usa| useGames
+    Pages -.->|usa| useTranslation
+
+    Components -.->|usa| useAuth
+    Components -.->|usa| useCart
+    Components -.->|usa| useGames
+
+    %% 5. Hooks leen de Providers
+    useAuth -.->|lee de| AuthProvider
+    useCart -.->|lee de| CartProvider
+    useWishlist -.->|lee de| WishlistProvider
+    useGames -.->|usa| QueryProvider
+    useTranslation -.->|usa| i18n
+
+    %% 6. Hooks llaman Services
+    useAuth -->|9. Call| AuthService
+    useGames -->|9. Call| GamesService
+    useWishlist -->|9. Call| GamesService
+
+    %% 7. Services usan APIClient
+    AuthService -->|10. Request| APIClient
+    GamesService -->|10. Request| APIClient
+    UserService -->|10. Request| APIClient
+
+    %% 8. APIClient → Backend
+    APIClient <-->|11. HTTP| Backend
+
+    %% ============================================
+    %% SIDE EFFECTS
+    %% ============================================
+    AuthProvider -.->|Persist Token| Storage
+    CartProvider -.->|Persist Cart| Storage
+    i18n -.->|Persist Language| Storage
+
+    AuthService -.->|Success/Error| Toaster
+    GamesService -.->|Success/Error| Toaster
+
     APIClient -.->|Force Logout| EventBus
-    EventBus -.->|Trigger| AuthContext
+    EventBus -.->|Trigger| AuthProvider
+
+    WishlistProvider -.->|Uses internally| QueryProvider
 
     %% ============================================
     %% ESTILOS DE NODOS
     %% ============================================
-    style User fill:#FFF9C4,stroke:#FBC02D,stroke-width:2px,color:#000
-    style Backend fill:#C8E6C9,stroke:#388E3C,stroke-width:2px,color:#000
 
-    style Router fill:#FAFAFA,stroke:#9E9E9E,stroke-width:1px,color:#000
-    style ErrorBoundary fill:#FAFAFA,stroke:#9E9E9E,stroke-width:1px,color:#000
+    %% Externos
+    style User fill:#FFF9C4,stroke:#FBC02D,stroke-width:2px,color:#F57F17
+    style Backend fill:#C8E6C9,stroke:#388E3C,stroke-width:2px,color:#1B5E20
 
-    style Pages fill:#BBDEFB,stroke:#1976D2,stroke-width:1px,color:#000
-    style Components fill:#BBDEFB,stroke:#1976D2,stroke-width:1px,color:#000
+    %% Infraestructura
+    style ErrorBoundary fill:#FAFAFA,stroke:#9E9E9E,stroke-width:2px,color:#333
+    style Router fill:#FAFAFA,stroke:#9E9E9E,stroke-width:2px,color:#333
+    style i18n fill:#FFF9C4,stroke:#F57C00,stroke-width:2px,color:#E65100
 
-    style AuthContext fill:#B2DFDB,stroke:#00695C,stroke-width:1px,color:#000
-    style GloblContext fill:#B2DFDB,stroke:#00695C,stroke-width:1px,color:#000
+    %% Providers
+    style QueryProvider fill:#FFCDD2,stroke:#C62828,stroke-width:2px,color:#B71C1C
+    style AuthProvider fill:#B2DFDB,stroke:#00695C,stroke-width:2px,color:#004D40
+    style CartProvider fill:#B2DFDB,stroke:#00695C,stroke-width:2px,color:#004D40
+    style WishlistProvider fill:#B2DFDB,stroke:#00695C,stroke-width:2px,color:#004D40
 
-    style Hooks fill:#FFCDD2,stroke:#C62828,stroke-width:1px,color:#000
-    style ReactQuery fill:#FFCDD2,stroke:#C62828,stroke-width:1px,color:#000
+    %% Components
+    style Pages fill:#BBDEFB,stroke:#1976D2,stroke-width:2px,color:#0D47A1
+    style Components fill:#BBDEFB,stroke:#1976D2,stroke-width:2px,color:#0D47A1
 
-    style Services fill:#E1BEE7,stroke:#7B1FA2,stroke-width:1px,color:#000
-    style APIClient fill:#E1BEE7,stroke:#7B1FA2,stroke-width:1px,color:#000
+    %% Hooks
+    style useAuth fill:#FFEBEE,stroke:#C62828,stroke-width:2px,color:#B71C1C
+    style useCart fill:#FFEBEE,stroke:#C62828,stroke-width:2px,color:#B71C1C
+    style useWishlist fill:#FFEBEE,stroke:#C62828,stroke-width:2px,color:#B71C1C
+    style useGames fill:#FFEBEE,stroke:#C62828,stroke-width:2px,color:#B71C1C
+    style useTranslation fill:#FFEBEE,stroke:#C62828,stroke-width:2px,color:#B71C1C
 
-    style Storage fill:#FFE0B2,stroke:#E65100,stroke-width:1px,color:#000
-    style Toaster fill:#FFE0B2,stroke:#E65100,stroke-width:1px,color:#000
-    style EventBus fill:#FFE0B2,stroke:#E65100,stroke-width:1px,color:#000
+    %% Services
+    style AuthService fill:#E1BEE7,stroke:#7B1FA2,stroke-width:2px,color:#4A148C
+    style GamesService fill:#E1BEE7,stroke:#7B1FA2,stroke-width:2px,color:#4A148C
+    style UserService fill:#E1BEE7,stroke:#7B1FA2,stroke-width:2px,color:#4A148C
+    style APIClient fill:#E1BEE7,stroke:#7B1FA2,stroke-width:2px,color:#4A148C
+
+    %% Side Effects
+    style Storage fill:#FFE0B2,stroke:#E65100,stroke-width:2px,color:#BF360C
+    style Toaster fill:#FFE0B2,stroke:#E65100,stroke-width:2px,color:#BF360C
+    style EventBus fill:#FFE0B2,stroke:#E65100,stroke-width:2px,color:#BF360C
 ```
 
-### 🎨 Leyenda de Colores
+### 🎨 Leyenda del Diagrama
 
-| Color           | Capa / Responsabilidad     | Ejemplo                      |
-| :-------------- | :------------------------- | :--------------------------- |
-| 🟨 **Amarillo** | **Usuario**                | Interacción humana           |
-| 🟦 **Azul**     | **Presentación**           | Pages, Layout, UI Components |
-| 🟥 **Rojo**     | **Lógica / Estado Server** | React Query, Custom Hooks    |
-| 🟩 **Verde**    | **Backend / Externo**      | API, Base de Datos           |
-| 🟪 **Morado**   | **Datos / Servicios**      | Axios Client, Services       |
-| ⬜ **Gris**     | **Infraestructura**        | Error Boundary               |
+Este diagrama refleja la **composición real** de la aplicación React, no capas abstractas.
+
+#### Colores por Tipo de Componente
+
+| Color           | Componente / Responsabilidad | Ejemplo                                    |
+| :-------------- | :--------------------------- | :----------------------------------------- |
+| 🟨 **Amarillo** | **Usuario / i18n**           | Interacción externa, Traducciones globales |
+| ⬜ **Gris**     | **Infraestructura**          | ErrorBoundary, Router                      |
+| 🟩 **Verde**    | **Providers (Composition)**  | QueryClient, Auth, Cart, Wishlist          |
+| 🟦 **Azul**     | **Components Tree**          | Pages, UI Components                       |
+| 🟥 **Rojo**     | **Hooks (dentro de comps)**  | useAuth, useCart, useGames, useTranslation |
+| 🟪 **Morado**   | **Services / API**           | auth.service, games.service, Axios         |
+| 🟧 **Naranja**  | **Side Effects**             | LocalStorage, Toaster, EventBus            |
+
+#### Flujo Principal Numerado
+
+El diagrama muestra el flujo de datos con **11 pasos numerados**:
+
+1. **Usuario interactúa** → Router
+   2-7. **Provider Hierarchy** (Composition wrapping)
+   - Router → ErrorBoundary → QueryProvider → AuthProvider → CartProvider → WishlistProvider → Pages
+2. **Pages renderiza** Components
+3. **Hooks llaman** Services (useAuth → AuthService, useGames → GamesService)
+4. **Services hacen** Request (AuthService/GamesService → APIClient)
+5. **APIClient** ↔ Backend (HTTP)
+
+Las **líneas punteadas** (-.->)representan conexiones de lectura/uso sin transferencia de control:
+
+- Components **usan** Hooks
+- Hooks **leen de** Providers
+- Providers **persisten en** Storage
+
+> [!NOTE] > **Diferencia clave con diagramas abstractos**:
+>
+> - Este diagrama muestra la **estructura real** de `main.tsx`
+> - Providers envuelven la app (composition pattern)
+> - Hooks se usan **dentro** de Components (no son una capa separada)
+> - Refleja exactamente cómo funciona React
+
+### 📐 Vista Simplificada (Overview)
+
+Para una comprensión rápida del flujo general, aquí está la versión simplificada:
+
+```mermaid
+flowchart LR
+    %% Nodos principales
+    User([👤 Usuario])
+    Backend[(🔌 Backend)]
+
+    %% Capas simplificadas
+    Entry["🚪 Entrada<br/>(Router + ErrorBoundary)"]
+    UI["🎨 UI<br/>(Pages + Components)"]
+    State["🌍 Estado<br/>(Auth + Cart + Wishlist + i18n)"]
+    Logic["🧠 Lógica<br/>(Hooks + React Query)"]
+    Data["📦 Datos<br/>(Services + Axios)"]
+    Effects["⚡ Effects<br/>(Storage + Toast + Events)"]
+
+    %% Flujo principal
+    User -->|1| Entry
+    Entry -->|2| UI
+    UI -->|3| Logic
+    Logic <-->|4| State
+    Logic -->|5| Data
+    Data <-->|6| Backend
+
+    %% Side effects
+    State -.-> Effects
+    Data -.-> Effects
+
+    %% Estilos
+    style User fill:#FFF9C4,stroke:#FBC02D,stroke-width:2px,color:#F57F17
+    style Backend fill:#C8E6C9,stroke:#388E3C,stroke-width:2px,color:#1B5E20
+    style Entry fill:#FAFAFA,stroke:#9E9E9E,stroke-width:2px,color:#424242
+    style UI fill:#E3F2FD,stroke:#1565C0,stroke-width:2px,color:#0D47A1
+    style State fill:#E1F5FE,stroke:#0277BD,stroke-width:2px,color:#01579B
+    style Logic fill:#FFEBEE,stroke:#C62828,stroke-width:2px,color:#B71C1C
+    style Data fill:#F3E5F5,stroke:#7B1FA2,stroke-width:2px,color:#4A148C
+    style Effects fill:#FFF3E0,stroke:#EF6C00,stroke-width:2px,color:#BF360C
+```
+
+> [!TIP] > **Cuándo usar cada diagrama**:
+>
+> - **Diagrama Completo** (arriba): Para análisis técnico detallado, debugging, y entender conexiones específicas
+> - **Vista Simplificada** (aquí): Para presentaciones, onboarding de nuevos desarrolladores, y comprensión rápida del flujo
 
 ---
 
@@ -202,10 +311,10 @@ Aquí viven las configuraciones globales de la aplicación.
 Cada feature es un **módulo autocontenido** con todo lo necesario para funcionar:
 
 - **`auth/`**: Autenticación y sesión
-  - `AuthContext.tsx`: Gestiona el estado global de autenticación
-  - `hooks/`: `useUpdateProfile`
+  - `AuthContext.tsx`: Context unificado (Provider + `useAuth` hook) para estado global de autenticación
   - `pages/`: `LoginPage`, `RegisterPage`
   - `schemas.ts`: Validación con Zod
+  - `types.ts`: Interfaces TypeScript
 - **`games/`**: Catálogo de juegos
   - `hooks/`: `useGames` (infinite scroll), `useGameDetails`
   - `components/`: `GameCard`
@@ -213,11 +322,11 @@ Cada feature es un **módulo autocontenido** con todo lo necesario para funciona
   - `hooks/`: `useLibrary`, `useWishlist` (Mutation hooks)
   - `services/`: usa `games.service.ts` (Library) y `user.service.ts` (Wishlist)
 - **`wishlist/`**: Gestión de lista de deseos (Context-based)
-  - `WishlistContext.tsx`: Context API para wishlist con **optimistic updates**
-  - Alternativa a `useWishlist` hook, usado por `WishlistPage` para mejor UX
+  - `WishlistContext.tsx`: Context unificado (Provider + `useWishlist` hook) con **optimistic updates** y React Query
+  - Usado por `WishlistPage` para UX instantánea con rollback automático
 - **`cart/`**: Carrito de compras
-  - `CartContext.tsx`: Context API para carrito con persistencia en localStorage
-  - Gestión de items, total y contador
+  - `CartContext.tsx`: Context unificado (Provider + `useCart` hook) con persistencia en localStorage
+  - Gestión de items, cálculo de total y contador con `useMemo`
 - **`checkout/`**: Proceso de compra
   - `hooks/`: `useCheckout`
   - `services/`: `checkout.service.ts`
@@ -425,6 +534,46 @@ sequenceDiagram
     end
 ```
 
+### 3.5. Flujo de Cart (Persistencia y Gestión de Estado)
+
+**Concepto**: Carrito de compras con persistencia automática en localStorage y prevención de duplicados.
+
+```mermaid
+sequenceDiagram
+    participant User as 👤 Usuario
+    participant GameDetails as ⚛️ GameDetails
+    participant Cart as 🛒 CartContext
+    participant Storage as 💾 LocalStorage
+
+    Note over User, Storage: Agregar Item al Carrito
+    User->>GameDetails: Click "Add to Cart"
+    GameDetails->>Cart: addItem(game)
+
+    alt Juego ya en carrito
+        Cart->>Cart: Check duplicates
+        Cart-->>GameDetails: No action (skip)
+        GameDetails-->>User: Toast "Already in cart"
+    else Juego nuevo
+        Cart->>Cart: Add to items array
+        Cart->>Cart: useMemo recalcula total
+        Note right of Cart: Optimización de performance
+        Cart->>Storage: Persist cart (useEffect)
+        Cart-->>GameDetails: Success
+        GameDetails-->>User: Toast "Added to cart ✅"
+    end
+
+    Note over User, Storage: Eliminar Item
+    User->>Cart: removeItem(id)
+    Cart->>Cart: Filter items array
+    Cart->>Storage: Persist updated cart
+    Cart-->>User: Update UI
+
+    Note over User, Storage: Vaciar Carrito (Post-Checkout)
+    User->>Cart: clear()
+    Cart->>Cart: setItems([])
+    Cart->>Storage: Persist empty cart
+```
+
 ### 4. Flujo Upload de Avatar (Manejo de Archivos)
 
 **Concepto**: Manejo de BLOBs y UX inmediata.
@@ -450,6 +599,49 @@ sequenceDiagram
     Note right of Auth: 3. Actualización Silenciosa
     Auth->>Storage: Update 'user' object
     Auth->>Modal: Success!
+```
+
+### 4.5. Flujo de Error Boundary (Manejo Global de Errores)
+
+**Concepto**: Captura de errores de React para prevenir crashes completos de la aplicación.
+
+```mermaid
+flowchart TD
+    Start([⚛️ Component Render]) --> Try{Try Render}
+
+    Try -->|✅ Success| Render[✅ Normal UI]
+    Try -->|❌ Error Thrown| Catch[🛡️ Error Boundary]
+
+    Catch --> Derive[getDerivedStateFromError]
+    Derive --> SetState[hasError = true]
+
+    SetState --> Log{Env === 'dev'?}
+    Log -->|Yes| Console[📝 logger.error<br/>+ Component Stack]
+    Log -->|No| Silent[🤫 Silent Mode]
+
+    Console --> Fallback
+    Silent --> Fallback
+
+    Fallback[⚠️ Fallback UI<br/>Glassmorphism Card]
+
+    Fallback --> ShowDetails{DEV Mode?}
+    ShowDetails -->|Yes| Details[📋 Show Error Details<br/>+ Stack Trace]
+    ShowDetails -->|No| NoDetails[🚫 Hide Technical Info]
+
+    Details --> Actions
+    NoDetails --> Actions
+
+    Actions{User Action}
+
+    Actions -->|Click Refresh| Reload[🔄 window.location.reload<br/>Full Page Reload]
+    Actions -->|Click Try Again| Reset[🔄 handleReset<br/>Reset Error State]
+
+    Reset --> Start
+    Reload --> Start
+
+    style Catch fill:#ffebee,stroke:#c62828,stroke-width:2px
+    style Fallback fill:#fff3e0,stroke:#ef6c00,stroke-width:2px
+    style Render fill:#e8f5e9,stroke:#388e3c,stroke-width:2px
 ```
 
 ### 5. Flujo de Catálogo (Search & Filter)
@@ -491,6 +683,162 @@ flowchart TD
 
     CheckRole -->|No| Home[🚫 Redirigir a /]
     CheckRole -->|Sí| Render
+```
+
+### 7. Flujo de Internacionalización (Language Toggle)
+
+**Concepto**: Cambio de idioma con persistencia automática vía i18next.
+
+```mermaid
+sequenceDiagram
+    participant User as 👤 Usuario
+    participant Toggle as 🌐 LanguageToggle
+    participant i18n as 📚 i18next
+    participant Storage as 💾 LocalStorage
+    participant App as ⚛️ App Components
+
+    User->>Toggle: Click "ES"
+    Toggle->>i18n: changeLanguage('es')
+
+    Note right of i18n: i18next maneja persistencia
+    i18n->>Storage: setItem('i18nextLng', 'es')
+    i18n->>i18n: Load ES translations
+
+    i18n-->>App: Trigger re-render
+    Note right of App: useTranslation hooks actualizan
+
+    App-->>User: UI en Español ✅
+
+    Note over User, App: Próxima Sesión
+    User->>App: Reload page
+    App->>i18n: Initialize
+    i18n->>Storage: getItem('i18nextLng')
+    Storage-->>i18n: 'es'
+    i18n-->>App: Auto-load Spanish
+    App-->>User: UI en Español (Persistido)
+```
+
+### 8. Flujo de Admin RAWG Import
+
+**Concepto**: Importación de juegos desde RAWG API al catálogo local.
+
+```mermaid
+sequenceDiagram
+    participant Admin as 👤 Admin
+    participant UI as ⚛️ RAWGImport Page
+    participant Hook as 🪝 useSearchRAWG
+    participant Service as 📦 AdminService
+    participant Backend as ☁️ Backend
+    participant RAWG as 🎮 RAWG API
+    participant DB as 💾 MongoDB
+
+    Note over Admin, DB: Fase 1: Búsqueda
+    Admin->>UI: Enter "Zelda"
+    UI->>Hook: searchRAWG("Zelda")
+    Hook->>Service: searchRAWG("Zelda")
+    Service->>Backend: GET /admin/rawg/search?q=Zelda
+    Backend->>RAWG: GET /games?search=Zelda
+    RAWG-->>Backend: [Game1, Game2, ...]
+    Backend-->>Service: Mapped games
+    Service-->>Hook: Games array
+    Hook-->>UI: Display results grid
+
+    Note over Admin, DB: Fase 2: Importación
+    Admin->>UI: Click "Import" (Game ID: 123)
+    UI->>Hook: importGame(123)
+    Hook->>Service: importFromRAWG(123)
+    Service->>Backend: POST /admin/rawg/import/:id
+
+    Backend->>RAWG: GET /games/123 (Full details)
+    RAWG-->>Backend: Complete game data
+
+    Backend->>Backend: Transform to local schema
+    Backend->>DB: Save game document
+    DB-->>Backend: Success
+
+    Backend-->>Service: { success: true, game }
+    Service-->>Hook: Invalidate ["games"] cache
+    Hook-->>UI: Toast "Game imported ✅"
+    UI-->>Admin: Refresh catalog
+```
+
+### 9. Flujo de Infinite Scroll (Paginación)
+
+**Concepto**: Carga progresiva de juegos con `useInfiniteQuery`.
+
+```mermaid
+sequenceDiagram
+    participant User as 👤 Usuario
+    participant Home as ⚛️ HomePage
+    participant Hook as 🪝 useGames
+    participant Query as ⚡ React Query
+    participant Service as 📦 GamesService
+    participant Backend as ☁️ Backend
+
+    Note over User, Backend: Carga Inicial
+    User->>Home: Visit /home
+    Home->>Hook: useGames()
+    Hook->>Query: useInfiniteQuery
+    Query->>Service: getCatalog({ page: 1 })
+    Service->>Backend: GET /games?page=1&limit=12
+    Backend-->>Service: { games: [...], hasMore: true }
+    Service-->>Query: Cache page 1
+    Query-->>Hook: { pages: [page1] }
+    Hook-->>Home: Display 12 games
+
+    Note over User, Backend: Load More
+    User->>Home: Scroll to bottom / Click "Load More"
+    Home->>Hook: fetchNextPage()
+    Hook->>Query: getNextPageParam(lastPage)
+    Query->>Service: getCatalog({ page: 2 })
+    Service->>Backend: GET /games?page=2&limit=12
+    Backend-->>Service: { games: [...], hasMore: true }
+    Service-->>Query: Cache page 2
+    Query-->>Hook: { pages: [page1, page2] }
+    Hook-->>Home: Display 24 games total
+```
+
+### 10. Flujo de Profile Update
+
+**Concepto**: Actualización de perfil con validación Zod y refresh de AuthContext.
+
+```mermaid
+sequenceDiagram
+    participant User as 👤 Usuario
+    participant Modal as ⚛️ EditProfileModal
+    participant Hook as 🪝 useUpdateProfile
+    participant Auth as 🔐 AuthContext
+    participant Service as 📦 AuthService
+    participant Backend as ☁️ Backend
+
+    User->>Modal: Edit username
+    User->>Modal: Click "Save"
+
+    Modal->>Modal: Zod validation
+    alt Validation fails
+        Modal-->>User: Show errors
+    else Validation passes
+        Modal->>Hook: updateProfile({ username })
+        Hook->>Service: updateProfile(data)
+        Service->>Backend: PUT /users/profile
+
+        alt Success
+            Backend-->>Service: { user: {...} }
+            Service-->>Hook: Success
+            Hook->>Auth: refreshUser()
+            Auth->>Service: getProfile()
+            Service->>Backend: GET /users/profile
+            Backend-->>Service: Updated user
+            Service-->>Auth: Update user state
+            Auth-->>Modal: Context updated
+            Modal-->>User: Toast "Profile updated ✅"
+        else Error
+            Backend-->>Service: 400 Error
+            Service-->>Hook: Reject
+            Hook-->>Modal: Error message
+            Modal-->>User: Toast "Update failed ❌"
+        end
+    end
 ```
 
 ---
@@ -565,7 +913,7 @@ No usamos una "bala de plata" para el estado. Usamos la herramienta correcta par
 
 ## 🔮 Roadmap Actualizado
 
-### Corto Plazo
+### Corto Plazo (Completado)
 
 - [x] ~~Implementar lógica de refresh token~~ ✅ Completado
 - [x] ~~Error Boundaries para manejo robusto de errores~~ ✅ Completado
@@ -573,10 +921,12 @@ No usamos una "bala de plata" para el estado. Usamos la herramienta correcta par
 - [x] ~~Cargar traducciones al español~~ ✅ Completado
 - [x] ~~Mover estilos inline restantes a CSS modules~~ ✅ Completado (100% Clean Code)
 - [x] ~~Implementar Buscador Avanzado (Search, Filters & Sort)~~ ✅ Completado
+- [x] ~~Optimistic Updates en Wishlist~~ ✅ Completado
+- [x] ~~Testing Strategy (74 tests, 16 archivos)~~ ✅ Completado
 
 ### Medio Plazo
 
-- [ ] Optimistic Updates en mutations (Cart)
+- [ ] Refactorización Fast Refresh (Fase 16 - Opcional)
 - [ ] Service Workers para PWA
 - [ ] Integración con Sentry para tracking
 

@@ -66,7 +66,7 @@ export const EditProfileModal = ({
       formData.append("email", data.email);
 
       await authService.updateProfile(formData);
-      
+
       // Refresh user context to show new name immediately
       await refreshUser();
 

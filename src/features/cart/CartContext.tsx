@@ -1,4 +1,4 @@
-﻿/**
+/**
  * CartContext.tsx
  * Shopping cart context provider with localStorage persistence.
  * Manages cart items, total calculation, and provides cart operations
@@ -140,5 +140,3 @@ export const useCart = () => {
   }
   return ctx;
 };
-
-// Exported to main.tsx for application-wide cart state management

@@ -60,12 +60,14 @@ El módulo de autenticación completo.
 
 #### `AuthContext.tsx`
 
-- **Qué hace**: Gestiona el estado global de autenticación.
+- **Qué hace**: Context unificado que gestiona el estado global de autenticación.
 - **Por qué**: El estado de auth se necesita en muchos componentes (Navbar, rutas protegidas, etc.).
+- **Estructura**: Archivo unificado que exporta `AuthProvider` (componente) y `useAuth` (hook custom).
 - **Detalle**:
   - Guarda el token en `localStorage`
   - Proporciona funciones: `login`, `register`, `logout`, `refreshUser`
   - Inicializa la sesión al cargar la app (verifica si hay token guardado)
+  - Implementa sistema dual token (access + refresh) con auto-refresh
 
 #### `pages/LoginPage.tsx` y `RegisterPage.tsx`
 
@@ -137,10 +139,11 @@ Módulo de lista de deseos con Context API.
 
 #### `WishlistContext.tsx`
 
-- **Qué hace**: Context provider para gestión de wishlist del usuario.
-- **Por qué**: Alternativa a hooks con optimistic updates para mejor UX.
+- **Qué hace**: Context unificado para gestión de wishlist del usuario.
+- **Por qué**: Proporciona estado global de wishlist con optimistic updates para mejor UX.
+- **Estructura**: Archivo unificado que exporta `WishlistProvider` (componente) y `useWishlist` (hook custom).
 - **Características**:
-  - Fetch automático al autenticarse
+  - Fetch automático al autenticarse (React Query internamente)
   - Optimistic updates (UI se actualiza antes de respuesta del servidor)
   - Rollback automático si falla la petición
   - Toast notifications para feedback
@@ -156,13 +159,14 @@ Módulo de carrito de compras.
 
 #### `CartContext.tsx`
 
-- **Qué hace**: Context provider para gestión del carrito.
-- **Por qué**: Estado global del carrito con persistencia.
+- **Qué hace**: Context unificado para gestión del carrito.
+- **Por qué**: Estado global del carrito con persistencia automática.
+- **Estructura**: Archivo unificado que exporta `CartProvider` (componente) y `useCart` (hook custom).
 - **Características**:
-  - Persistencia en localStorage
-  - Cálculo automático de total y contador
+  - Persistencia en localStorage (sincronización automática)
+  - Cálculo automático de total y contador con `useMemo`
   - Previene duplicados
-  - Maneja precios con descuento
+  - Maneja precios con descuento (offerPrice vs price)
 - **Funciones exportadas**:
   - `addItem(game)`: Añade juego al carrito
   - `removeItem(id)`: Quita juego del carrito

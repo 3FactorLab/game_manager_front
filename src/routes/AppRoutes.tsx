@@ -1,11 +1,4 @@
-﻿/**
- * AppRoutes.tsx
- * Application routing configuration using React Router v7.
- * Defines all application routes including public, protected, and admin routes.
- * Implements ProtectedRoute component for authentication and authorization.
- */
-
-import { Routes, Route, Navigate } from "react-router-dom";
+﻿import { Routes, Route, Navigate } from "react-router-dom";
 import { MainLayout } from "../components/layout/MainLayout";
 import HomePage from "../pages/HomePage";
 import CatalogPage from "../pages/CatalogPage";
@@ -19,7 +12,6 @@ import CheckoutPage from "../pages/CheckoutPage";
 import WishlistPage from "../pages/WishlistPage";
 import OrdersPage from "../pages/OrdersPage";
 
-// Admin Pages
 import AdminDashboard from "../pages/admin/AdminDashboard";
 import UserManagement from "../pages/admin/UserManagement";
 import GameManagement from "../pages/admin/GameManagement";
@@ -27,19 +19,6 @@ import RAWGImport from "../pages/admin/RAWGImport";
 
 import ProtectedRoute from "./ProtectedRoute";
 
-/**
- * AppRoutes component
- * Main routing configuration for the application.
- * Organizes routes into categories:
- * - Public routes (/, /home, /store, /game/:id)
- * - Protected user routes (/library, /checkout/:id)
- * - Protected admin routes (/admin/*)
- * - Auth routes (/login, /register)
- *
- * All routes are wrapped in MainLayout for consistent navigation.
- *
- * @returns {JSX.Element} Application routes
- */
 const AppRoutes = () => {
   return (
     <Routes>
@@ -138,5 +117,4 @@ const AppRoutes = () => {
   );
 };
 
-// Exported to App.tsx as main routing component
 export default AppRoutes;

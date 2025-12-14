@@ -90,6 +90,7 @@
     var(--accent-secondary)
   );
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   pointer-events: none;
@@ -195,4 +196,30 @@
     height: 36px;
     font-size: 0.85rem;
   }
+}
+
+.contentWrapper {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.loadingState,
+.errorState,
+.emptyState {
+  text-align: center;
+  padding: 4rem;
+}
+
+.loadingText {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.errorState {
+  color: var(--error);
+}
+
+.emptyState {
+  color: var(--text-muted);
 }

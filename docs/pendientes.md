@@ -11,43 +11,27 @@
 
 ---
 
-## ⚠️ Mejoras Pendientes (Media Prioridad)
+## ⚠️ Mejoras Pendientes (Prioridad Media)
 
----
+### Fase 16: Refactorización Fast Refresh (DX)
 
-### 📡 Backend Refactoring (Tech Debt)
+- [ ] **Context Split**: Separar Hooks (`useAuth`, `useCart`, `useWishlist`) de sus Providers para habilitar Fast Refresh y eliminar warnings.
 
-- [x] **Refactorización de Arquitectura (PROMPT_AI Compliance)**:
-  - [x] **Controladores**: Eliminar lógica de negocio y dependencias de Mongoose Models.
-  - [x] **Servicios**: Centralizar toda la lógica (User Wishlist, Payment Simulation).
-  - [x] **Async/Error**: Implementar `asyncHandler` en `user`, `payment`, `order` controllers.
-  - [x] **DTOs**: Estandarizar entradas en controladores faltantes.
-- [x] **Tests Unitarios (Prioridad Alta)**: Extender cobertura con Mocks. ✅
-  - _Nota_: Cubierto por tests de integración y servicios clave (Auth, Payment, RAWG).
-  - _Objetivo_: Crear red de seguridad antes de refactorizar.
+### 🔮 Visión Futura (Migración a Monorepo)
 
-### 🔮 Visión Futura (Monorepo Transition)
+Pasos estrictamente de infraestructura para cuando decidamos fusionar los repositorios:
 
-Cuando el proyecto escale, esta preparación permitirá una transición fluida al **Monorepo**:
+1.  **Hoja de Ruta de Infraestructura**:
+    - Mover `frontend` y `backend` a una carpeta raíz común.
+    - Configurar `npm workspaces` o `pnpm`.
+    - Crear `packages/shared-types` (Moviendo los tipos de la Fase 14 aquí).
+    - Crear `packages/shared-utils` (Zod schemas, formatters).
 
-1.  **Beneficios**:
-    - Eliminación de la "copia manual" de schemas.
-    - Tipado automático end-to-end (`z.infer<Type>`).
-2.  **Hoja de Ruta**:
-    - Mover `frontend` y `backend` a raíz común.
-    - Crear `packages/shared`.
-    - Configurar NPM Workspaces.
-
-- [ ] **Tests Unitarios**: Extender la cobertura de tests unitarios (con Mocks) para lógica de negocio compleja.
+- [x] **Tests Unitarios**: Extender la cobertura de tests unitarios (con Mocks) para lógica de negocio compleja. ✅
 
 ---
 
 ## ✅ Completado Recientemente
-
-### Fase 5: Rutas de Archivos Estáticos
-
-- ✅ Corregidas 2 referencias que usaban `/public/game_manager_icon.png` a `/game_manager_icon.png`.
-- ✅ Resuelto warning de Vite.
 
 ### Fase 1: Type Safety y Error Handling
 
@@ -62,12 +46,6 @@ Cuando el proyecto escale, esta preparación permitirá una transición fluida a
 - ✅ Integrado en `App.tsx`
 - ✅ UI de fallback user-friendly
 
-### Fase 4: Token Refresh Logic
-
-- ✅ Soporte backend `/api/users/refresh-token`
-- ✅ Auto-refresh en frontend sin logout
-- ✅ Persistencia segura en localStorage
-
 ### Fase 3: Style Refactoring (Clean Code)
 
 - ✅ Eliminados 100% estilos inline (70+ instancias)
@@ -76,6 +54,17 @@ Cuando el proyecto escale, esta preparación permitirá una transición fluida a
 - ✅ Migración de 6ª Screenshot completada y verificada
 - ✅ Internacionalización (i18n) activada con toggle EN/ES
 - ✅ Rutas estáticas corregidas (`/public` prefix removed)
+
+### Fase 4: Token Refresh Logic
+
+- ✅ Soporte backend `/api/users/refresh-token`
+- ✅ Auto-refresh en frontend sin logout
+- ✅ Persistencia segura en localStorage
+
+### Fase 5: Rutas de Archivos Estáticos
+
+- ✅ Corregidas 2 referencias que usaban `/public/game_manager_icon.png` a `/game_manager_icon.png`.
+- ✅ Resuelto warning de Vite.
 
 ### Fase 6: Search & Filter (Advanced)
 
@@ -90,12 +79,6 @@ Cuando el proyecto escale, esta preparación permitirá una transición fluida a
 - ✅ Middleware `validateZod` implementado con formato de error compatible.
 - ✅ Limpieza de código legacy.
 
-### Fase 9: Backend Architecture (PROMPT_AI Compliance)
-
-- ✅ **Controllers**: Refactorizados para ser "HTTP-Only" (Delegación a Servicios).
-- ✅ **Async/Error**: Uso universal de `asyncHandler`.
-- ✅ **Separation of Concerns**: User/Auth/Collection claramente separados.
-
 ### Fase 8: Testing Strategy (Quality Assurance)
 
 - ✅ **Fase 1 (Core)**: AuthContext, CartContext, WishlistContext (Unit Tests).
@@ -103,12 +86,42 @@ Cuando el proyecto escale, esta preparación permitirá una transición fluida a
 - ✅ **Fase 3 (Contracts)**: MSW Setup & API Contract Validation.
 - ✅ **Fase 4 (E2E)**: Evaluada y descartada por regla de "No Delete" y coste/beneficio académicos.
 
+### Fase 9: Backend Architecture (PROMPT_AI Compliance)
+
+- ✅ **Controllers**: Refactorizados para ser "HTTP-Only" (Delegación a Servicios).
+- ✅ **Async/Error**: Uso universal de `asyncHandler`.
+- ✅ **Separation of Concerns**: User/Auth/Collection claramente separados.
+
 ### Fase 10 & 11: Backend Modernization & Hardening
 
 - ✅ **Test Colocation**: Migración de `tests/` a `src/` completada.
 - ✅ **Cron Services**: Limpieza automática de Tokens y Órdenes (04:00 AM).
 - ✅ **Resilience**: Fallbacks en Aggregator y Pagos (Email Service Down).
 - ✅ **Maintenance**: Script manual `manual-cleanup.ts` entregado.
+
+### Fase 12: Test Hardening & Monorepo Prep (Critical Fixes)
+
+- ✅ **Network Isolation**: Solucionada la fuga de API real en tests de Steam (`jest.spyOn`).
+- ✅ **Robust Mocking**: Migración de `jest.mock` a spies explícitos para evitar problemas de hoisting y fragilidad.
+- ✅ **CI Stability**: Configurado Jest para ignorar `dist/` y evitar falsos positivos/negativos.
+- ✅ **Monorepo Readiness**: Backend tests ahora son 100% aislados y rápidos, requisito clave para la fusión de repositorios.
+
+### Fase 13: Final Architecture Cleanup & DTOs
+
+---
+
+### Fase 14: Frontend Hardening (Robustez V2)
+
+- ✅ **Strict Typing**: `api.types.ts` migrado a `Game[]`.
+- ✅ **State Management**: `WishlistContext` migrado a **React Query**.
+- ✅ **Clean Styles**: `Navbar` y `CatalogPage` migrados a CSS Modules.
+- ✅ **Clean Code**: Eliminados `console.log` de producción.
+
+### Fase 15: Infraestructura Future-Proof (Fixed & Hardened)
+
+- ✅ **Dynamic Proxy**: `vite.config.ts` limpia sufijos `/api` automáticamente.
+- ✅ **Dynamic Client**: `api.client.ts` fuerza Proxy en modo DEV (Cero CORS).
+- ✅ **Env Security**: `.env` restaurado y verificado (Puerto 3500).
 
 ---
 
@@ -119,18 +132,19 @@ Cuando el proyecto escale, esta preparación permitirá una transición fluida a
 - **3 warnings:** Fast refresh warning (`react-refresh/only-export-components`) en `AuthContext.tsx`, `CartContext.tsx`, `WishlistContext.tsx`.
   - **Causa**: Exportar hooks (`useAuth`) y componentes (`AuthProvider`) en el mismo archivo.
   - **Impacto**: Solo afecta a la experiencia de desarrollo (Hot Reload recarga la página completa en lugar de mantener estado). Nulo en producción.
-  - **Decisión**: Pospuesto. La refactorización (dividir en 3 archivos por Context) añade complejidad innecesaria por ahora.
+  - **Decisión**: Planificado para **Fase 16**.
 
 ### Build Status
 
 - ✅ TypeScript compilation: SUCCESS
 - ✅ Vite build: SUCCESS
-- ✅ Tests: 38/38 passing
+- ✅ Tests: 74/74 passing (Cobertura extendida)
 
 ### Próximos Pasos Sugeridos
 
-1. Fix seguridad password (3-4h) - Requiere backend
+1. Iniciar **Fase 16** (Context Refactor).
+2. Fix seguridad password (3-4h) - Requiere backend.
 
 ---
 
-**Última actualización:** 2025-12-13
+**Última actualización:** 2025-12-14

@@ -7,8 +7,13 @@
  * Pattern: Context API for global auth state (appropriate for app-wide user data)
  */
 
-import { createContext, useContext, useState, useEffect } from "react";
-import type { ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  type ReactNode,
+} from "react";
 import type { User, LoginCredentials, RegisterCredentials } from "./types";
 import { authService } from "../../services/auth.service";
 import { authEvents, AUTH_LOGOUT } from "../../utils/auth-events";
@@ -78,12 +83,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     // Subscribe to soft logout events (from API client)
     const unsubscribe = authEvents.on(AUTH_LOGOUT, () => {
       logout();
-      // Since we are inside a React component but not necessarily inside Router's data router (yet),
-      // we can't easily use useNavigate here if this provider is outside Router.
-      // However, App.tsx structure shows AuthProvider IS inside QueryClientProvider but OUTSIDE BrowserRouter?
-      // Wait, main.tsx: AuthProvider wraps CartProvider wraps WishlistProvider wraps BrowserRouter.
-      // So AuthProvider CANNOT use useNavigate directly because it is a PARENT of Router.
-      // BUT: The state change (user = null) should trigger ProtectedRoute to redirect.
     });
 
     return () => {
@@ -172,7 +171,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
  * Usage example:
  * const { user, login, logout, isAuthenticated } = useAuth();
  */
-export const useAuth = () => {
+export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
   if (context === undefined) {
     throw new Error("useAuth must be used within an AuthProvider");

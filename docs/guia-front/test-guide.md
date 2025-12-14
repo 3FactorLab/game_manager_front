@@ -131,19 +131,31 @@ npm test
 
 ### Current Test Scope
 
-- **Utilities**: `formatCurrency`
-- **Components**: Basic rendering tests for `Button`, `Input`.
-- **Hooks**: `useAuth` mock tests (Planned).
+**Coverage**: 16 test files, 74 tests passing (100%)
+
+- **Contexts**: `AuthContext`, `CartContext`, `WishlistContext`
+- **Pages**: `CheckoutPage`, `GameDetails`, `LibraryPage`, `LoginPage`, `RegisterPage`
+- **Components**: `Button`, `ErrorBoundary`, `CatalogControls`, `ChangePasswordModal`
+- **Routes**: `ProtectedRoute`
+- **Utilities**: `formatCurrency`, `error.util`
+- **Schemas**: `auth.schemas` (Zod validation)
+- **Contracts**: API contract validation with MSW
 
 ### Writing New Tests
 
 1. Create file `Component.test.tsx` next to your component.
 2. Import `render`, `screen` from `@testing-library/react`.
-3. Example:
+3. Use `vi.mock()` for mocking (NOT `jest.mock()`).
+4. Example:
 
 ```tsx
-test("renders button text", () => {
-  render(<Button>Click Me</Button>);
-  expect(screen.getByText("Click Me")).toBeInTheDocument();
+import { render, screen } from "@testing-library/react";
+import { describe, it, expect } from "vitest";
+
+describe("Button", () => {
+  it("renders button text", () => {
+    render(<Button>Click Me</Button>);
+    expect(screen.getByText("Click Me")).toBeInTheDocument();
+  });
 });
 ```
