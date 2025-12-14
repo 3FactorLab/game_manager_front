@@ -6,10 +6,10 @@ import { HelmetProvider } from "react-helmet-async";
 
 import "./index.css";
 import "./lib/i18n";
-import { CartProvider } from "./features/cart/CartContext";
-import { WishlistProvider } from "./features/wishlist/WishlistContext";
+import { CartProvider } from "./features/cart/CartProvider";
+import { WishlistProvider } from "./features/wishlist/WishlistProvider";
 import { queryClient } from "./lib/queryClient";
-import { AuthProvider } from "./features/auth/AuthContext";
+import { AuthProvider } from "./features/auth/AuthProvider";
 import App from "./App.tsx";
 import ScrollToTop from "./components/common/ScrollToTop";
 

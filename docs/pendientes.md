@@ -1,6 +1,30 @@
-# Pendientes - Frontend
+# Pendientes Frontend
 
-## 🔴 Seguridad (Alta Prioridad)
+## 🔧 Code Quality (Auditoría 2025-12-14)
+
+### Crítico (Debe Arreglarse)
+
+- [ ] **Eliminar console.error en producción** (Prioridad ALTA)
+  - Archivo: `src/services/api.client.ts:102`
+  - Línea: `console.error("[Auth] Token refresh failed:", refreshError);`
+  - Solución: Reemplazar con logger utility o eliminar
+  - Impacto: Logs innecesarios en producción
+
+### Opcional (Mejora de Calidad)
+
+- [ ] **Mejorar tipado en tests** (Prioridad MEDIA)
+  - 19 usos de `any` en archivos de test
+  - Archivos afectados:
+    - `api.client.test.ts` (3 usos)
+    - `GameDetails.test.tsx` (8 usos)
+    - `api.contract.test.ts` (2 usos)
+    - `WishlistContext.test.tsx` (6 usos)
+  - Solución: Tipar mocks correctamente
+  - Impacto: Mejor type safety en tests
+
+---
+
+## 📋 Features Pendientes
 
 ### Cambio de Contraseña
 
@@ -12,10 +36,6 @@
 ---
 
 ## ⚠️ Mejoras Pendientes (Prioridad Media)
-
-### Fase 16: Refactorización Fast Refresh (DX)
-
-- [ ] **Context Split**: Separar Hooks (`useAuth`, `useCart`, `useWishlist`) de sus Providers para habilitar Fast Refresh y eliminar warnings.
 
 ### 🔮 Visión Futura (Migración a Monorepo)
 
@@ -123,16 +143,32 @@ Pasos estrictamente de infraestructura para cuando decidamos fusionar los reposi
 - ✅ **Dynamic Client**: `api.client.ts` fuerza Proxy en modo DEV (Cero CORS).
 - ✅ **Env Security**: `.env` restaurado y verificado (Puerto 3500).
 
+### Fase 16: Fast Refresh Optimization (DX Improvement)
+
+- ✅ **Context Split**: Separados Hooks de Providers en 3 contexts.
+  - ✅ `AuthContext.tsx` (54 líneas) + `AuthProvider.tsx` (127 líneas)
+  - ✅ `CartContext.tsx` (55 líneas) + `CartProvider.tsx` (88 líneas)
+  - ✅ `WishlistContext.tsx` (35 líneas) + `WishlistProvider.tsx` (103 líneas)
+- ✅ **Automation Scripts**: 5 scripts creados para futuras migraciones.
+  - ✅ `scripts/split-context.js` - Separación automática de contexts
+  - ✅ `scripts/update-imports.js` - Actualización de imports
+  - ✅ `scripts/migrate-context.sh` - Script maestro de orquestación
+  - ✅ `scripts/validate-phase16.js` - Validación de refactor
+  - ✅ `codemod/split-context.js` - Codemod con jscodeshift
+- ✅ **Import Updates**: Actualizados `main.tsx` y archivos de test.
+- ✅ **Zero Git Operations**: Scripts NO ejecutan git automáticamente.
+- ✅ **Test Coverage**: 74/74 tests passing (100% mantenido).
+- ✅ **TypeScript**: Compila sin errores.
+- ✅ **Fast Refresh**: Warnings eliminados, Hot Reload funciona correctamente.
+- ✅ **Logic Flows**: Todos los flujos verificados (Auth, Cart, Wishlist).
+
 ---
 
 ## 📝 Notas Técnicas
 
 ### Errores de Lint Restantes
 
-- **3 warnings:** Fast refresh warning (`react-refresh/only-export-components`) en `AuthContext.tsx`, `CartContext.tsx`, `WishlistContext.tsx`.
-  - **Causa**: Exportar hooks (`useAuth`) y componentes (`AuthProvider`) en el mismo archivo.
-  - **Impacto**: Solo afecta a la experiencia de desarrollo (Hot Reload recarga la página completa en lugar de mantener estado). Nulo en producción.
-  - **Decisión**: Planificado para **Fase 16**.
+- ✅ **0 warnings de Fast Refresh**: Resueltos en Fase 16.
 
 ### Build Status
 
@@ -142,9 +178,10 @@ Pasos estrictamente de infraestructura para cuando decidamos fusionar los reposi
 
 ### Próximos Pasos Sugeridos
 
-1. Iniciar **Fase 16** (Context Refactor).
-2. Fix seguridad password (3-4h) - Requiere backend.
+1. **Commit Phase 16**: Revisar cambios y hacer commit manual.
+2. **Fix seguridad password** (3-4h) - Requiere backend.
+3. **Actualizar documentación**: architecture-front.md, tutorial-front.md, test-guide.md.
 
 ---
 
-**Última actualización:** 2025-12-14
+**Última actualización:** 2025-12-14 (Phase 16 Completed)

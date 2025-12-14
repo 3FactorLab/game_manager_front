@@ -18,10 +18,47 @@ This document tracks the step-by-step implementation of the Game Manager Fronten
 ## Phase 2: Authentication Infrastructure
 
 - [x] **Auth Service**: Created `auth.service.ts` for Login/Register API calls.
-- [x] **Auth Context**: Implemented `AuthProvider` to manage global user state and JWT persistence in `localStorage`.
-- [x] **Pages**:
-  - `LoginPage`: Form with validation and error handling.
-  - `RegisterPage`: Registration form with basic validation.
+- [x] **Dual Token System**: Implemented automatic token refresh with `refreshToken` stored in `localStorage`.
+- [x] **Auto-Refresh**: `api.client.ts` intercepts 401 errors, refreshes token automatically, and retries failed requests.
+- [x] **Session Persistence**: User remains logged in across page reloads and new tabs.
+
+## Phase 16: Fast Refresh Optimization (DX Improvement)
+
+- [x] **Context Pattern Refactor (2-File Pattern)**:
+  - Separated all Contexts into 2 files for Fast Refresh compliance.
+  - **AuthContext**: Split into `AuthContext.tsx` (context + hook) and `AuthProvider.tsx` (provider component).
+  - **CartContext**: Split into `CartContext.tsx` (context + hook) and `CartProvider.tsx` (provider component).
+  - **WishlistContext**: Split into `WishlistContext.tsx` (context + hook) and `WishlistProvider.tsx` (provider component).
+- [x] **Automation Scripts**:
+  - Created `scripts/split-context.js` for automatic context splitting.
+  - Created `scripts/update-imports.js` for import path updates.
+  - Created `scripts/migrate-context.sh` for orchestration.
+  - Created `scripts/validate-phase16.js` for refactor validation.
+  - Created `codemod/split-context.js` for advanced automation with jscodeshift.
+  - Added `npm run validate:phase16` script to `package.json`.
+- [x] **Import Cleanup Automation**:
+  - Installed `eslint-plugin-unused-imports` for automatic cleanup.
+  - Added `npm run lint:fix` script for auto-fix.
+  - Updated `eslint.config.js` with unused imports rules.
+- [x] **Documentation Updates**:
+  - Updated `PROMPT_AI_front.md` with Context Pattern guidelines (2-file pattern).
+  - Updated `architecture-front.md` to reflect 2-file pattern.
+  - Updated `tutorial-front.md` with detailed Context Pattern explanations.
+  - Updated `pendientes.md` to mark Phase 16 as completed.
+- [x] **Results**:
+  - ✅ 74/74 tests passing (100% coverage maintained).
+  - ✅ 0 Fast Refresh warnings (previously 3).
+  - ✅ TypeScript compiles without errors.
+  - ✅ Build successful.
+  - ✅ All logic flows verified (Auth, Cart, Wishlist).
+
+**Benefits**:
+
+- Fast Refresh now works correctly (no state loss on hot reload).
+- Cleaner code organization (50-100 line files vs 150-200).
+- Better separation of concerns (Context definition vs Provider implementation).
+- Automated tools for future context migrations.
+- Automatic import cleanup prevents build errors.
 - [x] **UI Components**: Created reusable `Input.tsx` and `Button.tsx`.
 
 ## Phase 3: Catalog & Navigation

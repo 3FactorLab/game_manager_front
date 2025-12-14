@@ -2,7 +2,7 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import { BrowserRouter } from "react-router-dom";
 import LoginPage from "./LoginPage";
-import { AuthProvider } from "../AuthContext";
+import { AuthProvider } from "../AuthProvider";
 // We need to mock useNavigae since it's used in the component
 const navigate = vi.fn();
 vi.mock("react-router-dom", async () => {

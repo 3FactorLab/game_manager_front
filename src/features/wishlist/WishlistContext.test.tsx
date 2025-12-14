@@ -7,7 +7,8 @@
 import { render, screen, act, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { WishlistProvider, useWishlist } from "./WishlistContext";
+import { WishlistProvider } from "./WishlistProvider";
+import { useWishlist } from "./WishlistContext";;
 import * as userService from "../../services/user.service";
 import * as authContext from "../auth/AuthContext";
 import type { User } from "../auth/types";

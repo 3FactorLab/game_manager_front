@@ -6,7 +6,7 @@
 
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
-import { MemoryRouter, Route, Routes, BrowserRouter } from "react-router-dom";
+import { MemoryRouter, Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoute";
 import { useAuth } from "../features/auth/AuthContext";
 import type { Mock } from "vitest";

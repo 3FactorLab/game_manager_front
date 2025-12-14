@@ -58,11 +58,27 @@ Cada feature es un **módulo autocontenido** con todo lo necesario para funciona
 
 El módulo de autenticación completo.
 
-#### `AuthContext.tsx`
+#### `AuthContext.tsx` y `AuthProvider.tsx`
 
-- **Qué hace**: Context unificado que gestiona el estado global de autenticación.
+> **📌 Nota sobre Context Pattern**
+>
+> Desde Phase 16, todos los Contexts siguen el patrón 2-file:
+>
+> - **Context.tsx**: Context definition + Hook
+> - **Provider.tsx**: Provider implementation
+>
+> Este patrón mejora Fast Refresh, separation of concerns, y mantenibilidad.
+
+**AuthContext.tsx**:
+
+- **Qué hace**: Define el Context y exporta el hook `useAuth()`.
+- **Por qué**: Separar la definición del Context de su implementación (Fast Refresh compliance).
+- **Exporta**: `AuthContext` (context) y `useAuth()` (hook custom).
+
+**AuthProvider.tsx**:
+
+- **Qué hace**: Implementa el Provider que gestiona el estado global de autenticación.
 - **Por qué**: El estado de auth se necesita en muchos componentes (Navbar, rutas protegidas, etc.).
-- **Estructura**: Archivo unificado que exporta `AuthProvider` (componente) y `useAuth` (hook custom).
 - **Detalle**:
   - Guarda el token en `localStorage`
   - Proporciona funciones: `login`, `register`, `logout`, `refreshUser`
@@ -137,15 +153,21 @@ Biblioteca y wishlist del usuario.
 
 Módulo de lista de deseos con Context API.
 
-#### `WishlistContext.tsx`
+#### `WishlistContext.tsx` y `WishlistProvider.tsx`
 
-- **Qué hace**: Context unificado para gestión de wishlist del usuario.
-- **Por qué**: Proporciona estado global de wishlist con optimistic updates para mejor UX.
-- **Estructura**: Archivo unificado que exporta `WishlistProvider` (componente) y `useWishlist` (hook custom).
-- **Características**:
-  - Fetch automático al autenticarse (React Query internamente)
-  - Optimistic updates (UI se actualiza antes de respuesta del servidor)
-  - Rollback automático si falla la petición
+**WishlistContext.tsx**:
+
+- **Qué hace**: Define el Context y exporta el hook `useWishlist()`.
+- **Exporta**: `WishlistContext` (context) y `useWishlist()` (hook custom).
+
+**WishlistProvider.tsx**:
+
+- **Qué hace**: Provider component para gestión de wishlist del usuario.
+- **Por qué**: Centralizar lógica de wishlist con optimistic updates.
+- **Detalle**:
+  - Usa React Query (`useQuery`, `useMutation`) para sincronización con backend
+  - Implementa **optimistic updates**: Añade/elimina items instantáneamente en UI, luego sincroniza
+  - Si falla la API, hace **rollback automático** (UX perfecta)
   - Toast notifications para feedback
 - **Funciones exportadas**:
   - `addToWishlist(game)`: Añade juego con update optimista
@@ -157,15 +179,21 @@ Módulo de lista de deseos con Context API.
 
 Módulo de carrito de compras.
 
-#### `CartContext.tsx`
+#### `CartContext.tsx` y `CartProvider.tsx`
 
-- **Qué hace**: Context unificado para gestión del carrito.
-- **Por qué**: Estado global del carrito con persistencia automática.
-- **Estructura**: Archivo unificado que exporta `CartProvider` (componente) y `useCart` (hook custom).
-- **Características**:
-  - Persistencia en localStorage (sincronización automática)
-  - Cálculo automático de total y contador con `useMemo`
-  - Previene duplicados
+**CartContext.tsx**:
+
+- **Qué hace**: Define el Context y exporta el hook `useCart()`.
+- **Exporta**: `CartContext` (context) y `useCart()` (hook custom).
+
+**CartProvider.tsx**:
+
+- **Qué hace**: Provider component para gestión del carrito de compras.
+- **Por qué**: Necesitamos carrito global accesible desde cualquier página.
+- **Detalle**:
+  - Persiste en `localStorage` (carrito sobrevive a recargas)
+  - Calcula total con `useMemo` (optimización de performance)
+  - Funciones: `addItem`, `removeItem`, `clear`
   - Maneja precios con descuento (offerPrice vs price)
 - **Funciones exportadas**:
   - `addItem(game)`: Añade juego al carrito

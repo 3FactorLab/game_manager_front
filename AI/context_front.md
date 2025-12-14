@@ -1,5 +1,134 @@
 # Frontend Context Log
 
+## 2025-12-14T20:30:00+01:00 - Phase 16: Context Pattern Refactor
+
+### Actions Performed
+
+Completed Phase 16: Fast Refresh Optimization by refactoring all Contexts to follow 2-file pattern.
+
+### Files Modified
+
+**Context Files (6 files)**:
+
+1. **`src/features/auth/AuthContext.tsx`** (181 → 54 lines)
+
+   - Removed Provider implementation
+   - Kept Context definition and `useAuth` hook
+   - Cleaned up unused imports (useState, useEffect, ReactNode, authService, authEvents)
+
+2. **`src/features/auth/AuthProvider.tsx`** (NEW, 127 lines)
+
+   - Moved Provider implementation from AuthContext
+   - Imports AuthContext
+   - Contains all state management logic
+
+3. **`src/features/cart/CartContext.tsx`** (138 → 48 lines)
+
+   - Removed Provider implementation
+   - Kept Context definition and `useCart` hook
+   - Cleaned up unused imports (useEffect, useMemo, useState, ReactNode, STORAGE_KEY)
+
+4. **`src/features/cart/CartProvider.tsx`** (NEW, 103 lines)
+
+   - Moved Provider implementation from CartContext
+   - Imports CartContext
+   - Contains cart logic and localStorage persistence
+
+5. **`src/features/wishlist/WishlistContext.tsx`** (181 → 40 lines)
+
+   - Removed Provider implementation
+   - Kept Context definition and `useWishlist` hook
+   - Cleaned up unused imports (ReactNode, React Query hooks, toast, useAuth, service functions)
+
+6. **`src/features/wishlist/WishlistProvider.tsx`** (NEW, 138 lines)
+   - Moved Provider implementation from WishlistContext
+   - Imports WishlistContext
+   - Contains optimistic updates logic with React Query
+
+**Main File (1 file)**:
+
+7. **`src/main.tsx`**
+   - Updated imports to use Provider files instead of Context files
+   - Maintained same Provider hierarchy
+
+**Test Files (1 file)**:
+
+8. **`src/routes/ProtectedRoute.test.tsx`**
+   - Removed unused BrowserRouter import
+
+**Component Files (1 file)**:
+
+9. **`src/features/profile/components/AvatarUploadModal.tsx`**
+   - Removed unused useAuth import
+
+**Automation Scripts (5 files)**:
+
+10-14. Created automation scripts for context splitting and validation
+
+**Documentation (4 files)**:
+
+15-18. Updated all documentation files to reflect 2-file pattern
+
+### Pattern Implementation
+
+**2-File Pattern Structure**:
+
+```
+src/features/auth/
+├── AuthContext.tsx      ← Context + useAuth hook (54 lines)
+└── AuthProvider.tsx     ← Provider component (127 lines)
+```
+
+**Imports**:
+
+- `main.tsx`: Imports Provider from `AuthProvider.tsx`
+- Components: Import hook from `AuthContext.tsx`
+
+### Results
+
+**Tests**: 74/74 passing (100% coverage maintained)
+**Build**: TypeScript compiles without errors
+**Lint**: 0 Fast Refresh warnings (previously 3)
+**Code Quality**: Cleaner separation, smaller files
+
+### Decisions Made
+
+- Used 2-file pattern for all Contexts (Auth, Cart, Wishlist)
+- Created automation scripts for future migrations
+- Implemented automatic import cleanup with ESLint plugin
+- Updated all documentation to reflect new pattern
+- Maintained 100% test coverage throughout refactor
+
+### Next Steps
+
+- ✅ Phase 16 completed successfully
+- ✅ All Contexts follow 2-file pattern
+- ✅ Automation scripts available for future use
+- ✅ Documentation fully updated
+
+### Files Referenced
+
+- `/Users/andydev/game manager v0/frontend/src/features/auth/AuthContext.tsx`
+- `/Users/andydev/game manager v0/frontend/src/features/auth/AuthProvider.tsx`
+- `/Users/andydev/game manager v0/frontend/src/features/cart/CartContext.tsx`
+- `/Users/andydev/game manager v0/frontend/src/features/cart/CartProvider.tsx`
+- `/Users/andydev/game manager v0/frontend/src/features/wishlist/WishlistContext.tsx`
+- `/Users/andydev/game manager v0/frontend/src/features/wishlist/WishlistProvider.tsx`
+- `/Users/andydev/game manager v0/frontend/src/main.tsx`
+- `/Users/andydev/game manager v0/frontend/scripts/split-context.js`
+- `/Users/andydev/game manager v0/frontend/scripts/update-imports.js`
+- `/Users/andydev/game manager v0/frontend/scripts/validate-phase16.js`
+
+### Notes
+
+- **Fast Refresh compliance achieved** ✅
+- **Separation of concerns improved** ✅
+- **Code organization optimized** ✅
+- **Automation tools created** ✅
+- **Documentation updated** ✅
+
+---
+
 ## 2025-12-10T16:15:00+01:00 - Documentation Update (100% Coverage)
 
 ### Actions Performed

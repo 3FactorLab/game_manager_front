@@ -4,18 +4,14 @@ Este documento explica en profundidad cómo está construido el frontend, **por 
 
 ## 🏛️ Filosofía: Arquitectura Basada en Componentes + Features
 
-En lugar de tener todo el código mezclado, organizamos el proyecto en **componentes reutilizables** y **features autocontenidos**. Cada pieza tiene una **responsabilidad única** y puede evolucionar independientemente.
+El proyecto se organiza en **componentes reutilizables** y **features autocontenidos**. Cada pieza tiene una **responsabilidad única** y puede evolucionar independientemente.
 
-### ¿Por qué hacemos esto?
+**Principios clave**:
 
-Imagina una tienda de LEGO:
-
-- **Los Bloques Básicos** (UI Components) son piezas reutilizables: botones, tarjetas, inputs.
-- **Los Sets Temáticos** (Features) son colecciones completas: autenticación, catálogo de juegos, carrito.
-- **Las Instrucciones** (Hooks) dicen cómo usar y combinar las piezas.
-- **El Almacén** (Services) es donde pedimos más piezas cuando las necesitamos.
-
-Si cada set viniera con sus propios bloques únicos que no puedes reusar, sería un desperdicio. En nuestro código pasa lo mismo.
+- **UI Components**: Piezas reutilizables (botones, tarjetas, inputs)
+- **Features**: Módulos completos (autenticación, catálogo, carrito)
+- **Hooks**: Lógica reutilizable
+- **Services**: Capa de datos y comunicación con API
 
 ---
 
@@ -210,16 +206,7 @@ Las **líneas punteadas** (-.->)representan conexiones de lectura/uso sin transf
 - Hooks **leen de** Providers
 - Providers **persisten en** Storage
 
-> [!NOTE] > **Diferencia clave con diagramas abstractos**:
->
-> - Este diagrama muestra la **estructura real** de `main.tsx`
-> - Providers envuelven la app (composition pattern)
-> - Hooks se usan **dentro** de Components (no son una capa separada)
-> - Refleja exactamente cómo funciona React
-
 ### 📐 Vista Simplificada (Overview)
-
-Para una comprensión rápida del flujo general, aquí está la versión simplificada:
 
 ```mermaid
 flowchart LR
@@ -257,11 +244,6 @@ flowchart LR
     style Data fill:#F3E5F5,stroke:#7B1FA2,stroke-width:2px,color:#4A148C
     style Effects fill:#FFF3E0,stroke:#EF6C00,stroke-width:2px,color:#BF360C
 ```
-
-> [!TIP] > **Cuándo usar cada diagrama**:
->
-> - **Diagrama Completo** (arriba): Para análisis técnico detallado, debugging, y entender conexiones específicas
-> - **Vista Simplificada** (aquí): Para presentaciones, onboarding de nuevos desarrolladores, y comprensión rápida del flujo
 
 ---
 
@@ -311,7 +293,8 @@ Aquí viven las configuraciones globales de la aplicación.
 Cada feature es un **módulo autocontenido** con todo lo necesario para funcionar:
 
 - **`auth/`**: Autenticación y sesión
-  - `AuthContext.tsx`: Context unificado (Provider + `useAuth` hook) para estado global de autenticación
+  - `AuthContext.tsx`: Context definition y `useAuth` hook para acceso al estado de autenticación
+  - `AuthProvider.tsx`: Provider component que gestiona el estado global de autenticación
   - `pages/`: `LoginPage`, `RegisterPage`
   - `schemas.ts`: Validación con Zod
   - `types.ts`: Interfaces TypeScript
@@ -322,17 +305,19 @@ Cada feature es un **módulo autocontenido** con todo lo necesario para funciona
   - `hooks/`: `useLibrary`, `useWishlist` (Mutation hooks)
   - `services/`: usa `games.service.ts` (Library) y `user.service.ts` (Wishlist)
 - **`wishlist/`**: Gestión de lista de deseos (Context-based)
-  - `WishlistContext.tsx`: Context unificado (Provider + `useWishlist` hook) con **optimistic updates** y React Query
+  - `WishlistContext.tsx`: Context definition y `useWishlist` hook para acceso al estado de wishlist
+  - `WishlistProvider.tsx`: Provider component con **optimistic updates** y React Query
   - Usado por `WishlistPage` para UX instantánea con rollback automático
 - **`cart/`**: Carrito de compras
-  - `CartContext.tsx`: Context unificado (Provider + `useCart` hook) con persistencia en localStorage
+  - `CartContext.tsx`: Context definition y `useCart` hook para acceso al estado del carrito
+  - `CartProvider.tsx`: Provider component con persistencia en localStorage
   - Gestión de items, cálculo de total y contador con `useMemo`
 - **`checkout/`**: Proceso de compra
   - `hooks/`: `useCheckout`
   - `services/`: `checkout.service.ts`
-- **`profile/`**: Perfil de usuario
+- **`profile/`**: Gestión de perfil de usuario
+  - `components/`: `AvatarUploadModal`, `ChangePasswordModal`, `EditProfileModal`
   - `hooks/`: `useUpdateProfile`
-  - `components/`: `AvatarUploadModal` (Drag & Drop)
 
 ### 3. UI Components (`src/components/`)
 
@@ -420,7 +405,68 @@ Funciones helper sin dependencias de React:
 
 Aquí desglosamos los flujos de datos más complejos e importantes de la aplicación.
 
-### 1. Flujo de Autenticación (Dual Token)
+### 1. Patrón de Context (2-File Pattern)
+
+**Concepto**: Separación de Context definition y Provider implementation para Fast Refresh compliance.
+
+A partir de Phase 16, todos los Contexts siguen este patrón:
+
+```mermaid
+sequenceDiagram
+    participant Dev as 👨‍💻 Developer
+    participant Context as 📄 AuthContext.tsx
+    participant Provider as 📄 AuthProvider.tsx
+    participant Main as 🚀 main.tsx
+    participant Comp as ⚛️ Component
+
+    Note over Context: Define Context + Hook
+    Dev->>Context: createContext()
+    Dev->>Context: export AuthContext
+    Dev->>Context: export useAuth()
+
+    Note over Provider: Implement Provider
+    Dev->>Provider: import AuthContext
+    Dev->>Provider: useState, useEffect
+    Dev->>Provider: Login/Logout Logic
+    Dev->>Provider: export AuthProvider
+
+    Note over Main,Comp: Usage Pattern
+    Main->>Provider: import AuthProvider
+    Main->>Main: Wrap App with Provider
+
+    Comp->>Context: import useAuth
+    Comp->>Context: const { user, login } = useAuth()
+
+    Note over Context,Provider: Context imported by Provider
+    Provider->>Context: Uses AuthContext internally
+```
+
+**Beneficios**:
+
+1. **Fast Refresh**: Evita warnings `react-refresh/only-export-components`
+2. **Separation of Concerns**: Context definition separada de implementación
+3. **Mantenibilidad**: Archivos más pequeños (50-100 líneas vs 150-200)
+4. **Claridad**: Responsabilidades bien definidas
+
+**Estructura**:
+
+```text
+src/features/auth/
+├── AuthContext.tsx      ← Context + useAuth hook (54 líneas)
+└── AuthProvider.tsx     ← Provider component (127 líneas)
+```
+
+**Imports**:
+
+```typescript
+// En main.tsx (Provider)
+import { AuthProvider } from "./features/auth/AuthProvider";
+
+// En componentes (Hook)
+import { useAuth } from "./features/auth/AuthContext";
+```
+
+### 2. Flujo de Autenticación (Dual Token)
 
 **Concepto**: JWT con Access Token (corta duración) y Refresh Token (larga duración) con rotación automática.
 
@@ -582,7 +628,7 @@ sequenceDiagram
 sequenceDiagram
     participant User as 👤 Usuario
     participant Modal as ⚛️ AvatarModal
-    participant Auth as 🔐 AuthContext
+    participant Auth as 🔐 AuthProvider
     participant Storage as 💾 LocalStorage
     participant Backend as ☁️ Backend
 
@@ -807,7 +853,7 @@ sequenceDiagram
     participant User as 👤 Usuario
     participant Modal as ⚛️ EditProfileModal
     participant Hook as 🪝 useUpdateProfile
-    participant Auth as 🔐 AuthContext
+    participant Auth as 🔐 AuthProvider
     participant Service as 📦 AuthService
     participant Backend as ☁️ Backend
 

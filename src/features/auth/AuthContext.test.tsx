@@ -6,7 +6,8 @@
 
 import { render, screen, waitFor, act } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { AuthProvider, useAuth } from "./AuthContext";
+import { AuthProvider } from "./AuthProvider";
+import { useAuth } from "./AuthContext";;
 import { authService } from "../../services/auth.service";
 import type { User } from "./types";
 
