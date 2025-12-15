@@ -136,7 +136,7 @@ export const GameCard = ({ game }: GameCardProps) => {
           )}
         </div>
 
-        {/* Meta Info: Genre & Developer Chips */}
+        {/* Meta Info: Genre */}
         <div className={styles.metaContainer}>
           <span
             className={styles.genreBadge}
@@ -144,17 +144,8 @@ export const GameCard = ({ game }: GameCardProps) => {
           >
             {game.genre}
           </span>
-          {game.developer && (
-            <span
-              className={styles.developerBadge}
-              onClick={(e) => handleTagClick(e, "developer", game.developer)}
-            >
-              {game.developer}
-            </span>
-          )}
         </div>
 
-        {/* Platform Badge (on its own line) */}
         {/* Platform Badges */}
         <div className={styles.platformContainer}>
           {(game.platforms?.length ? game.platforms : ["Unknown"]).map(
@@ -172,7 +163,16 @@ export const GameCard = ({ game }: GameCardProps) => {
 
         {/* Footer with pricing */}
         <div className={styles.footer}>
-          <div />
+          <div className={styles.developerContainer}>
+            {game.developer && (
+              <span
+                className={styles.developerBadge}
+                onClick={(e) => handleTagClick(e, "developer", game.developer)}
+              >
+                {game.developer}
+              </span>
+            )}
+          </div>
 
           <div className={styles.priceContainer}>
             {/* Discount percentage badge */}

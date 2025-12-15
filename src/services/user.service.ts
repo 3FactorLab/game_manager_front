@@ -32,7 +32,8 @@ export const getWishlist = async (): Promise<Game[]> => {
     description: game.description || "",
     price: game.price || 0,
     currency: game.currency || "USD",
-    platform: game.platform || "Unknown",
+    platforms:
+      game.platforms || (game.platform ? [game.platform] : ["Unknown"]),
     genre: game.genre || "Unknown",
     type: game.type || "game",
     releaseDate: game.released || game.releaseDate || "",
