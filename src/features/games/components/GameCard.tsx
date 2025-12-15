@@ -122,12 +122,9 @@ export const GameCard = ({ game }: GameCardProps) => {
           )}
         </div>
 
-        {/* Meta Info: Genre & Developer Chips */}
+        {/* Meta Info: Genre */}
         <div className={styles.metaContainer}>
           <span className={styles.genreBadge}>{game.genre}</span>
-          {game.developer && (
-            <span className={styles.developerBadge}>{game.developer}</span>
-          )}
         </div>
 
         {/* Platform Badge (on its own line) */}
@@ -144,7 +141,11 @@ export const GameCard = ({ game }: GameCardProps) => {
 
         {/* Footer with pricing */}
         <div className={styles.footer}>
-          <div />
+          <div className={styles.developerContainer}>
+            {game.developer && (
+              <span className={styles.developerBadge}>{game.developer}</span>
+            )}
+          </div>
 
           <div className={styles.priceContainer}>
             {/* Discount percentage badge */}
