@@ -35,7 +35,8 @@
     "view_all": "Ver Todo",
     "loading": "Cargando ofertas...",
     "no_free_games": "No se encontraron juegos gratis.",
-    "no_cheap_games": "No se encontraron juegos por menos de 10$."
+    "no_cheap_games": "No se encontraron juegos por menos de 10$.",
+    "seasonal_offers": "Winter Sales"
   },
   "landing": {
     "hero_title": "Bienvenido a GameManager",
@@ -70,8 +71,14 @@
     "title": "Catálogo",
     "genre": "Género",
     "platform": "Plataforma",
-    "all": "Todos",
-    "allPlatforms": "Todas las Plataformas",
+    "price": "Precio",
+    "all_genres": "Todos los géneros",
+    "all_platforms": "Todas las plataformas",
+    "all_prices": "Todos los precios",
+    "free": "Gratis",
+    "under10": "Menos de 10€",
+    "under30": "Menos de 30€",
+    "under60": "Menos de 60€",
     "orderBy": "Ordenar por",
     "newest": "Más Recientes",
     "priceLowHigh": "Precio: Bajo a Alto",

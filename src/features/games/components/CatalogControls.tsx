@@ -34,16 +34,24 @@ export const CatalogControls = () => {
     query,
     genre,
     platform,
+    maxPrice,
+    onSale,
     sortBy,
     order,
     setSearch,
     setFilter,
+    setMaxPrice,
+    setOnSale,
+    removeFilter,
     setSort,
     clearAll,
   } = useCatalogUrl();
 
   const { data: filterOptions, isLoading } = useFilters();
   const [localSearch, setLocalSearch] = useState(query);
+
+  const hasActiveFilters =
+    genre || platform || maxPrice !== undefined || onSale || query;
 
   // Sync local search input with URL query param if it changes externally
   useEffect(() => {
@@ -114,7 +122,7 @@ export const CatalogControls = () => {
             onChange={(e) => setFilter("genre", e.target.value)}
             disabled={isLoading}
           >
-            <option value="">{t("catalog.all")}</option>
+            <option value="">{t("catalog.all_genres")}</option>
             {filterOptions?.genres.map((g) => (
               <option key={g} value={g}>
                 {g}
@@ -132,13 +140,46 @@ export const CatalogControls = () => {
             onChange={(e) => setFilter("platform", e.target.value)}
             disabled={isLoading}
           >
-            <option value="">{t("catalog.allPlatforms")}</option>
+            <option value="">{t("catalog.all_platforms")}</option>
             {filterOptions?.platforms.map((p) => (
               <option key={p} value={p}>
                 {p}
               </option>
             ))}
           </select>
+        </div>
+
+        {/* Price Filter */}
+        <div className={styles.filterGroup}>
+          <label htmlFor="filter-price" className={styles.label}>
+            {t("catalog.price")}
+          </label>
+          <select
+            id="filter-price"
+            className={styles.select}
+            value={maxPrice === undefined ? "" : maxPrice.toString()}
+            onChange={(e) =>
+              setMaxPrice(e.target.value ? Number(e.target.value) : undefined)
+            }
+          >
+            <option value="">{t("catalog.all_prices")}</option>
+            <option value="0">{t("catalog.free")}</option>
+            <option value="10">{t("catalog.under10")}</option>
+            <option value="30">{t("catalog.under30")}</option>
+            <option value="60">{t("catalog.under60")}</option>
+          </select>
+        </div>
+
+        {/* Offers Toggle */}
+        <div className={styles.filterGroup}>
+          <label className={styles.label}>&nbsp;</label>
+          <button
+            className={`${styles.toggleButton} ${onSale ? styles.active : ""}`}
+            onClick={() => setOnSale(!onSale)}
+            title={t("home.seasonal_offers")}
+          >
+            {onSale ? "🎄 " : "❄️ "} {t("home.seasonal_offers")}
+          </button>
         </div>
 
         {/* Sort */}
@@ -170,6 +211,81 @@ export const CatalogControls = () => {
           </Button>
         </div>
       </div>
+
+      {/* Active Filter Chips */}
+      {hasActiveFilters && (
+        <div className={styles.activeFilters}>
+          {genre && (
+            <div className={styles.chip}>
+              <span className={styles.chipLabel}>{t("catalog.genre")}:</span>
+              {genre}
+              <button
+                onClick={() => removeFilter("genre")}
+                className={styles.chipClose}
+              >
+                <FiX />
+              </button>
+            </div>
+          )}
+
+          {platform && (
+            <div className={styles.chip}>
+              <span className={styles.chipLabel}>{t("catalog.platform")}:</span>
+              {platform}
+              <button
+                onClick={() => removeFilter("platform")}
+                className={styles.chipClose}
+              >
+                <FiX />
+              </button>
+            </div>
+          )}
+
+          {maxPrice !== undefined && (
+            <div className={styles.chip}>
+              <span className={styles.chipLabel}>{t("catalog.price")}:</span>
+              {maxPrice === 0 ? t("catalog.free") : `< ${maxPrice}€`}
+              <button
+                onClick={() => removeFilter("maxPrice")}
+                className={styles.chipClose}
+              >
+                <FiX />
+              </button>
+            </div>
+          )}
+
+          {onSale && (
+            <div className={`${styles.chip} ${styles.active}`}>
+              <span className={styles.chipLabel}>
+                {t("home.seasonal_offers")}
+              </span>
+              <button
+                onClick={() => removeFilter("onSale")}
+                className={styles.chipClose}
+                style={{ color: "white" }}
+              >
+                <FiX />
+              </button>
+            </div>
+          )}
+
+          {query && (
+            <div className={styles.chip}>
+              <span className={styles.chipLabel}>{t("common.search")}:</span>"
+              {query}"
+              <button
+                onClick={() => {
+                  setLocalSearch("");
+                  setSearch("");
+                }}
+                className={styles.chipClose}
+              >
+                <FiX />
+              </button>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };

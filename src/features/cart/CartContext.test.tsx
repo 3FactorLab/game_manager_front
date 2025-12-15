@@ -36,9 +36,9 @@ Object.defineProperty(window, "localStorage", {
 });
 
 const mockGame1: Game = {
-  _id: "1",
+  _id: "game-1",
   title: "Test Game 1",
-  price: 59.99,
+  price: 10,
   currency: "USD",
   image: "test1.jpg",
   description: "Test Description 1",
@@ -52,14 +52,15 @@ const mockGame1: Game = {
 };
 
 const mockGame2: Game = {
-  _id: "2",
+  _id: "game-2",
   title: "Test Game 2",
   price: 29.99,
+  offerPrice: 15,
   currency: "USD",
   image: "test2.jpg",
   description: "Test Description 2",
   type: "game",
-  isOffer: false,
+  isOffer: true,
   platforms: ["PS5"],
   genre: "RPG",
   developer: "Dev 2",

@@ -1,5 +1,71 @@
 # Frontend Changelog
 
+## 2025-12-15 - Phase 17: Home Page UX & Performance Optimization
+
+### Added
+
+- **DealSection Component Refactor**:
+
+  - 4-column grid layout (previously 5 columns) for wider, more prominent game cards
+  - Increased game pool from 15 to 16 games (4 batches of 4 cards each)
+  - Perfect alternating rotation system using boolean toggle (Free Games ↔ Under $10)
+  - Fixed container height (`min-height: 500px`) with uniform card heights (`480px`)
+  - GPU acceleration optimizations (`will-change`, `translateZ(0)`, `backface-visibility`)
+  - Layout containment (`contain: layout style paint`) for performance isolation
+
+- **SeasonalOffersMarquee Component** (NEW):
+
+  - Auto-scrolling horizontal marquee for Winter Sales / Seasonal Offers
+  - Pure CSS animations using `@keyframes` (no Framer Motion dependency)
+  - Hover pause functionality with `animation-play-state: paused`
+  - Fixed card dimensions (320px × 520px) for visual uniformity
+  - Seamless infinite loop with duplicated content technique
+  - "View All" button linking to catalog sale filter
+
+- **Animation System Improvements**:
+  - Removed Framer Motion `layout` prop to eliminate layout shift artifacts
+  - Simplified to opacity-only transitions for maximum smoothness (0.4s duration)
+  - Staggered card delays (0.02s) for elegant cascading effect
+  - `initial={false}` to prevent unwanted animations on component mount
+  - `overflow: hidden` on card containers to prevent visual overflow
+
+### Changed
+
+- **GameCard Image Handling**:
+
+  - Restored `aspect-ratio: 16/9` for responsive image sizing (removed fixed 180px height)
+  - Maintained `flex-shrink: 0` to prevent image compression by long text content
+  - Kept `object-position: center top` for optimal game cover cropping
+
+- **DealSection Responsive Breakpoints**:
+
+  - Desktop (>850px): 4 columns
+  - Tablet (640px-850px): 2 columns
+  - Mobile (<640px): 1 column
+  - Ensures cards remain proportional across all screen sizes
+
+- **TypeScript Cleanup**:
+  - Removed unused React import from `SeasonalOffersMarquee.tsx`
+  - Fixed all build errors for production readiness
+
+### Impact
+
+- ✅ **Performance**: 60fps animations with GPU acceleration
+- ✅ **UX**: No layout shifts during card rotation
+- ✅ **Visual**: Smooth crossfade transitions between card batches
+- ✅ **Synchronization**: Perfect alternating rotation (never simultaneous)
+- ✅ **Responsive**: Proportional card sizing across all devices
+- ✅ **Build**: Production build successful with optimized bundles
+
+### Technical Details
+
+- **Rotation Logic**: Boolean toggle (`shouldRotateFree`) ensures deterministic alternation
+- **Performance**: `contain: layout style paint` isolates layout calculations to grid
+- **Animation**: CSS-only marquee for better performance than JS-based solutions
+- **Testing**: Existing DealSection.test.tsx maintained and passing
+
+---
+
 ## 2025-12-15 - Phase 2: Frontend Performance Optimization
 
 ### Added

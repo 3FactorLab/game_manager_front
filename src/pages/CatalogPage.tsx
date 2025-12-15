@@ -19,6 +19,8 @@ const CatalogPage = () => {
     platform,
     developer,
     publisher,
+    maxPrice,
+    onSale,
     sortBy,
     order,
     page,
@@ -34,6 +36,8 @@ const CatalogPage = () => {
     platform,
     developer,
     publisher,
+    maxPrice,
+    onSale,
     sortBy,
     order,
   });

@@ -6,6 +6,7 @@
  */
 
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { BsCartPlus, BsHeart, BsHeartFill } from "react-icons/bs";
 import { Card } from "../../../components/ui/Card";
 import type { Game } from "../../../services/games.service";
@@ -21,18 +22,13 @@ import styles from "./GameCard.module.css";
  * GameCard component props
  */
 interface GameCardProps {
-  game: Game; // Game data to display
+  game: Game;
+  className?: string;
+  style?: React.CSSProperties;
 }
 
-/**
- * GameCard component
- * Clickable card displaying game information with cover image and pricing.
- * Calculates and displays offer discounts when applicable.
- *
- * @param {GameCardProps} props - Component props
- * @returns {JSX.Element} Game card with image, details, and pricing
- */
-export const GameCard = ({ game }: GameCardProps) => {
+export const GameCard = ({ game, className, style }: GameCardProps) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { addItem } = useCart();
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
@@ -72,12 +68,13 @@ export const GameCard = ({ game }: GameCardProps) => {
   };
 
   // Calculate offer pricing
-  const hasOffer = game.isOffer && game.offerPrice !== undefined;
-  const currentPrice = hasOffer ? game.offerPrice : game.price;
+  // const hasOffer = game.isOffer && game.offerPrice !== undefined;
+  // const currentPrice = hasOffer ? game.offerPrice : game.price;
 
   return (
     <Card
-      className={styles.gameCard}
+      className={`${styles.gameCard} ${className || ""}`}
+      style={style}
       padding="none"
       hoverable
       onClick={handleCardClick}
@@ -176,26 +173,28 @@ export const GameCard = ({ game }: GameCardProps) => {
 
           <div className={styles.priceContainer}>
             {/* Discount percentage badge */}
-            {hasOffer && (
+            {(game.originalPrice || 0) > (game.price || 0) && (
               <span className={styles.discount}>
                 -
                 {Math.round(
-                  ((game.price - (game.offerPrice || 0)) / game.price) * 100
+                  (((game.originalPrice || 0) - game.price) /
+                    (game.originalPrice || 1)) *
+                    100
                 )}
                 %
               </span>
             )}
             {/* Original price (strikethrough) */}
-            {hasOffer && (
+            {(game.originalPrice || 0) > (game.price || 0) && (
               <span className={styles.oldPrice}>
-                {formatCurrency(game.price, game.currency)}
+                {formatCurrency(game.originalPrice || 0, game.currency)}
               </span>
             )}
             {/* Current price */}
             <span className={styles.price}>
-              {currentPrice === 0
-                ? "Free"
-                : formatCurrency(currentPrice || 0, game.currency)}
+              {game.price === 0
+                ? t("catalog.free")
+                : formatCurrency(game.price || 0, game.currency)}
             </span>
           </div>
         </div>

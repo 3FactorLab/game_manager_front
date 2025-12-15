@@ -27,6 +27,9 @@ export const useCatalogUrl = () => {
   const platform = searchParams.get("platform") || "";
   const developer = searchParams.get("developer") || "";
   const publisher = searchParams.get("publisher") || "";
+  const maxPriceParam = searchParams.get("maxPrice");
+  const maxPrice = maxPriceParam ? parseInt(maxPriceParam, 10) : undefined;
+  const onSale = searchParams.get("onSale") === "true";
   const sortBy = searchParams.get("sortBy") || "releaseDate";
   const order = (searchParams.get("order") as "asc" | "desc") || "desc";
   const page = parseInt(searchParams.get("page") || "1", 10);
@@ -79,6 +82,35 @@ export const useCatalogUrl = () => {
     setSearchParams(newParams);
   };
 
+  const setMaxPrice = (price?: number) => {
+    const newParams = new URLSearchParams(searchParams);
+    if (price !== undefined) {
+      newParams.set("maxPrice", price.toString());
+    } else {
+      newParams.delete("maxPrice");
+    }
+    newParams.set("page", "1");
+    setSearchParams(newParams);
+  };
+
+  const setOnSale = (enable: boolean) => {
+    const newParams = new URLSearchParams(searchParams);
+    if (enable) {
+      newParams.set("onSale", "true");
+    } else {
+      newParams.delete("onSale");
+    }
+    newParams.set("page", "1");
+    setSearchParams(newParams);
+  };
+
+  const removeFilter = (key: string) => {
+    const newParams = new URLSearchParams(searchParams);
+    newParams.delete(key);
+    newParams.set("page", "1");
+    setSearchParams(newParams);
+  };
+
   const setSort = (newSort: string, newOrder: "asc" | "desc") => {
     const newParams = new URLSearchParams(searchParams);
     newParams.set("sortBy", newSort);
@@ -97,12 +129,17 @@ export const useCatalogUrl = () => {
     platform,
     developer,
     publisher,
+    maxPrice,
+    onSale,
     sortBy,
     order,
     page,
     setPage,
     setSearch, // This is the DEBOUNCED setter
     setFilter,
+    setMaxPrice,
+    setOnSale,
+    removeFilter,
     setSort,
     clearAll,
   };

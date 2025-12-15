@@ -32,6 +32,8 @@ export interface Game {
     screenshots: string[];
     videos: string[];
   };
+  onSale?: boolean;
+  originalPrice?: number;
   score?: number;
   metacritic?: number;
   image?: string; // Fallback for backend compatibility
