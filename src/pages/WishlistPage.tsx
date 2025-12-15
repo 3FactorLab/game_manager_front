@@ -19,6 +19,16 @@ export const WishlistPage = () => {
   const { wishlist, isLoading } = useWishlist();
   const { isAuthenticated } = useAuth();
 
+  const {
+    filteredGames,
+    filters,
+    handleSearchChange,
+    handleGenreChange,
+    handlePlatformChange,
+    handleSortChange,
+    handleClear,
+  } = useGameFiltering(wishlist);
+
   if (isLoading) {
     return (
       <div className={styles.loadingContainer}>
@@ -51,18 +61,6 @@ export const WishlistPage = () => {
       </Link>
     </div>
   );
-
-  // const hasItems = wishlist.length > 0;
-  
-  const {
-      filteredGames,
-      filters,
-      handleSearchChange,
-      handleGenreChange,
-      handlePlatformChange,
-      handleSortChange,
-      handleClear,
-    } = useGameFiltering(wishlist);
 
   return (
     <div className={styles.page}>

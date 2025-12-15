@@ -14,20 +14,6 @@ const LibraryPage = () => {
 
   const { data: libraryItems, isLoading } = useLibrary();
 
-  if (isLoading) return <div className={styles.loadingState}>Loading...</div>;
-
-  const renderEmptyState = () => (
-    <div className={styles.emptyState}>
-      <h2 className="text-gradient">Your library is empty</h2>
-      <p className={styles.emptyStateText}>Go explore and find some games!</p>
-      <Link to="/" className={styles.browseLink}>
-        Browse Store
-      </Link>
-    </div>
-  );
-
-
-
   // Extract Game objects from UserGame array
   const games = useMemo(() => libraryItems?.map((item) => item.game) || [], [libraryItems]);
 
@@ -40,6 +26,18 @@ const LibraryPage = () => {
     handleSortChange,
     handleClear,
   } = useGameFiltering(games);
+
+  if (isLoading) return <div className={styles.loadingState}>Loading...</div>;
+
+  const renderEmptyState = () => (
+    <div className={styles.emptyState}>
+      <h2 className="text-gradient">Your library is empty</h2>
+      <p className={styles.emptyStateText}>Go explore and find some games!</p>
+      <Link to="/" className={styles.browseLink}>
+        Browse Store
+      </Link>
+    </div>
+  );
 
   return (
     <div className={styles.container}>
