@@ -19,7 +19,7 @@ export interface Game {
   description: string;
   price: number;
   currency: string;
-  platform: string;
+  platforms: string[];
   genre: string; // e.g., "Action RPG", "FPS", "Platformer"
   type: "game" | "dlc" | "bundle";
   releaseDate: string;
@@ -60,6 +60,8 @@ export interface GamesQueryParams {
 }
 
 export interface BackendGame extends Partial<Omit<Game, "assets">> {
+  platforms?: string[];
+  platform?: string; // Legacy support
   assets?: Game["assets"];
   image?: string;
   screenshots?: string[];
@@ -93,7 +95,8 @@ export const gamesService = {
         description: game.description || "",
         price: game.price || 0,
         currency: game.currency || "USD",
-        platform: game.platform || "Unknown",
+        platforms:
+          game.platforms || (game.platform ? [game.platform] : ["Unknown"]),
         genre: game.genre || "Unknown",
         type: game.type || "game",
         releaseDate: game.released || game.releaseDate || "",

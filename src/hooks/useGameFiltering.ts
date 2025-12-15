@@ -1,6 +1,5 @@
 import { useState, useMemo } from "react";
 import type { Game } from "../services/games.service";
-import debounce from "lodash.debounce";
 
 export interface FilterState {
   query: string;
@@ -42,7 +41,9 @@ export const useGameFiltering = (games: Game[] | undefined) => {
 
     // 3. Platform Filter
     if (filters.platform) {
-      result = result.filter((game) => game.platform === filters.platform);
+      result = result.filter((game) =>
+        game.platforms?.includes(filters.platform)
+      );
     }
 
     // 4. Sorting

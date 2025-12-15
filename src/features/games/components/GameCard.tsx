@@ -131,8 +131,15 @@ export const GameCard = ({ game }: GameCardProps) => {
         </div>
 
         {/* Platform Badge (on its own line) */}
+        {/* Platform Badges */}
         <div className={styles.platformContainer}>
-          <span className={styles.platformBadge}>{game.platform}</span>
+          {(game.platforms?.length ? game.platforms : ["Unknown"]).map(
+            (platform, index) => (
+              <span key={index} className={styles.platformBadge}>
+                {platform}
+              </span>
+            )
+          )}
         </div>
 
         {/* Footer with pricing */}

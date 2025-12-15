@@ -77,10 +77,16 @@ const GameDetails = () => {
         <div className={styles.heroOverlay} />
         <div className={styles.heroContent}>
           <h1 className={`${styles.title} text-gradient`}>{game.title}</h1>
-          <div className={styles.meta}>
-            <span className={styles.platformTag}>{game.platform}</span>
-            <span>{game.developer}</span>
-          </div>
+            <div className={styles.meta}>
+              {(game.platforms?.length ? game.platforms : ["Unknown"]).map(
+                (platform, index) => (
+                  <span key={index} className={styles.platformTag}>
+                    {platform}
+                  </span>
+                )
+              )}
+              <span>{game.developer}</span>
+            </div>
         </div>
       </div>
 
