@@ -25,7 +25,15 @@
   },
   "home": {
     "hero_title": "Discover your next adventure",
-    "hero_subtitle": "Explore thousands of games powered by the community."
+    "hero_subtitle": "Explore thousands of games powered by the community.",
+    "trending_title": "Trending Now",
+    "trending_subtitle": "Discover Your Next Obsession",
+    "free_games": "Free Games",
+    "under_10": "Under $10",
+    "view_all": "View All",
+    "loading": "Loading Deals...",
+    "no_free_games": "No free games found.",
+    "no_cheap_games": "No games under $10 found."
   },
   "landing": {
     "hero_title": "Welcome to GameManager",
