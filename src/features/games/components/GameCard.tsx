@@ -112,20 +112,27 @@ export const GameCard = ({ game }: GameCardProps) => {
 
       {/* Game information */}
       <div className={styles.content}>
-        <h3 className={styles.title} title={game.title}>
-          {game.title}
-        </h3>
+        {/* Header: Title and Score */}
+        <div className={styles.header}>
+          <h3 className={styles.title} title={game.title}>
+            {game.title}
+          </h3>
+          {game.score && (
+            <span className={styles.scoreBadge}>⭐ {game.score}</span>
+          )}
+        </div>
 
-        {/* Badges: genre, platform, score */}
-        <div className={styles.badges}>
+        {/* Meta Info: Genre & Developer Chips */}
+        <div className={styles.metaContainer}>
           <span className={styles.genreBadge}>{game.genre}</span>
-          <span className={styles.platformBadge}>{game.platform}</span>
           {game.developer && (
             <span className={styles.developerBadge}>{game.developer}</span>
           )}
-          {game.score && (
-            <span className={styles.scoreBadge}>⭐ {game.score}/10</span>
-          )}
+        </div>
+
+        {/* Platform Badge (on its own line) */}
+        <div className={styles.platformContainer}>
+          <span className={styles.platformBadge}>{game.platform}</span>
         </div>
 
         {/* Footer with pricing */}

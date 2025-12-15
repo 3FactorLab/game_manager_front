@@ -212,7 +212,7 @@ const GameDetails = () => {
             )}
             {game.score && (
               <div className={clsx(styles.detailRow, styles.userScore)}>
-                <span className={styles.detailLabel}>User Score</span>
+                <span className={styles.detailLabel}>User Score (RawG)</span>
                 <span className={styles.userScoreValue}>{game.score}/10</span>
               </div>
             )}
