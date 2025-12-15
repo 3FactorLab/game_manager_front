@@ -7,6 +7,7 @@ import { Button } from "../components/ui/Button";
 import styles from "./HomePage.module.css";
 import { AutoScrollGameList } from "../features/home/components/AutoScrollGameList";
 import { HeroCarousel } from "../features/home/components/HeroCarousel";
+import { DealSection } from "../features/home/components/DealSection";
 
 const HomePage = () => {
   const { t } = useTranslation();
@@ -157,15 +158,18 @@ const HomePage = () => {
         <div className={styles.widgetContainer}>
           <div className={styles.widgetHeader}>
             <h2 className={`${styles.widgetTitle} text-gradient`}>
-              Trending Now
+              {t("home.trending_title")}
             </h2>
             <p className={styles.widgetSubtitle}>
-              Discover Your Next Obsession
+              {t("home.trending_subtitle")}
             </p>
           </div>
           <AutoScrollGameList />
         </div>
       </div>
+
+      {/* Modern Store Sections (Flash Deals & Under $10) */}
+      <DealSection />
     </div>
   );
 };
