@@ -22,14 +22,7 @@
   gap: 0.5rem;
 }
 
-.header h1 {
-  font-size: 2rem;
-  font-weight: 700;
-  background: var(--gradient-primary);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  margin: 0;
-}
+/* .header h1 removed to allow global text-gradient class to work like in LibraryPage */
 
 .count {
   color: var(--text-secondary);
