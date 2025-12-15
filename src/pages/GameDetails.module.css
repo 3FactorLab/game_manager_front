@@ -62,6 +62,23 @@
   width: 100%;
 }
 
+.developerBadge {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  z-index: 10;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.5rem 1rem;
+  border-radius: 9px; /* Pill shape */
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+  letter-spacing: 0.5px;
+}
+
 @media (min-width: 768px) {
   .heroContent {
     padding: 2.5rem;

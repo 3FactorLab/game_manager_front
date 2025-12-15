@@ -75,6 +75,12 @@ const GameDetails = () => {
           className={styles.heroBackground}
         />
         <div className={styles.heroOverlay} />
+        
+        {/* Developer Badge Top-Right */}
+        <div className={styles.developerBadge}>
+            {game.developer}
+        </div>
+
         <div className={styles.heroContent}>
           <h1 className={`${styles.title} text-gradient`}>{game.title}</h1>
             <div className={styles.meta}>
@@ -85,7 +91,6 @@ const GameDetails = () => {
                   </span>
                 )
               )}
-              <span>{game.developer}</span>
             </div>
         </div>
       </div>
