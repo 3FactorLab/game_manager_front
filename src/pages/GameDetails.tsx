@@ -34,241 +34,208 @@ import styles from "./GameDetails.module.css";
  */
 
 const GameDetails = () => {
-  const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
-  // const { t } = useTranslation();
-  const { isAuthenticated } = useAuth();
-  const { data: game, isLoading, error } = useGameDetails(id);
-  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
-  const { addItem } = useCart();
+    const { id } = useParams<{ id: string }>();
+    const navigate = useNavigate();
+    // const { t } = useTranslation();
+    const { isAuthenticated } = useAuth();
+    const { data: game, isLoading, error } = useGameDetails(id);
+    const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
+    const { addItem } = useCart();
 
-  // Modal state for screenshot lightbox
-  const [modalOpen, setModalOpen] = useState(false);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    // Modal state for screenshot lightbox
+    const [modalOpen, setModalOpen] = useState(false);
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  const isWishlisted = isInWishlist(game?._id || "");
+    const isWishlisted = isInWishlist(game?._id || "");
 
-  const handleToggleWishlist = async () => {
-    if (!game) return;
-    if (isWishlisted) {
-      await removeFromWishlist(game._id);
-    } else {
-      await addToWishlist(game);
-    }
-  };
+    const handleToggleWishlist = async () => {
+        if (!game) return;
+        if (isWishlisted) {
+            await removeFromWishlist(game._id);
+        } else {
+            await addToWishlist(game);
+        }
+    };
 
-  if (isLoading) return <div className={styles.loadingState}>Loading...</div>;
-  if (error || !game)
-    return <div className={styles.errorState}>Game not found</div>;
-  const hasOffer = game.isOffer && game.offerPrice !== undefined;
-  const currentPrice = hasOffer ? game.offerPrice : game.price;
+    if (isLoading) return <div className={styles.loadingState}>Loading...</div>;
+    if (error || !game) return <div className={styles.errorState}>Game not found</div>;
+    const hasOffer = game.isOffer && game.offerPrice !== undefined;
+    const currentPrice = hasOffer ? game.offerPrice : game.price;
 
-  return (
-    <div className={styles.container}>
-      <div className={styles.hero}>
-        <img
-          src={
-            game.assets?.cover ||
-            "https://placehold.co/1200x600/101010/FFF?text=No+Cover"
-          }
-          alt={game.title}
-          className={styles.heroBackground}
-        />
-        <div className={styles.heroOverlay} />
-        
-        {/* Developer Badge Top-Right */}
-        <div className={styles.developerBadge}>
-            {game.developer}
-        </div>
+    return (
+        <div className={styles.container}>
+            <div className={styles.hero}>
+                <img
+                    src={game.assets?.cover || "https://placehold.co/1200x600/101010/FFF?text=No+Cover"}
+                    alt={game.title}
+                    className={styles.heroBackground}
+                />
+                <div className={styles.heroOverlay} />
 
-        <div className={styles.heroContent}>
-          <h1 className={`${styles.title} text-gradient`}>{game.title}</h1>
-          <div className={styles.meta}>
-            {(game.platforms?.length ? game.platforms : ["Unknown"]).map(
-              (platform, index) => (
-                <Link
-                  key={index}
-                  to={`/catalog?platform=${encodeURIComponent(platform)}`}
-                  className={styles.platformTag}
-                >
-                  {platform}
-                </Link>
-              )
-            )}
-            {game.developer && (
-              <Link
-                to={`/catalog?developer=${encodeURIComponent(game.developer)}`}
-                className={styles.linkText}
-              >
-                {game.developer}
-              </Link>
-            )}
-          </div>
-        </div>
-      </div>
-
-      <div className={styles.content}>
-        <div className={styles.mainInfo}>
-          <Card>
-            <h2 className={styles.sectionTitle}>About this game</h2>
-            <p className={styles.description}>{game.description}</p>
-          </Card>
-
-          {/* Screenshot Gallery */}
-          {game.assets?.screenshots && game.assets.screenshots.length > 0 && (
-            <Card>
-              <h2 className={styles.sectionTitle}>Screenshots</h2>
-              <div className={styles.gallery}>
-                {game.assets.screenshots.slice(0, 6).map((screenshot, i) => (
-                  <img
-                    key={i}
-                    src={screenshot}
-                    alt={`${game.title} screenshot ${i + 1}`}
-                    className={styles.screenshot}
-                    onClick={() => {
-                      setCurrentImageIndex(i);
-                      setModalOpen(true);
-                    }}
-                  />
-                ))}
-              </div>
-            </Card>
-          )}
-        </div>
-
-        <aside className={styles.sidebar}>
-          {/* Cover Image Card */}
-          <Card padding="none">
-            <img
-              src={
-                game.assets?.cover ||
-                "https://placehold.co/350x500/101010/FFF?text=No+Cover"
-              }
-              alt={game.title}
-              className={styles.coverImage}
-            />
-          </Card>
-
-          <Card className={styles.priceCard} padding="lg">
-            <div className={styles.priceRow}>
-              <div className={styles.priceColumn}>
-                {hasOffer && (
-                  <span className={styles.originalPrice}>
-                    {formatCurrency(game.price, game.currency)}
-                  </span>
+                {/* Developer Badge Top-Right */}
+                {game.developer && (
+                    <Link
+                        to={`/catalog?developer=${encodeURIComponent(game.developer)}`}
+                        className={styles.developerBadge}
+                    >
+                        {game.developer}
+                    </Link>
                 )}
-                <span className={styles.price}>
-                  {currentPrice === 0
-                    ? "Free"
-                    : formatCurrency(currentPrice || 0, game.currency)}
-                </span>
-              </div>
-              {hasOffer && <span className={styles.discountBadge}>OFFER</span>}
+
+                <div className={styles.heroContent}>
+                    <h1 className={`${styles.title} text-gradient`}>{game.title}</h1>
+                    <div className={styles.meta}>
+                        {(game.platforms?.length ? game.platforms : ["Unknown"]).map((platform, index) => (
+                            <Link
+                                key={index}
+                                to={`/catalog?platform=${encodeURIComponent(platform)}`}
+                                className={styles.platformTag}
+                            >
+                                {platform}
+                            </Link>
+                        ))}
+                    </div>
+                </div>
             </div>
 
-            <div className={styles.actions}>
-              <Button
-                size="lg"
-                disabled={!isAuthenticated}
-                title={!isAuthenticated ? "Login to buy" : ""}
-                onClick={() => navigate(`/checkout/${game._id}`)}
-              >
-                <BsCartPlus /> Buy Now
-              </Button>
-              <Button
-                variant="ghost"
-                disabled={!isAuthenticated}
-                onClick={() => addItem(game)}
-              >
-                Add to Cart
-              </Button>
-              <Button
-                variant="ghost"
-                disabled={!isAuthenticated}
-                onClick={handleToggleWishlist}
-              >
-                {isWishlisted ? (
-                  <BsHeartFill color="var(--accent-primary)" />
-                ) : (
-                  <BsHeart />
-                )}
-                {isWishlisted ? "In Wishlist" : "Add to Wishlist"}
-              </Button>
-              {!isAuthenticated && (
-                <p className={styles.loginPrompt}>Login to purchase</p>
-              )}
-            </div>
-          </Card>
+            <div className={styles.content}>
+                <div className={styles.mainInfo}>
+                    <Card>
+                        <h2 className={styles.sectionTitle}>About this game</h2>
+                        <p className={styles.description}>{game.description}</p>
+                    </Card>
 
-          <Card padding="md">
-            <div className={styles.detailRow}>
-              <span className={styles.detailLabel}>Genre</span>
-              <Link
-                to={`/catalog?genre=${encodeURIComponent(game.genre)}`}
-                className={styles.genreValue}
-              >
-                {game.genre}
-              </Link>
+                    {/* Screenshot Gallery */}
+                    {game.assets?.screenshots && game.assets.screenshots.length > 0 && (
+                        <Card>
+                            <h2 className={styles.sectionTitle}>Screenshots</h2>
+                            <div className={styles.gallery}>
+                                {game.assets.screenshots.slice(0, 6).map((screenshot, i) => (
+                                    <img
+                                        key={i}
+                                        src={screenshot}
+                                        alt={`${game.title} screenshot ${i + 1}`}
+                                        className={styles.screenshot}
+                                        onClick={() => {
+                                            setCurrentImageIndex(i);
+                                            setModalOpen(true);
+                                        }}
+                                    />
+                                ))}
+                            </div>
+                        </Card>
+                    )}
+                </div>
+
+                <aside className={styles.sidebar}>
+                    {/* Cover Image Card */}
+                    <Card padding="none">
+                        <img
+                            src={game.assets?.cover || "https://placehold.co/350x500/101010/FFF?text=No+Cover"}
+                            alt={game.title}
+                            className={styles.coverImage}
+                        />
+                    </Card>
+
+                    <Card className={styles.priceCard} padding="lg">
+                        <div className={styles.priceRow}>
+                            <div className={styles.priceColumn}>
+                                {hasOffer && (
+                                    <span className={styles.originalPrice}>
+                                        {formatCurrency(game.price, game.currency)}
+                                    </span>
+                                )}
+                                <span className={styles.price}>
+                                    {currentPrice === 0 ? "Free" : formatCurrency(currentPrice || 0, game.currency)}
+                                </span>
+                            </div>
+                            {hasOffer && <span className={styles.discountBadge}>OFFER</span>}
+                        </div>
+
+                        <div className={styles.actions}>
+                            <Button
+                                size="lg"
+                                disabled={!isAuthenticated}
+                                title={!isAuthenticated ? "Login to buy" : ""}
+                                onClick={() => navigate(`/checkout/${game._id}`)}
+                            >
+                                <BsCartPlus /> Buy Now
+                            </Button>
+                            <Button variant="ghost" disabled={!isAuthenticated} onClick={() => addItem(game)}>
+                                Add to Cart
+                            </Button>
+                            <Button variant="ghost" disabled={!isAuthenticated} onClick={handleToggleWishlist}>
+                                {isWishlisted ? <BsHeartFill color="var(--accent-primary)" /> : <BsHeart />}
+                                {isWishlisted ? "In Wishlist" : "Add to Wishlist"}
+                            </Button>
+                            {!isAuthenticated && <p className={styles.loginPrompt}>Login to purchase</p>}
+                        </div>
+                    </Card>
+
+                    <Card padding="md">
+                        <div className={styles.detailRow}>
+                            <span className={styles.detailLabel}>Genre</span>
+                            <Link to={`/catalog?genre=${encodeURIComponent(game.genre)}`} className={styles.genreValue}>
+                                {game.genre}
+                            </Link>
+                        </div>
+                        <div className={styles.detailRow}>
+                            <span className={styles.detailLabel}>Developer</span>
+                            <Link
+                                to={`/catalog?developer=${encodeURIComponent(game.developer)}`}
+                                className={styles.linkValue}
+                            >
+                                {game.developer}
+                            </Link>
+                        </div>
+                        <div className={styles.detailRow}>
+                            <span className={styles.detailLabel}>Publisher</span>
+                            <Link
+                                to={`/catalog?publisher=${encodeURIComponent(game.publisher)}`}
+                                className={styles.linkValue}
+                            >
+                                {game.publisher}
+                            </Link>
+                        </div>
+                        <div className={styles.detailRow}>
+                            <span className={styles.detailLabel}>Release Date</span>
+                            <span>
+                                {game.releaseDate
+                                    ? new Date(game.releaseDate).toLocaleDateString("en-US", {
+                                          year: "numeric",
+                                          month: "long",
+                                          day: "numeric",
+                                      })
+                                    : "TBA"}
+                            </span>
+                        </div>
+                        {game.metacritic && (
+                            <div className={styles.detailRow}>
+                                <span className={styles.detailLabel}>Metacritic</span>
+                                <span className={styles.metacriticScore}>{game.metacritic}/100</span>
+                            </div>
+                        )}
+                        {game.score && (
+                            <div className={clsx(styles.detailRow, styles.userScore)}>
+                                <span className={styles.detailLabel}>User Score (RawG)</span>
+                                <span className={styles.userScoreValue}>{game.score}/10</span>
+                            </div>
+                        )}
+                    </Card>
+                </aside>
             </div>
-            <div className={styles.detailRow}>
-              <span className={styles.detailLabel}>Developer</span>
-              <Link
-                to={`/catalog?developer=${encodeURIComponent(game.developer)}`}
-                className={styles.linkValue}
-              >
-                {game.developer}
-              </Link>
-            </div>
-            <div className={styles.detailRow}>
-              <span className={styles.detailLabel}>Publisher</span>
-              <Link
-                to={`/catalog?publisher=${encodeURIComponent(game.publisher)}`}
-                className={styles.linkValue}
-              >
-                {game.publisher}
-              </Link>
-            </div>
-            <div className={styles.detailRow}>
-              <span className={styles.detailLabel}>Release Date</span>
-              <span>
-                {game.releaseDate
-                  ? new Date(game.releaseDate).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })
-                  : "TBA"}
-              </span>
-            </div>
-            {game.metacritic && (
-              <div className={styles.detailRow}>
-                <span className={styles.detailLabel}>Metacritic</span>
-                <span className={styles.metacriticScore}>
-                  {game.metacritic}/100
-                </span>
-              </div>
+
+            {/* Image Modal */}
+            {modalOpen && game?.assets?.screenshots && (
+                <ImageModal
+                    images={game.assets.screenshots}
+                    currentIndex={currentImageIndex}
+                    onClose={() => setModalOpen(false)}
+                    onNavigate={setCurrentImageIndex}
+                />
             )}
-            {game.score && (
-              <div className={clsx(styles.detailRow, styles.userScore)}>
-                <span className={styles.detailLabel}>User Score (RawG)</span>
-                <span className={styles.userScoreValue}>{game.score}/10</span>
-              </div>
-            )}
-          </Card>
-        </aside>
-      </div>
-
-      {/* Image Modal */}
-      {modalOpen && game?.assets?.screenshots && (
-        <ImageModal
-          images={game.assets.screenshots}
-          currentIndex={currentImageIndex}
-          onClose={() => setModalOpen(false)}
-          onNavigate={setCurrentImageIndex}
-        />
-      )}
-    </div>
-  );
+        </div>
+    );
 };
 
 export default GameDetails;
