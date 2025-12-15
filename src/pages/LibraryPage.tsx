@@ -4,6 +4,9 @@ import { Button } from "../components/ui/Button";
 import { GameCard } from "../features/games/components/GameCard";
 import { Link, useNavigate } from "react-router-dom";
 import styles from "./LibraryPage.module.css";
+import { GameFilterBar } from "../components/common/GameFilterBar";
+import { useGameFiltering } from "../hooks/useGameFiltering";
+import { useMemo } from "react";
 
 const LibraryPage = () => {
   const { t } = useTranslation();
@@ -23,7 +26,20 @@ const LibraryPage = () => {
     </div>
   );
 
-  const hasItems = libraryItems && libraryItems.length > 0;
+
+
+  // Extract Game objects from UserGame array
+  const games = useMemo(() => libraryItems?.map((item) => item.game) || [], [libraryItems]);
+
+  const {
+    filteredGames,
+    filters,
+    handleSearchChange,
+    handleGenreChange,
+    handlePlatformChange,
+    handleSortChange,
+    handleClear,
+  } = useGameFiltering(games);
 
   return (
     <div className={styles.container}>
@@ -31,8 +47,8 @@ const LibraryPage = () => {
         <div className={styles.titleSection}>
           <h1 className="text-gradient">{t("nav.library")}</h1>
           <span className={styles.gameCount}>
-            {libraryItems?.length || 0}{" "}
-            {(libraryItems?.length || 0) === 1 ? "Game" : "Games"}
+            {filteredGames.length}{" "}
+            {filteredGames.length === 1 ? "Game" : "Games"}
           </span>
         </div>
 
@@ -50,12 +66,26 @@ const LibraryPage = () => {
         </div>
       </div>
 
-      {!hasItems ? (
+      <GameFilterBar
+        searchQuery={filters.query}
+        genre={filters.genre}
+        platform={filters.platform}
+        sortBy={filters.sortBy}
+        order={filters.order}
+        onSearchChange={handleSearchChange}
+        onGenreChange={handleGenreChange}
+        onPlatformChange={handlePlatformChange}
+        onSortChange={handleSortChange}
+        onClear={handleClear}
+        collapsible
+      />
+
+      {!games.length ? (
         renderEmptyState()
       ) : (
         <div className={styles.grid}>
-          {libraryItems?.map((item) => (
-            <GameCard key={item._id} game={item.game} />
+          {filteredGames.map((game) => (
+            <GameCard key={game._id} game={game} />
           ))}
         </div>
       )}

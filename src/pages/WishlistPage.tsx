@@ -10,6 +10,8 @@ import { Loader } from "../components/ui/Loader";
 import { Button } from "../components/ui/Button";
 import styles from "./WishlistPage.module.css";
 import { useAuth } from "../features/auth/AuthContext";
+import { GameFilterBar } from "../components/common/GameFilterBar";
+import { useGameFiltering } from "../hooks/useGameFiltering";
 
 export const WishlistPage = () => {
   // const { t } = useTranslation();
@@ -50,7 +52,17 @@ export const WishlistPage = () => {
     </div>
   );
 
-  const hasItems = wishlist.length > 0;
+  // const hasItems = wishlist.length > 0;
+  
+  const {
+      filteredGames,
+      filters,
+      handleSearchChange,
+      handleGenreChange,
+      handlePlatformChange,
+      handleSortChange,
+      handleClear,
+    } = useGameFiltering(wishlist);
 
   return (
     <div className={styles.page}>
@@ -58,7 +70,7 @@ export const WishlistPage = () => {
         <div className={styles.titleArea}>
           <h1 className="text-gradient">My Wishlist</h1>
           <span className={styles.count}>
-            {wishlist.length} {wishlist.length === 1 ? "Game" : "Games"}
+            {filteredGames.length} {filteredGames.length === 1 ? "Game" : "Games"}
           </span>
         </div>
 
@@ -76,11 +88,25 @@ export const WishlistPage = () => {
         </div>
       </div>
 
-      {!hasItems ? (
+      <GameFilterBar
+        searchQuery={filters.query}
+        genre={filters.genre}
+        platform={filters.platform}
+        sortBy={filters.sortBy}
+        order={filters.order}
+        onSearchChange={handleSearchChange}
+        onGenreChange={handleGenreChange}
+        onPlatformChange={handlePlatformChange}
+        onSortChange={handleSortChange}
+        onClear={handleClear}
+        collapsible
+      />
+
+      {!wishlist.length ? (
         renderEmptyState()
       ) : (
         <div className={styles.grid}>
-          {wishlist.map((game) => (
+          {filteredGames.map((game) => (
             <GameCard key={game._id} game={game} />
           ))}
         </div>
