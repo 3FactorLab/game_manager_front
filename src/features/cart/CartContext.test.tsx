@@ -7,7 +7,7 @@
 import { render, screen, act } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { CartProvider } from "./CartProvider";
-import { useCart } from "./CartContext";;
+import { useCart } from "./CartContext";
 import type { Game } from "../../services/games.service";
 
 // Mocks
@@ -36,34 +36,35 @@ Object.defineProperty(window, "localStorage", {
 });
 
 const mockGame1: Game = {
-  _id: "game-1",
-  title: "Game One",
-  price: 10,
+  _id: "1",
+  title: "Test Game 1",
+  price: 59.99,
   currency: "USD",
-  description: "Desc",
-  platform: "PC",
-  genre: "Action",
+  image: "test1.jpg",
+  description: "Test Description 1",
   type: "game",
-  releaseDate: "2022",
-  developer: "Dev",
-  publisher: "Pub",
   isOffer: false,
+  platforms: ["PC"],
+  genre: "Action",
+  developer: "Dev 1",
+  publisher: "Pub 1",
+  releaseDate: new Date().toISOString(),
 };
 
 const mockGame2: Game = {
-  _id: "game-2",
-  title: "Game Two",
-  price: 20,
+  _id: "2",
+  title: "Test Game 2",
+  price: 29.99,
   currency: "USD",
-  description: "Desc",
-  platform: "PC",
-  genre: "Action",
+  image: "test2.jpg",
+  description: "Test Description 2",
   type: "game",
-  releaseDate: "2022",
-  developer: "Dev",
-  publisher: "Pub",
-  isOffer: true,
-  offerPrice: 15,
+  isOffer: false,
+  platforms: ["PS5"],
+  genre: "RPG",
+  developer: "Dev 2",
+  publisher: "Pub 2",
+  releaseDate: new Date().toISOString(),
 };
 
 const TestComponent = () => {
