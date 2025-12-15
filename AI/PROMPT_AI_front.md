@@ -32,6 +32,10 @@ Este documento define las reglas y expectativas para la IA asistente integrada e
 - **Mocks**: Usar `vi.mock()` y `vi.spyOn()`. **PROHIBIDO** `jest.mock()`.
 - **Interacciones**: Usar `userEvent` de `@testing-library/user-event` en lugar de `fireEvent` siempre que sea posible.
 - **Aislamiento**: Los tests no deben depender del backend real (usar MSW o Mocks).
+- **Creación de Tests (OBLIGATORIO)**:
+  - Siempre que se implemente nueva lógica o componentes, se deben crear sus tests correspondientes (`.test.tsx`).
+  - Si los tests ya existen, SIEMPRE verificar si necesitan actualización ante cambios de lógica o refactoring.
+  - Asegurar cobertura de los flujos principales (happy paths y edge cases).
 
 ## 4. Strict Typing
 
@@ -181,6 +185,9 @@ npm run validate:phase16
 - **Context Legacy**: Si encuentras un Context que mezcla Provider y Hook en el mismo archivo, refactorízalo usando el patrón 2-file con los scripts disponibles.
 - **Seguridad**: No comprometer la seguridad del cliente (XSS, datos sensibles en localStorage).
 - **Monorepo Readiness**: Mantener la estructura `features/` limpia y desacoplada para facilitar la futura migración.
+- **Verificación de Librerías**:
+  - **OBLIGATORIO**: Verificar siempre `package.json` para confirmar librerías instaladas y sus versiones exactas antes de importar nada.
+  - **PROHIBIDO**: Alucinar imports de librerías que no están en el proyecto.
 
 ## 7. Validation Driven Development (VDD) - OBLIGATORIO
 

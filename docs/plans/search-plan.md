@@ -1,128 +1,162 @@
-# Implementation Plan - Advanced Search & Sort
+# 🎓 Master Class: Architecture of a Production-Grade Search Engine
 
-This plan addresses the implementation of a real-time "Super Search" engine and Sorting functionality for the Game Catalog, as requested by the user.
+> **Nivel**: Senior Logic / Architect
+> **Estado**: Implementado & Verificado ✅
+> **Objetivo**: Desglosar la ingeniería detrás del motor de búsqueda de Game Manager. Este documento no solo explica _cómo_ se hizo, sino _por qué_ es la solución estándar de la industria.
 
-## User Review Required
+## 🧠 Mapa Mental (The Flow)
 
-> [!IMPORTANT] > **Pagination Change**: The plan includes switching from **Infinite Scroll** to **Standard Pagination** (Pages 1, 2, 3...) in the Catalog. This aligns with the "Super Search" and "Sort" requirements (similar to GOG.com) and the user's suggestion.
+Antes de ver código, entendamos el flujo de datos. En una arquitectura profesional, **la UI nunca habla directamente con la API**; la UI actualiza la URL, y la API reacciona a la URL.
 
-> [!NOTE] > **Super Search**: The "Super Search" will be implemented as a prominent search bar with **real-time debounced results** showing in a dropdown (as depicted in typical e-commerce sites).
+```mermaid
+sequenceDiagram
+    participant User as 👤 Usuario
+    participant Input as ⌨️ Input Search
+    participant URL as 🌍 URL Browser
+    participant Hook as 🪝 useCatalogUrl
+    participant Query as ⚡ React Query
+    participant API as 📡 Backend API
 
-## Proposed Changes
+    Note over User, Input: El usuario escribe "Cyber..."
+    User->>Input: Escribe "C", "y", "b"...
+    Input->>Hook: onChange("C")...
 
-### Backend (`game-manager-BACK`)
+    Note right of Hook: 🛑 DEBOUNCE (500ms)<br/>Espera a que el usuario termine
 
-#### [MODIFY] [game.validator.ts](file:///Users/andydev/game%20manager%20v0/game-manager-BACK/src/validators/game.validator.ts)
+    Hook->>URL: setSearchParams(?query=Cyber)
+    Note over URL, Query: Sync Automático
+    URL->>Query: Detecta cambio en URL
+    Query->>API: GET /games?query=Cyber
+    API-->>Query: JSON { games: [...] }
+    Query-->>User: Renderiza Grid de Juegos
+```
 
-- Update `searchGameValidator` to accept optional `sortBy` and `order` query parameters.
-- `sortBy` allowed values: `price`, `releaseDate`, `title`, `genre`, `platform`.
-- `order` allowed values: `asc`, `desc`.
+---
 
-#### [MODIFY] [game.controller.ts](file:///Users/andydev/game%20manager%20v0/game-manager-BACK/src/controllers/game.controller.ts)
+## 🏛️ Backend Architecture: Determinismo & Flexibilidad
 
-- Extract `sortBy`, `order`, and filters from `req.query` in the `search` method.
-- Pass these parameters to the service layer.
-- **[NEW] Endpoint**: `GET /api/games/filters` to retrieve available genres and platforms.
-  - Implement `getFilters` method to aggregation query for distinct values.
+El backend debe ser capaz de responder preguntas complejas ("Juegos de RPG lanzados en 2023 ordenados por precio") de manera eficiente.
 
-#### [MODIFY] [game.model.ts](file:///Users/andydev/game%20manager%20v0/game-manager-BACK/src/models/game.model.ts)
+### 1. Estrategia de Búsqueda Flexible (`$or` vs `$text`)
 
-- **[PERFORMANCE] Indexing**: Add MongoDB Text Index on searchable fields with **Weights** for relevance:
-  - `title`: Weight 10 (Highest priority)
-  - `genre`: Weight 5
-  - `developer`: Weight 3
-  - `publisher`: Weight 3
-  - `platform`: Weight 1
+Decidimos usar **Regex sobre múltiples campos** mediante el operador `$or`.
 
-#### [MODIFY] [game.service.ts](file:///Users/andydev/game%20manager%20v0/game-manager-BACK/src/services/game.service.ts)
+**¿Por qué?**
 
-- Update `searchGames` signature to accept `sortBy` and `order`.
-- **[NEW] Multi-field Search**: Update query logic.
-  - Use `$text` search (if using Text Index) or optimized `$or` query.
-- Implement Mongoose sorting logic based on params.
-  - Initial default: `releaseDate` DESC (Newest first).
-- **[NEW] method**: `getFilters()` to return `{ genres: [...], platforms: [...] }`.
+- **Full Text Search (FTS)** de MongoDB es potente pero estricto con las palabras exactas.
+- **Regex** es más "humano": Permite encontrar "Cyberpunk" escribiendo "Cyber".
+- **Multi-campo**: Al buscar en `title`, `genre` y `developer` a la vez, creamos una experiencia "Google-like".
 
-### Frontend (`frontend`)
+```typescript
+// backend/components/game/game.service.ts
 
-> [!IMPORTANT] > **Design Consistency**: All new components (`NavbarSearch`, `CatalogControls`, Pagination) MUST strictly adhere to the existing application aesthetics.
+// 🧠 Logic: Crear una expresión regular "case insensitive"
+const regex = { $regex: query, $options: "i" };
+
+// 🛡️ Pattern: Array de condiciones OR
+const queryFilter = {
+  $or: [
+    { title: regex }, // Busca en título
+    { genre: regex }, // Busca en género (ej: "RPG")
+    { developer: regex }, // Busca por creador
+    { platform: regex }, // Busca por consola
+  ],
+};
+```
+
+### 2. Paginación Determinista (The "Ghost Sort")
+
+Un error de novato es ordenar solo por un campo que puede tener duplicados (como el precio o la fecha).
+
+**El Problema**:
+Si tienes 50 juegos con precio $59.99, MongoDB no garantiza en qué orden los devuelve. Al pasar de página 1 a 2, podrías ver el mismo juego repetido o saltarte alguno.
+
+**La Solución (Tie-Breaker)**:
+Siempre agregamos `_id` (que es único) como criterio de desempate final.
+
+```typescript
+// ✅ CORRECTO: Orden estable garantizado
+const sortOptions = {
+  price: -1, // Principal: Más caros primero
+  _id: 1, // Secundario: Tie-breaker único
+};
+```
+
+---
+
+## 🎨 Frontend Architecture: URL as Source of Truth
+
+En el frontend, adoptamos la filosofía **"Si no está en la URL, no existe"**.
+
+### 1. El mito del `useState` local
+
+Un error común es guardar la búsqueda en un estado local (`useState`).
+
+- ❌ **Mal**: El usuario refresca la página y pierde su búsqueda.
+- ✅ **Bien**: La URL contiene el estado (`?query=mario`). Al refrescar, React lee la URL y restaura la vista exacta.
+
+### 2. La importancia del Debounce (Suavizado)
+
+Imagina buscar "Minecraft". Son 9 caracteres.
+
+- Sin debounce: 9 peticiones a la API en < 1 segundo. 📉
+- Con debounce: 1 petición al terminar de escribir. 📈
+
+Implementamos esto en `useCatalogUrl.ts` usando `lodash.debounce`.
+
+```typescript
+// frontend/hooks/useCatalogUrl.ts
+const updateUrl = debounce((term) => {
+  setSearchParams({ query: term });
+}, 500); // Espera 500ms de inactividad
+```
+
+---
+
+## 🛡️ Patrones de Prevención de Errores (Anti-Patterns)
+
+Cosas que evitamos explícitamente en esta implementación:
+
+### 🚫 Anti-Pattern 1: "useEffect Chaining"
+
+```javascript
+// ❌ PEOR PRÁCTICA
+useEffect(() => {
+  setSearch(term);
+}, [term]);
+useEffect(() => {
+  api.call(search);
+}, [search]);
+```
+
+**Solución**: Usar **React Query**. La query depende de la variable; cuando la variable cambia, React Query se encarga (cache, reintentos, validación).
+
+### 🚫 Anti-Pattern 2: Resetear Paginación Manualmente
+
+Al cambiar un filtro (ej: de "Acción" a "RPG"), si estabas en la página 5, podrías ver una pantalla vacía porque "RPG" solo tiene 2 páginas.
+**Solución**: Nuestro hook `useCatalogUrl` resetea automáticamente `page=1` cada vez que cambia `query`, `genre` o `sort`.
+
+---
+
+## 🧪 Cómo verificar la calidad (QA Scripts)
+
+### Prueba de Estrés (Debounce)
+
+1.  Abre Network Tab en DevTools.
+2.  Escribe "The Witcher 3" rápido.
+3.  ✅ **Pass**: Solo ves **1 petición** al final.
+4.  ❌ **Fail**: Ves una petición por cada letra (T, Th, The...).
+
+### Prueba de Persistencia
+
+1.  Filtra por "RPG", ordena por "Precio" y ve a la página 2.
+2.  Copia la URL y ábrela en una pestaña de incógnito.
+3.  ✅ **Pass**: Ves exactamente los mismos juegos.
+
+---
+
+> **Referencias Académicas / Documentación**:
 >
-> - **Colors**: Use existing Tailwind tokens/CSS variables (e.g., `primary`, `bg-dark`, `text-muted`). Do NOT introduce new random colors.
-> - **Typography**: Match existing font sizes and weights.
-> - **Spacing**: Follow the project's spacing system.
-> - **Borders/Effects**: Replicate existing border-radius and hover effects (e.g., the specific glow or transition used elsewhere).
-
-#### [NEW] [NavbarSearch.tsx](file:///Users/andydev/game%20manager%20v0/frontend/src/features/games/components/NavbarSearch.tsx)
-
-- **"Super Search" for Navbar**:
-  - instant search with debounce.
-  - **Visual Dropdown**: Shows game thumbnail, title, price, release date, publisher/developer.
-  - **No Results**: Show "No results found" message within the dropdown when no matches exist.
-  - **[UX] Clear Input**: precise "X" button to clear the search term and reset state.
-  - **[UX] Keyboard Navigation**: Support `ArrowUp`/`ArrowDown` to traverse results and `Enter` to select/navigate.
-  - **[UX] View All**: Add a list item at the bottom: "See all results for '...'" which navigates to `/catalog?search=...`.
-  - Clicking a result navigates to `GameDetails`.
-
-#### [NEW] [CatalogControls.tsx](file:///Users/andydev/game%20manager%20v0/frontend/src/features/games/components/CatalogControls.tsx)
-
-- Search Input + Filter/Sort Controls for the Catalog Page.
-- **Search Behavior**: Updates the `search` query param to filter the main game grid (no dropdown).
-- **[UX] Clear Input**: precise "X" button to clear the search term and reset search param.
-- **Advanced Filters**: Collapsible section with Genre and Platform dropdowns.
-- **Sort Control**: "Newest", "Oldest", "Price: Low/High", "Name: A-Z/Z-A", "Genre", "Platform".
-
-#### [MODIFY] [Navbar.tsx](file:///Users/andydev/game%20manager%20v0/frontend/src/components/layout/Navbar.tsx)
-
-- Replace existing search input with `NavbarSearch` component.
-
-#### [MODIFY] [CatalogPage.tsx](file:///Users/andydev/game%20manager%20v0/frontend/src/pages/CatalogPage.tsx)
-
-- Implement `CatalogControls` below the hero section.
-- Sync state with URL parameters (search, page, genre, platform, sort).
-- Remove independent `SortControl` (merged into `CatalogControls` or kept adjacent).
-- **Empty State**: Use a dedicated component to show "We couldn't find anything matching your criteria" with an icon/illustration when the filtered list is empty.
-
-#### [MODIFY] [useGames.ts](file:///Users/andydev/game%20manager%20v0/frontend/src/features/games/hooks/useGames.ts)
-
-- Update hook to accept `sortBy`, `order`, and `page` (instead of infinite scroll `cursor`).
-- Switch from `useInfiniteQuery` to standard `useQuery` (since we are moving to standard pagination).
-- **[UX] Smooth Transitions**: Use `placeholderData: keepPreviousData` to prevent layout shift/flashing while fetching new pages.
-- **[CACHE] Filters**: Implement `useFilters` hook (or add to `useGames`) with `staleTime: Infinity` to cache Genre/Platform lists and reduce API calls.
-
-#### [MODIFY] [CatalogPage.tsx](file:///Users/andydev/game%20manager%20v0/frontend/src/pages/CatalogPage.tsx)
-
-- Replace "Hero" title with the new `AdvancedSearch` component below the title.
-- Add `SortControl` above the game grid.
-- Replace "Load More" button with standard numbered pagination controls.
-- Manage state for `page`, `sortBy`, `order`.
-- **CRITICAL**: Preserve exact existing visual style (`GameCard`, Grid layout, usage of `styles.grid`). Only the pagination mechanism changes (button vs numbers).
-- **[TECH] URL Sync Hook**: Create `useCatalogUrl` hook to manage `page`, `sort`, `search` params.
-  - Implement **Debounce strategy** here: Delay updating the URL `search` param to avoid cluttering browser history while typing.
-
-## Verification Plan
-
-### Automated Tests
-
-- **Backend Integration Test**:
-  - Create/Update `tests/public.games.test.ts` to verify:
-    - Sorting by price (ASC/DESC).
-    - Sorting by date.
-    - Pagination metadata (total pages, current page).
-  - Command: `npm test tests/public.games.test.ts` (in `game-manager-BACK`).
-
-### Manual Verification
-
-1.  **Search**:
-    - Go to Catalog.
-    - Type "Cyber" in the new search bar.
-    - Verify debounced request is sent.
-    - Verify simple dropdown appears with highlighted results (e.g., "**Cyber**punk").
-2.  **Sort**:
-    - Select "Price: Low to High".
-    - Verify games reorder correctly.
-    - Select "Newest".
-    - Verify games reorder by release date.
-3.  **Pagination**:
-    - Scroll to bottom.
-    - Click "Next" or specific page number.
-    - Verify new set of games loads and page top is scrolled to.
+> - [Deboucing Explanation (Visual)](https://css-tricks.com/debouncing-throttling-explained-examples/)
+> - [MongoDB Text Search vs Regex](https://www.mongodb.com/docs/manual/reference/operator/query/regex/)
+> - [React Query Docs: Paginated Queries](https://tanstack.com/query/v4/docs/react/guides/paginated-queries)
