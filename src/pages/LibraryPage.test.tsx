@@ -9,6 +9,8 @@ import { describe, it, expect, vi } from "vitest";
 import LibraryPage from "./LibraryPage";
 import { BrowserRouter } from "react-router-dom";
 
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
 // Mock Library Hook
 const mockUseLibrary = vi.fn();
 
@@ -28,6 +30,22 @@ vi.mock("../features/games/components/GameCard", () => ({
   GameCard: ({ game }: { game: { title: string } }) => <div>{game.title}</div>,
 }));
 
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: false,
+    },
+  },
+});
+
+const renderWithProviders = (ui: React.ReactNode) => {
+  return render(
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>{ui}</BrowserRouter>
+    </QueryClientProvider>
+  );
+};
+
 describe("LibraryPage", () => {
   it("renders loading state", () => {
     mockUseLibrary.mockReturnValue({
@@ -35,11 +53,7 @@ describe("LibraryPage", () => {
       isLoading: true,
     });
 
-    render(
-      <BrowserRouter>
-        <LibraryPage />
-      </BrowserRouter>
-    );
+    renderWithProviders(<LibraryPage />);
 
     // Assuming there's a loader or just nothing/skeleton
     // Adjust based on actual implementation
@@ -53,11 +67,7 @@ describe("LibraryPage", () => {
       isLoading: false,
     });
 
-    render(
-      <BrowserRouter>
-        <LibraryPage />
-      </BrowserRouter>
-    );
+    renderWithProviders(<LibraryPage />);
 
     expect(screen.getByText(/Your library is empty/i)).toBeInTheDocument();
   });
@@ -79,11 +89,7 @@ describe("LibraryPage", () => {
       isLoading: false,
     });
 
-    render(
-      <BrowserRouter>
-        <LibraryPage />
-      </BrowserRouter>
-    );
+    renderWithProviders(<LibraryPage />);
 
     expect(screen.getByText("Elden Ring")).toBeInTheDocument();
     expect(screen.getByText("Cyberpunk 2077")).toBeInTheDocument();

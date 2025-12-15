@@ -153,6 +153,11 @@
   justify-content: space-between;
   padding: 0.75rem 0;
   border-bottom: 1px solid var(--glass-border);
+  font-size: 0.95rem;
+}
+
+.detailRow:last-child {
+  border-bottom: none;
 }
 
 .detailLabel {
@@ -178,8 +183,15 @@
 }
 
 .genreValue {
-  font-weight: 700;
-  color: #34d399;
+  color: var(--accent-secondary); /* Keep existing color if any */
+  text-decoration: none;
+  font-weight: 500;
+  transition: color var(--transition-fast);
+}
+
+.genreValue:hover {
+  text-decoration: underline;
+  color: var(--accent-primary);
 }
 
 .metacriticScore {
@@ -195,6 +207,18 @@
 .userScoreValue {
   color: var(--success);
   font-weight: bold;
+}
+
+.linkValue {
+  color: var(--text-primary);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color var(--transition-fast);
+}
+
+.linkValue:hover {
+  text-decoration: underline;
+  color: var(--accent-secondary);
 }
 
 .loginPrompt {
