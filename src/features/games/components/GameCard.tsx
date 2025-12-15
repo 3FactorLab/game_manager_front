@@ -46,6 +46,20 @@ export const GameCard = ({ game }: GameCardProps) => {
   };
 
   /**
+   * Navigate to catalog filtered by tag
+   */
+  const handleTagClick = (
+    e: React.MouseEvent,
+    key: "genre" | "developer" | "platform",
+    value: string
+  ) => {
+    e.stopPropagation();
+    // Encode value to handle spaces/special chars
+    const encodedValue = encodeURIComponent(value);
+    navigate(`/catalog?${key}=${encodedValue}`);
+  };
+
+  /**
    * Prefetch game details on hover
    * Improves perceived performance by loading data before click
    */
@@ -124,15 +138,23 @@ export const GameCard = ({ game }: GameCardProps) => {
 
         {/* Meta Info: Genre */}
         <div className={styles.metaContainer}>
-          <span className={styles.genreBadge}>{game.genre}</span>
+          <span
+            className={styles.genreBadge}
+            onClick={(e) => handleTagClick(e, "genre", game.genre)}
+          >
+            {game.genre}
+          </span>
         </div>
 
-        {/* Platform Badge (on its own line) */}
         {/* Platform Badges */}
         <div className={styles.platformContainer}>
           {(game.platforms?.length ? game.platforms : ["Unknown"]).map(
             (platform, index) => (
-              <span key={index} className={styles.platformBadge}>
+              <span
+                key={index}
+                className={styles.platformBadge}
+                onClick={(e) => handleTagClick(e, "platform", platform)}
+              >
                 {platform}
               </span>
             )
@@ -143,7 +165,12 @@ export const GameCard = ({ game }: GameCardProps) => {
         <div className={styles.footer}>
           <div className={styles.developerContainer}>
             {game.developer && (
-              <span className={styles.developerBadge}>{game.developer}</span>
+              <span
+                className={styles.developerBadge}
+                onClick={(e) => handleTagClick(e, "developer", game.developer)}
+              >
+                {game.developer}
+              </span>
             )}
           </div>
 

@@ -95,7 +95,9 @@ const GameManagement = () => {
                 <div className={styles.cardContent}>
                   <h3 className={styles.cardTitle}>{game.title}</h3>
                   <div className={styles.cardMeta}>
-                    <span className={styles.badge}>{game.platform}</span>
+                    <span className={styles.badge}>
+                      {game.platforms?.join(", ")}
+                    </span>
                     {game.score && (
                       <span className={styles.score}>⭐ {game.score}/10</span>
                     )}

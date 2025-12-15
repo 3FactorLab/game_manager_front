@@ -25,6 +25,8 @@ export const useCatalogUrl = () => {
   const query = searchParams.get("query") || "";
   const genre = searchParams.get("genre") || "";
   const platform = searchParams.get("platform") || "";
+  const developer = searchParams.get("developer") || "";
+  const publisher = searchParams.get("publisher") || "";
   const sortBy = searchParams.get("sortBy") || "releaseDate";
   const order = (searchParams.get("order") as "asc" | "desc") || "desc";
   const page = parseInt(searchParams.get("page") || "1", 10);
@@ -63,7 +65,10 @@ export const useCatalogUrl = () => {
     debouncedSetSearch(newQuery);
   };
 
-  const setFilter = (key: "genre" | "platform", value: string) => {
+  const setFilter = (
+    key: "genre" | "platform" | "developer" | "publisher",
+    value: string
+  ) => {
     const newParams = new URLSearchParams(searchParams);
     if (value) {
       newParams.set(key, value);
@@ -90,6 +95,8 @@ export const useCatalogUrl = () => {
     query,
     genre,
     platform,
+    developer,
+    publisher,
     sortBy,
     order,
     page,

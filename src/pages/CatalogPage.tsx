@@ -13,8 +13,17 @@ const CatalogPage = () => {
   const { t } = useTranslation();
 
   // Use URL params for state
-  const { query, genre, platform, sortBy, order, page, setPage } =
-    useCatalogUrl();
+  const {
+    query,
+    genre,
+    platform,
+    developer,
+    publisher,
+    sortBy,
+    order,
+    page,
+    setPage,
+  } = useCatalogUrl();
 
   // Fetch games with standard pagination
   const { data, isLoading, isError, isPlaceholderData } = useGames({
@@ -23,6 +32,8 @@ const CatalogPage = () => {
     query, // Changed from 'search' to match backend
     genre,
     platform,
+    developer,
+    publisher,
     sortBy,
     order,
   });

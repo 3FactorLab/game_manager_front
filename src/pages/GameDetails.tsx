@@ -11,7 +11,7 @@
  */
 
 import { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { clsx } from "clsx";
 // import { useTranslation } from "react-i18next";
 import { BsCartPlus, BsHeart, BsHeartFill } from "react-icons/bs";
@@ -83,15 +83,27 @@ const GameDetails = () => {
 
         <div className={styles.heroContent}>
           <h1 className={`${styles.title} text-gradient`}>{game.title}</h1>
-            <div className={styles.meta}>
-              {(game.platforms?.length ? game.platforms : ["Unknown"]).map(
-                (platform, index) => (
-                  <span key={index} className={styles.platformTag}>
-                    {platform}
-                  </span>
-                )
-              )}
-            </div>
+          <div className={styles.meta}>
+            {(game.platforms?.length ? game.platforms : ["Unknown"]).map(
+              (platform, index) => (
+                <Link
+                  key={index}
+                  to={`/catalog?platform=${encodeURIComponent(platform)}`}
+                  className={styles.platformTag}
+                >
+                  {platform}
+                </Link>
+              )
+            )}
+            {game.developer && (
+              <Link
+                to={`/catalog?developer=${encodeURIComponent(game.developer)}`}
+                className={styles.linkText}
+              >
+                {game.developer}
+              </Link>
+            )}
+          </div>
         </div>
       </div>
 
@@ -191,15 +203,30 @@ const GameDetails = () => {
           <Card padding="md">
             <div className={styles.detailRow}>
               <span className={styles.detailLabel}>Genre</span>
-              <span className={styles.genreValue}>{game.genre}</span>
+              <Link
+                to={`/catalog?genre=${encodeURIComponent(game.genre)}`}
+                className={styles.genreValue}
+              >
+                {game.genre}
+              </Link>
             </div>
             <div className={styles.detailRow}>
               <span className={styles.detailLabel}>Developer</span>
-              <span>{game.developer}</span>
+              <Link
+                to={`/catalog?developer=${encodeURIComponent(game.developer)}`}
+                className={styles.linkValue}
+              >
+                {game.developer}
+              </Link>
             </div>
             <div className={styles.detailRow}>
               <span className={styles.detailLabel}>Publisher</span>
-              <span>{game.publisher}</span>
+              <Link
+                to={`/catalog?publisher=${encodeURIComponent(game.publisher)}`}
+                className={styles.linkValue}
+              >
+                {game.publisher}
+              </Link>
             </div>
             <div className={styles.detailRow}>
               <span className={styles.detailLabel}>Release Date</span>

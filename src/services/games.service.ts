@@ -57,6 +57,8 @@ export interface GamesQueryParams {
   order?: "asc" | "desc";
   onSale?: boolean;
   maxPrice?: number;
+  developer?: string;
+  publisher?: string;
 }
 
 export interface BackendGame extends Partial<Omit<Game, "assets">> {

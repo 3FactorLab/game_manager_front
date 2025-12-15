@@ -32,7 +32,7 @@ beforeAll(() => {
 
 // Mock useGames hook
 vi.mock("../../games/hooks/useGames", () => ({
-  useGames: ({ onSale, maxPrice }: any) => {
+  useGames: ({ maxPrice }: any) => {
     // Free Games (maxPrice: 0)
     if (maxPrice === 0) {
       return {
