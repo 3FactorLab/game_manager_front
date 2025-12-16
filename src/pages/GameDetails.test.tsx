@@ -11,6 +11,7 @@ import * as gameHooks from "../features/games/hooks/useGameDetails";
 import * as authContext from "../features/auth/AuthContext";
 import * as wishlistContext from "../features/wishlist/WishlistContext";
 import * as cartContext from "../features/cart/CartContext";
+import * as collectionHooks from "../features/collection/hooks/useIsGameOwned";
 import type { Game } from "../services/games.service";
 
 // -----------------------------------------------------------------------------
@@ -31,6 +32,7 @@ vi.mock("../features/auth/AuthContext");
 vi.mock("../features/games/hooks/useGameDetails");
 vi.mock("../features/wishlist/WishlistContext");
 vi.mock("../features/cart/CartContext");
+vi.mock("../features/collection/hooks/useIsGameOwned");
 
 const mockGame: Game = {
   _id: "game-1",
@@ -77,6 +79,8 @@ describe("GameDetails Page", () => {
       removeFromWishlist: mockRemoveFromWishlist,
       isInWishlist: () => false,
     } as unknown as ReturnType<typeof wishlistContext.useWishlist>);
+
+    vi.mocked(collectionHooks.useIsGameOwned).mockReturnValue(false);
   });
 
   const renderComponent = () =>

@@ -34,6 +34,18 @@ vi.mock("../../../services/games.service", () => ({
 // Let's use real providers with mocked internal services for simplicity in integration
 // OR mock the hooks directly. Mocking hooks is cleaner for unit test.
 
+vi.mock("../../auth/AuthContext", () => ({
+  useAuth: () => ({ isAuthenticated: true }),
+}));
+
+vi.mock("../../collection/hooks/useIsGameOwned", () => ({
+  useIsGameOwned: vi.fn().mockReturnValue(false),
+}));
+
+vi.mock("../../collection/hooks/useLibrary", () => ({
+  useLibrary: () => ({ data: [] }),
+}));
+
 vi.mock("../../cart/CartContext", () => ({
   useCart: () => ({ addItem: vi.fn() }),
   CartProvider: ({ children }: { children: React.ReactNode }) => (
@@ -96,7 +108,10 @@ describe("GameCard", () => {
   });
 
   it("should render abbreviated platform names", () => {
-    const gameWithLongPlatform = { ...mockGame, platforms: ["PlayStation 5", "Nintendo Switch"] };
+    const gameWithLongPlatform = {
+      ...mockGame,
+      platforms: ["PlayStation 5", "Nintendo Switch"],
+    };
     render(
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
