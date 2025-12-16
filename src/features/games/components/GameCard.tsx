@@ -10,7 +10,7 @@ import { useTranslation } from "react-i18next";
 import { BsCartPlus, BsHeart, BsHeartFill } from "react-icons/bs";
 import { Card } from "../../../components/ui/Card";
 import type { Game } from "../../../services/games.service";
-import { formatCurrency } from "../../../utils/format";
+import { formatCurrency, formatPlatformName } from "../../../utils/format";
 import { useCart } from "../../cart/CartContext";
 import { useWishlist } from "../../wishlist/WishlistContext";
 import { useQueryClient } from "@tanstack/react-query";
@@ -152,7 +152,7 @@ export const GameCard = ({ game, className, style }: GameCardProps) => {
                 className={styles.platformBadge}
                 onClick={(e) => handleTagClick(e, "platform", platform)}
               >
-                {platform}
+                {formatPlatformName(platform)}
               </span>
             )
           )}

@@ -95,6 +95,20 @@ describe("GameCard", () => {
     expect(screen.getByText("$59.99")).toBeInTheDocument();
   });
 
+  it("should render abbreviated platform names", () => {
+    const gameWithLongPlatform = { ...mockGame, platforms: ["PlayStation 5", "Nintendo Switch"] };
+    render(
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+          <GameCard game={gameWithLongPlatform} />
+        </BrowserRouter>
+      </QueryClientProvider>
+    );
+
+    expect(screen.getByText("PS5")).toBeInTheDocument();
+    expect(screen.getByText("Switch")).toBeInTheDocument();
+  });
+
   it("should prefetch game details on mouse enter (Hover)", () => {
     const prefetchSpy = vi.spyOn(queryClient, "prefetchQuery");
     renderComponent();

@@ -19,3 +19,23 @@ export const formatCurrency = (amount: number, currency: string = "USD") => {
 };
 
 // Exported to GameCard and other components for price display
+
+/**
+ * Format platform name to abbreviated version
+ * @param {string} platform - Original platform name
+ * @returns {string} Abbreviated platform name
+ */
+export const formatPlatformName = (platform: string): string => {
+  const mappings: Record<string, string> = {
+    "PlayStation 1": "PS1",
+    "PlayStation 2": "PS2",
+    "PlayStation 3": "PS3",
+    "PlayStation 4": "PS4",
+    "PlayStation 5": "PS5",
+    "Nintendo Switch": "Switch",
+    "Nintendo 3DS": "3DS",
+    "Xbox Series S/X": "Xbox S/X",
+  };
+
+  return mappings[platform] || platform;
+};

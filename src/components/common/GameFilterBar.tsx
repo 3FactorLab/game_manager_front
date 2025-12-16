@@ -116,7 +116,7 @@ export const GameFilterBar = ({
             onChange={(e) => onGenreChange(e.target.value)}
             disabled={isLoading}
           >
-            <option value="">{t("catalog.all")}</option>
+            <option value="">{t("catalog.all_genres")}</option>
             {filterOptions?.genres.map((g) => (
               <option key={g} value={g}>
                 {g}
@@ -134,7 +134,7 @@ export const GameFilterBar = ({
             onChange={(e) => onPlatformChange(e.target.value)}
             disabled={isLoading}
           >
-            <option value="">{t("catalog.allPlatforms")}</option>
+            <option value="">{t("catalog.all_platforms")}</option>
             {filterOptions?.platforms.map((p) => (
               <option key={p} value={p}>
                 {p}
