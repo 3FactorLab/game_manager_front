@@ -11,7 +11,7 @@ import type { Game, BackendGame } from "./games.service";
  * Interface for Wishlist response from backend
  */
 export interface WishlistResponse {
-  wishlist: BackendGame[]; // Array of games in user's wishlist
+    wishlist: BackendGame[]; // Array of games in user's wishlist
 }
 
 /**
@@ -23,6 +23,7 @@ export interface WishlistResponse {
  * @returns Promise with array of games in wishlist
  */
 export const getWishlist = async (): Promise<Game[]> => {
+<<<<<<< HEAD
   // Fetch with a large limit to get all items for the context
   const response = await apiClient.get("/users/wishlist", {
     params: { limit: 1000 }, // Large limit to get all items
@@ -56,6 +57,33 @@ export const getWishlist = async (): Promise<Game[]> => {
       videos: [],
     },
   }));
+=======
+    const response = await apiClient.get<WishlistResponse>("/users/wishlist");
+
+    // Map backend structure to frontend Game interface
+    // Ensures consistent data structure across the application
+    return response.data.wishlist.map((game: BackendGame) => ({
+        _id: game._id || "",
+        title: game.title || "Untitled",
+        description: game.description || "",
+        price: game.price || 0,
+        currency: game.currency || "USD",
+        platforms: game.platforms || (game.platform ? [game.platform] : ["Unknown"]),
+        genre: game.genre || "Unknown",
+        type: game.type || "game",
+        releaseDate: game.released || game.releaseDate || "",
+        developer: game.developer || "Unknown",
+        publisher: game.publisher || "Unknown",
+        isOffer: !!game.isOffer,
+        offerPrice: game.offerPrice,
+        score: game.score,
+        assets: game.assets || {
+            cover: game.image || "https://placehold.co/600x400/101010/FFF?text=No+Cover",
+            screenshots: Array.isArray(game.screenshots) ? game.screenshots.filter((s) => s.startsWith("http")) : [],
+            videos: [],
+        },
+    }));
+>>>>>>> 29de31cc6b9834bd781db66164a29cbd34af4dfe
 };
 
 /**
@@ -67,12 +95,12 @@ export const getWishlist = async (): Promise<Game[]> => {
  * @returns Promise with void
  */
 export const addToWishlist = async (gameId: string): Promise<void> => {
-  try {
-    await apiClient.post(`/users/wishlist/${gameId}`);
-  } catch (error) {
-    console.error("Failed to add to wishlist:", error);
-    throw error;
-  }
+    try {
+        await apiClient.post(`/users/wishlist/${gameId}`);
+    } catch (error) {
+        console.error("Failed to add to wishlist:", error);
+        throw error;
+    }
 };
 
 /**
@@ -80,12 +108,12 @@ export const addToWishlist = async (gameId: string): Promise<void> => {
  * @param gameId - ID of game to remove
  */
 export const removeFromWishlist = async (gameId: string): Promise<void> => {
-  try {
-    await apiClient.delete(`/users/wishlist/${gameId}`);
-  } catch (error) {
-    console.error("Failed to remove from wishlist:", error);
-    throw error;
-  }
+    try {
+        await apiClient.delete(`/users/wishlist/${gameId}`);
+    } catch (error) {
+        console.error("Failed to remove from wishlist:", error);
+        throw error;
+    }
 };
 
 /**
