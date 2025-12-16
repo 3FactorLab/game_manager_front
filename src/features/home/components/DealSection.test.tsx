@@ -32,7 +32,7 @@ beforeAll(() => {
 
 // Mock useGames hook
 vi.mock("../../games/hooks/useGames", () => ({
-  useGames: ({ maxPrice }: any) => {
+  useGames: ({ maxPrice }: { maxPrice: number }) => {
     // Free Games (maxPrice: 0)
     if (maxPrice === 0) {
       return {
@@ -71,7 +71,9 @@ vi.mock("../../games/hooks/useGames", () => ({
 
 // Mock GameCard (to avoid deep rendering)
 vi.mock("../../games/components/GameCard", () => ({
-  GameCard: ({ game }: any) => <div data-testid="game-card">{game.title}</div>,
+  GameCard: ({ game }: { game: { title: string } }) => (
+    <div data-testid="game-card">{game.title}</div>
+  ),
 }));
 
 describe("DealSection", () => {

@@ -59,11 +59,12 @@ export const useGameFiltering = (games: Game[] | undefined) => {
           comparison = a.title.localeCompare(b.title);
           break;
         case "releaseDate":
-        default:
+        default: {
           const dateA = new Date(a.releaseDate).getTime();
           const dateB = new Date(b.releaseDate).getTime();
           comparison = dateA - dateB;
           break;
+        }
       }
 
       return filters.order === "asc" ? comparison : -comparison;

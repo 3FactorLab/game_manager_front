@@ -32,11 +32,11 @@ export const collectionService = {
    * @returns {Promise<CollectionItem[]>} User's game collection
    */
   async getLibrary(): Promise<CollectionItem[]> {
-    const { data } = await apiClient.get<{ items: CollectionItem[] }>(
+    const { data } = await apiClient.get<{ data: CollectionItem[] }>(
       "/collection",
-      { params: { limit: 50 } }
+      { params: { limit: 1000 } }
     );
-    return data.items;
+    return data.data;
   },
 
   /**
