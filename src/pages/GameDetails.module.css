@@ -68,7 +68,7 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.5rem 1rem;
-    background: var(--accent-secondary); /* Orange background */
+    background: linear-gradient(to right, var(--accent-primary), var(--accent-secondary));
     backdrop-filter: blur(8px);
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 9px; /* Match pill shape */
