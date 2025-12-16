@@ -18,13 +18,6 @@ vi.mock("../features/collection/hooks/useLibrary", () => ({
   useLibrary: () => mockUseLibrary(),
 }));
 
-// Mock useTranslation
-vi.mock("react-i18next", () => ({
-  useTranslation: () => ({
-    t: (key: string) => key,
-  }),
-}));
-
 // Mock GameCard to avoid CartProvider dependency
 vi.mock("../features/games/components/GameCard", () => ({
   GameCard: ({ game }: { game: { title: string } }) => <div>{game.title}</div>,

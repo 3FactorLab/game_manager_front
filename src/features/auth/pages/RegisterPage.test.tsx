@@ -28,12 +28,7 @@ vi.mock("../AuthContext", () => ({
   useAuth: vi.fn(),
 }));
 
-// Mock Translation
-vi.mock("react-i18next", () => ({
-  useTranslation: () => ({
-    t: (key: string) => key,
-  }),
-}));
+// i18n mock removed - using global i18n configuration from test-setup.ts
 
 describe("RegisterPage", () => {
   const mockRegisterUser = vi.fn();
@@ -65,14 +60,14 @@ describe("RegisterPage", () => {
     expect(screen.getByPlaceholderText("you@example.com")).toBeInTheDocument();
     expect(screen.getAllByPlaceholderText("••••••")).toHaveLength(2); // Password + Confirm
     expect(
-      screen.getByRole("button", { name: "nav.register" })
+      screen.getByRole("button", { name: /register/i })
     ).toBeInTheDocument();
   });
 
   it("should show validation errors on submitting empty form", async () => {
     renderComponent();
 
-    const submitBtn = screen.getByRole("button", { name: "nav.register" });
+    const submitBtn = screen.getByRole("button", { name: /register/i });
     fireEvent.click(submitBtn);
 
     // Zod validation messages
@@ -98,7 +93,7 @@ describe("RegisterPage", () => {
     const usernameInput = screen.getByPlaceholderText("Gamer123");
     const emailInput = screen.getByPlaceholderText("you@example.com");
     const passwordInputs = screen.getAllByPlaceholderText("••••••");
-    const submitBtn = screen.getByRole("button", { name: "nav.register" });
+    const submitBtn = screen.getByRole("button", { name: /register/i });
 
     fireEvent.change(usernameInput, { target: { value: "NewUser" } });
     fireEvent.change(emailInput, { target: { value: "new@example.com" } });
@@ -128,7 +123,7 @@ describe("RegisterPage", () => {
     const usernameInput = screen.getByPlaceholderText("Gamer123");
     const emailInput = screen.getByPlaceholderText("you@example.com");
     const passwordInputs = screen.getAllByPlaceholderText("••••••");
-    const submitBtn = screen.getByRole("button", { name: "nav.register" });
+    const submitBtn = screen.getByRole("button", { name: /register/i });
 
     fireEvent.change(usernameInput, { target: { value: "NewUser" } });
     fireEvent.change(emailInput, { target: { value: "existing@example.com" } });

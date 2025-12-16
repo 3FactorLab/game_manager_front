@@ -25,9 +25,7 @@ describe("LoginPage", () => {
 
     expect(screen.getByPlaceholderText("you@example.com")).toBeInTheDocument();
     expect(screen.getByPlaceholderText("••••••")).toBeInTheDocument();
-    expect(
-      screen.getByRole("button", { name: /nav.login/i })
-    ).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /login/i })).toBeInTheDocument();
   });
 
   it("shows validation error on empty submit", async () => {
@@ -39,7 +37,7 @@ describe("LoginPage", () => {
       </BrowserRouter>
     );
 
-    const submitBtn = screen.getByRole("button", { name: /nav.login/i });
+    const submitBtn = screen.getByRole("button", { name: /login/i });
     fireEvent.click(submitBtn);
 
     // Zod validation should trigger. Using findByText because it's async
