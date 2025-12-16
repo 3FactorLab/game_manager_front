@@ -51,7 +51,9 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
     },
     onSuccess: () => {
       toast.success("Added to wishlist");
+      // Invalidate both the context query and the paginated query
       queryClient.invalidateQueries({ queryKey: ["wishlist"] });
+      queryClient.invalidateQueries({ queryKey: ["wishlist-paginated"] });
     },
   });
 
@@ -78,7 +80,9 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
     },
     onSuccess: () => {
       toast.success("Removed from wishlist");
+      // Invalidate both the context query and the paginated query
       queryClient.invalidateQueries({ queryKey: ["wishlist"] });
+      queryClient.invalidateQueries({ queryKey: ["wishlist-paginated"] });
     },
   });
 

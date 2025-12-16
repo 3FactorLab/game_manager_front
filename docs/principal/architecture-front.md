@@ -722,6 +722,14 @@ sequenceDiagram
     Hook-->>UI: Renderiza Grid de Juegos
 ```
 
+> [!TIP] > **Pagination Hooks Pattern**:
+> Implementamos una separación estricta:
+>
+> 1.  **URL Hook** (`useCatalogUrl`): Maneja la escritura en URL.
+> 2.  **Data Hook** (`useGames`): Lee la URL y hace fetch.
+>
+> El componente de UI **nunca** llama al servicio directamente; solo actualiza la URL.
+
 ### 6. Flujo de Protección de Rutas
 
 **Concepto**: Guards en el lado del cliente (Client-Side Routing).

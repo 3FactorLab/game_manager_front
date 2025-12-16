@@ -606,7 +606,9 @@ Nuestra red de seguridad.
 
 - **Vitest**: Framework de testing (compatible con Vite)
 - **Testing Library**: Para testear componentes React
-- **Ejemplo**: Test de Button verifica que renderiza correctamente y responde a clicks
+- **Standard**: Usamos **userEvent** para interacciones realistas (click, type). `fireEvent` se considera legacy.
+- **Zero-Fragility**: Prohibido usar `any` en tests.
+- **Ejemplo**: Test de Button verifica que renderiza correctamente y responde a clicks reales.
 
 ---
 
@@ -649,9 +651,9 @@ Todos los archivos críticos incluyen documentación estilo académico:
 
 ## 🎯 14. Mejoras Recientes (Diciembre 2025)
 
-### Type Safety (95% Coverage)
+### Type Safety (100% Compliant)
 
-- Eliminación de 12 de 13 usos de `any`
+- Eliminación estricta de todos los `any` (Zero Tolerance)
 - Interfaces centralizadas en `src/types/`
 - Type guards para validación en runtime
 

@@ -30,8 +30,9 @@ Este documento define las reglas y expectativas para la IA asistente integrada e
 
 - **Runner**: Usar siempre `vitest`.
 - **Mocks**: Usar `vi.mock()` y `vi.spyOn()`. **PROHIBIDO** `jest.mock()`.
-- **Interacciones**: Usar `userEvent` de `@testing-library/user-event` en lugar de `fireEvent` siempre que sea posible.
+- **Interacciones**: **OBLIGATORIO** usar `userEvent` de `@testing-library/user-event` para simular interacciones reales (click, type). `fireEvent` solo permitido si `userEvent` no funciona.
 - **Aislamiento**: Los tests no deben depender del backend real (usar MSW o Mocks).
+- **Type Safety**: **PROHIBIDO** el uso de `any` incluso en tests. Usar interfaces parciales (`Partial<T>`) o mocks tipados correctamente.
 - **Creación de Tests (OBLIGATORIO)**:
   - Siempre que se implemente nueva lógica o componentes, se deben crear sus tests correspondientes (`.test.tsx`).
   - Si los tests ya existen, SIEMPRE verificar si necesitan actualización ante cambios de lógica o refactoring.
@@ -44,6 +45,7 @@ Este documento define las reglas y expectativas para la IA asistente integrada e
   - Usar interfaces compartidas (`src/types/*.ts`) para entidades de negocio (`Game`, `User`).
   - No usar `unknown[]` para listas de entidades; tipar correctamente (ej: `Game[]`).
 - **Props**: Todas las props de componentes deben estar tipadas explícitamente.
+- **Errors**: En bloques `try/catch`, tipar el error como `unknown` y usar funciones de utilidad (`isAxiosError`, generic type guards) antes de acceder a propiedades.
 
 ## 5. Context Pattern (React Context API)
 
@@ -56,7 +58,7 @@ Cada Context debe separarse en **2 archivos independientes**:
 
 **Ejemplo de estructura**:
 
-```
+```text
 src/features/auth/
 ├── AuthContext.tsx    ← Context + useAuth hook
 └── AuthProvider.tsx   ← AuthProvider component
@@ -198,3 +200,27 @@ npm run validate:phase16
     2. **Prohibiciones**: Escanear código buscando `console.log`, `any`, o imports circulares.
     3. **Tests**: Ejecutar tests específicos de la feature (`vitest run path/to/test`).
   - **Ejecución**: El plan no se marca como "Completado" hasta que este script pase en verde (`exit code 0`).
+
+## 8. Patterns & Standards
+
+### Paginación (Server-Side)
+
+- **Standard Response**: Consumir siempre la estructura estándar del backend:
+
+  ```typescript
+  interface PaginatedResponse<T> {
+    data: T[];
+    pagination: {
+      total: number;
+      pages: number;
+      page: number;
+      limit: number;
+    };
+  }
+  ```
+
+- **Pattern: Pagination Hooks**:
+  - Separar lógica de URL (`useLibraryUrl`) de lógica de datos (`useLibraryPaginated`).
+  - **URL Hook**: Gestiona `searchParams` (page, query, limit) y navegación.
+  - **Data Hook**: Usa `useQuery` con `keepPreviousData: true` para evitar flicker.
+  - **Pagination Component**: Componente reutilizable controlado por `page`, `totalPages` y `onPageChange`.

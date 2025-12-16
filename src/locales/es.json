@@ -110,12 +110,15 @@
     "games": "juegos"
   },
   "library": {
-    "loading": "Cargando...",
+    "loading": "Cargando biblioteca...",
     "emptyLibrary": "Biblioteca vacía",
-    "emptyDescription": "¡Explora!",
+    "emptyDescription": "Comienza tu colección explorando la tienda",
     "browseStore": "Explorar",
     "myGames": "Juegos",
-    "wishlist": "Deseados"
+    "wishlist": "Deseados",
+    "noResults": "Sin juegos",
+    "noResultsDescription": "Ajusta filtros o búsqueda",
+    "clearFilters": "Limpiar"
   },
   "checkout": {
     "title": "Pagar",
@@ -176,5 +179,10 @@
     "alreadyHaveAccount": "¿Tienes cuenta?",
     "invalidCredentials": "Datos incorrectos",
     "registrationFailed": "Error al registrar."
+  },
+  "pagination": {
+    "previous": "Anterior",
+    "next": "Siguiente",
+    "page": "Página {{page}}"
   }
 }

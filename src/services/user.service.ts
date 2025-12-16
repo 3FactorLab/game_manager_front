@@ -15,18 +15,24 @@ export interface WishlistResponse {
 }
 
 /**
- * Get user's wishlist
+ * Get user's wishlist (all items, for context)
  * Fetches all games in the authenticated user's wishlist.
  * Maps backend structure to frontend Game interface.
+ * Note: This fetches ALL items for WishlistContext. For paginated display, use getWishlistPaginated.
  *
  * @returns Promise with array of games in wishlist
  */
 export const getWishlist = async (): Promise<Game[]> => {
-  const response = await apiClient.get<WishlistResponse>("/users/wishlist");
+  // Fetch with a large limit to get all items for the context
+  const response = await apiClient.get("/users/wishlist", {
+    params: { limit: 1000 }, // Large limit to get all items
+  });
+
+  // Backend now returns {data: Game[], pagination: {...}}
+  const games = response.data.data || [];
 
   // Map backend structure to frontend Game interface
-  // Ensures consistent data structure across the application
-  return response.data.wishlist.map((game: BackendGame) => ({
+  return games.map((game: BackendGame) => ({
     _id: game._id || "",
     title: game.title || "Untitled",
     description: game.description || "",
@@ -82,4 +88,46 @@ export const removeFromWishlist = async (gameId: string): Promise<void> => {
   }
 };
 
+/**
+ * Query parameters for wishlist pagination
+ */
+export interface WishlistQueryParams {
+  page?: number;
+  limit?: number;
+  query?: string;
+  genre?: string;
+  platform?: string;
+  sortBy?: string;
+  order?: "asc" | "desc";
+}
+
+/**
+ * Paginated response interface
+ */
+export interface PaginatedWishlistResponse {
+  data: Game[];
+  pagination: {
+    total: number;
+    pages: number;
+    page: number;
+    limit: number;
+  };
+}
+
+/**
+ * Get user's wishlist with server-side pagination
+ * Fetches paginated games from the authenticated user's wishlist.
+ * Supports search, filtering, and sorting.
+ *
+ * @param params - Query parameters for filtering and pagination
+ * @returns Promise with paginated wishlist data
+ */
+export const getWishlistPaginated = async (
+  params: WishlistQueryParams = {}
+): Promise<PaginatedWishlistResponse> => {
+  const { data } = await apiClient.get("/users/wishlist", { params });
+  return data;
+};
+
 // Exported to WishlistContext for wishlist management with optimistic updates
+// Exported to useWishlistPaginated for paginated display

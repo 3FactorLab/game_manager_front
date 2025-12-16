@@ -108,12 +108,15 @@
     "games": "Games"
   },
   "library": {
-    "loading": "Loading...",
+    "loading": "Loading your library...",
     "emptyLibrary": "Your library is empty",
-    "emptyDescription": "Go explore!",
+    "emptyDescription": "Start building your collection by browsing the store",
     "browseStore": "Browse Store",
     "myGames": "My Games",
-    "wishlist": "Wishlist"
+    "wishlist": "Wishlist",
+    "noResults": "No games found",
+    "noResultsDescription": "Try adjusting your filters or search query",
+    "clearFilters": "Clear Filters"
   },
   "checkout": {
     "title": "Checkout",
@@ -174,5 +177,10 @@
     "alreadyHaveAccount": "Already have an account?",
     "invalidCredentials": "Invalid email or password",
     "registrationFailed": "Registration failed. Try using a different email."
+  },
+  "pagination": {
+    "previous": "Previous",
+    "next": "Next",
+    "page": "Page {{page}}"
   }
 }

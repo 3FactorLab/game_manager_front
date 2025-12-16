@@ -5,17 +5,21 @@
  */
 
 import { render, screen } from "@testing-library/react";
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import LibraryPage from "./LibraryPage";
 import { BrowserRouter } from "react-router-dom";
-
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-// Mock Library Hook
-const mockUseLibrary = vi.fn();
+// Mock paginated library hooks
+const mockUseLibraryPaginated = vi.fn();
+const mockUseLibraryUrl = vi.fn();
 
-vi.mock("../features/collection/hooks/useLibrary", () => ({
-  useLibrary: () => mockUseLibrary(),
+vi.mock("../features/collection/hooks/useLibraryPaginated", () => ({
+  useLibraryPaginated: () => mockUseLibraryPaginated(),
+}));
+
+vi.mock("../features/collection/hooks/useLibraryUrl", () => ({
+  useLibraryUrl: () => mockUseLibraryUrl(),
 }));
 
 // Mock GameCard to avoid CartProvider dependency
@@ -40,23 +44,42 @@ const renderWithProviders = (ui: React.ReactNode) => {
 };
 
 describe("LibraryPage", () => {
+  beforeEach(() => {
+    // Default URL state mock
+    mockUseLibraryUrl.mockReturnValue({
+      page: 1,
+      query: "",
+      genre: "",
+      platform: "",
+      status: "",
+      sortBy: "updatedAt",
+      order: "desc",
+      setPage: vi.fn(),
+      setSearch: vi.fn(),
+      setGenre: vi.fn(),
+      setPlatform: vi.fn(),
+      setSort: vi.fn(),
+      clearAll: vi.fn(),
+    });
+  });
+
   it("renders loading state", () => {
-    mockUseLibrary.mockReturnValue({
-      data: [],
+    mockUseLibraryPaginated.mockReturnValue({
+      data: undefined,
       isLoading: true,
     });
 
     renderWithProviders(<LibraryPage />);
 
-    // Assuming there's a loader or just nothing/skeleton
-    // Adjust based on actual implementation
-    // For now, checking that "No games found" is NOT present is a proxy
-    expect(screen.queryByText(/No games found/i)).not.toBeInTheDocument();
+    expect(screen.getByText(/Loading your library/i)).toBeInTheDocument();
   });
 
   it("renders empty state", () => {
-    mockUseLibrary.mockReturnValue({
-      data: [],
+    mockUseLibraryPaginated.mockReturnValue({
+      data: {
+        data: [],
+        pagination: { total: 0, pages: 0, page: 1, limit: 20 },
+      },
       isLoading: false,
     });
 
@@ -66,19 +89,22 @@ describe("LibraryPage", () => {
   });
 
   it("renders purchased games", () => {
-    mockUseLibrary.mockReturnValue({
-      data: [
-        {
-          _id: "1",
-          game: { title: "Elden Ring", image: "elden.jpg" },
-          status: "playing",
-        },
-        {
-          _id: "2",
-          game: { title: "Cyberpunk 2077", image: "cp.jpg" },
-          status: "completed",
-        },
-      ],
+    mockUseLibraryPaginated.mockReturnValue({
+      data: {
+        data: [
+          {
+            _id: "1",
+            game: { _id: "g1", title: "Elden Ring", image: "elden.jpg" },
+            status: "playing",
+          },
+          {
+            _id: "2",
+            game: { _id: "g2", title: "Cyberpunk 2077", image: "cp.jpg" },
+            status: "completed",
+          },
+        ],
+        pagination: { total: 2, pages: 1, page: 1, limit: 20 },
+      },
       isLoading: false,
     });
 

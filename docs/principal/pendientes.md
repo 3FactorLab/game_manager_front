@@ -13,6 +13,13 @@
 
 ## ⚠️ Prioridad Media (Improvements)
 
+### Code Quality (Technical Debt)
+
+- [ ] **Migración a `userEvent`**
+  - **Problema**: ~30 tests usan `fireEvent` (menor realismo, permite clics en elementos no interactivos).
+  - **Acción**: Migrar gradualmente a `userEvent` al tocar los archivos correspondientes (Boy Scout Rule).
+  - **Referencia**: Ver `PROMPT_AI_front.md` (Testing Strategy).
+
 ### Infraestructura (Futuro Monorepo)
 
 - [ ] **Preparación para Monorepo**
@@ -33,6 +40,16 @@
 ---
 
 ## ✅ Historial de Completados
+
+### Phase 18: PROMPT_AI & Compliance Audit (2025-12-16)
+
+- **Backend**:
+  - ✅ **Swagger Fix**: Documentación de Paginación `{ data, pagination }` sincronizada.
+  - ✅ **Strict Typing**: Middleware de error tipado (0 `any`).
+  - ✅ **Prompt Update**: Reglas claras sobre `jest.mock` vs `jest.spyOn`.
+- **Frontend**:
+  - ✅ **Prompt Update**: Estandarización de `userEvent`, Pagination Hooks y Response Types.
+  - ✅ **Fix**: Wishlist Pagination sincronizada con backend.
 
 ### Phase 17: End-to-End Performance (2025-12-14)
 
@@ -79,21 +96,20 @@
 - ✅ **Auth**: Token Refresh, Auto-login, Persistence.
 - ✅ **Features**: Search, Filter, Sort, Pagination.
 - ✅ **UI**: Error Boundaries, Loaders, CSS Modules.
-- ✅ **Docs**: Base documental académica establecida.
 
 ---
 
 ## 📝 Notas Técnicas
 
-### Estado Actual (2025-12-14)
+### Estado Actual (2025-12-16)
 
-- **Tests**: 74/74 passing (100% coverage).
-- **Lint**: 0 errores en src (19 en tests).
-- **Build**: Success.
-- **Documentation**: 100% Complete.
+- **Frontend Tests**: 74/74 passing.
+- **Backend Tests**: 112/112 passing (100% compliant).
+- **Proceso**: VDD implementado y validado.
+- **Documentation**: 100% Sincronizada (Back/Front/Prompts).
 
 ### Próximos Pasos
 
-1. Eliminar `console.error` residual (High Priority).
+1. Mantener disciplina de VDD.
 2. Planificar fix de contraseña backend (High Priority).
-3. Mantener documentación actualizada.
+3. Migrar gradualmente tests a `userEvent`.
