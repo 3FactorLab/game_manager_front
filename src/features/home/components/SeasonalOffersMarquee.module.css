@@ -7,12 +7,13 @@
     rgba(21, 128, 61, 0.85)
   );
   border-radius: var(--radius-lg);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3), 0 0 30px rgba(255, 215, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
   display: flex;
   flex-direction: column; /* Stack Title + Track */
   gap: 1.5rem;
   padding: 2.5rem 0;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 2px solid rgba(255, 215, 0, 0.6);
   overflow: hidden;
   position: relative;
 }
@@ -77,8 +78,8 @@
   will-change: transform;
 }
 
-/* Pause animation on hover */
-.marqueeContainer:hover .marqueeTrack {
+/* Pause animation when hovering over any card */
+.marqueeTrack:has(.seasonalCard:hover) {
   animation-play-state: paused;
 }
 

@@ -36,7 +36,7 @@
     "loading": "Cargando ofertas...",
     "no_free_games": "No se encontraron juegos gratis.",
     "no_cheap_games": "No se encontraron juegos por menos de 10$.",
-    "seasonal_offers": "Winter Sales"
+    "seasonal_offers": "Rebajas de Invierno"
   },
   "landing": {
     "hero_title": "Bienvenido a GameManager",
@@ -76,15 +76,105 @@
     "all_platforms": "Todas las plataformas",
     "all_prices": "Todos los precios",
     "free": "Gratis",
-    "under10": "Menos de 10€",
-    "under30": "Menos de 30€",
-    "under60": "Menos de 60€",
+    "under10": "Menos de $10",
+    "under30": "Menos de $30",
+    "under60": "Menos de $60",
     "orderBy": "Ordenar por",
     "newest": "Más Recientes",
     "priceLowHigh": "Precio: Bajo a Alto",
     "priceHighLow": "Precio: Alto a Bajo",
     "nameAZ": "Nombre: A-Z",
     "nameZA": "Nombre: Z-A",
-    "clear": "Limpiar Filtros"
+    "clear": "Limpiar Filtros",
+    "loading": "Cargando...",
+    "error": "Error",
+    "noGames": "Sin juegos",
+    "tryAdjusting": "Ajusta filtros."
+  },
+  "cart": {
+    "title": "Carrito",
+    "clear": "Vaciar",
+    "total": "Total",
+    "checkout": "Pagar",
+    "emptyCart": "Carrito vacío",
+    "browseGames": "Explorar"
+  },
+  "wishlist": {
+    "title": "Deseados",
+    "emptyWishlist": "Sin deseados",
+    "emptyDescription": "Guarda juegos para después.",
+    "pleaseLogin": "Inicia sesión",
+    "loginRequired": "Inicia sesión para ver.",
+    "myGames": "Juegos",
+    "game": "juego",
+    "games": "juegos"
+  },
+  "library": {
+    "loading": "Cargando...",
+    "emptyLibrary": "Biblioteca vacía",
+    "emptyDescription": "¡Explora!",
+    "browseStore": "Explorar",
+    "myGames": "Juegos",
+    "wishlist": "Deseados"
+  },
+  "checkout": {
+    "title": "Pagar",
+    "loading": "Cargando...",
+    "orderSummary": "Resumen",
+    "total": "Total",
+    "paymentMethod": "Pago",
+    "creditCard": "Tarjeta",
+    "paypal": "PayPal",
+    "cancel": "Cancelar",
+    "confirmPurchase": "Confirmar",
+    "purchaseSuccess": "¡Comprado!",
+    "addedToLibrary": "añadido.",
+    "gamesAddedToLibrary": "añadidos.",
+    "goToLibrary": "Ir a Juegos",
+    "purchaseFailed": "Error en compra.",
+    "gameNotFound": "No encontrado"
+  },
+  "orders": {
+    "title": "Pedidos",
+    "order": "pedido",
+    "orders": "pedidos",
+    "loading": "Cargando...",
+    "error": "Error.",
+    "noOrders": "Sin pedidos",
+    "noOrdersDescription": "No has comprado juegos.",
+    "browseStore": "Explorar",
+    "orderNumber": "Pedido #",
+    "game": "Juego",
+    "activationKey": "Clave",
+    "price": "Precio"
+  },
+  "gameDetails": {
+    "loading": "Cargando...",
+    "gameNotFound": "No encontrado",
+    "aboutGame": "Descripción",
+    "screenshots": "Capturas",
+    "offer": "OFERTA",
+    "buyNow": "Comprar",
+    "addToCart": "Al Carrito",
+    "inWishlist": "Deseado",
+    "addToWishlist": "Desear",
+    "loginToPurchase": "Inicia sesión",
+    "genre": "Género",
+    "developer": "Desarrollador",
+    "publisher": "Editor",
+    "releaseDate": "Lanzamiento",
+    "tba": "TBA",
+    "metacritic": "Metacritic",
+    "userScore": "Valoración"
+  },
+  "auth": {
+    "username": "Usuario",
+    "email": "Correo",
+    "password": "Contraseña",
+    "confirmPassword": "Confirmar",
+    "dontHaveAccount": "¿Sin cuenta?",
+    "alreadyHaveAccount": "¿Tienes cuenta?",
+    "invalidCredentials": "Datos incorrectos",
+    "registrationFailed": "Error al registrar."
   }
 }

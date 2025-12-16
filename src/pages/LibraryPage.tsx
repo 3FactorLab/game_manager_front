@@ -15,7 +15,10 @@ const LibraryPage = () => {
   const { data: libraryItems, isLoading } = useLibrary();
 
   // Extract Game objects from UserGame array
-  const games = useMemo(() => libraryItems?.map((item) => item.game) || [], [libraryItems]);
+  const games = useMemo(
+    () => libraryItems?.map((item) => item.game) || [],
+    [libraryItems]
+  );
 
   const {
     filteredGames,
@@ -27,14 +30,15 @@ const LibraryPage = () => {
     handleClear,
   } = useGameFiltering(games);
 
-  if (isLoading) return <div className={styles.loadingState}>Loading...</div>;
+  if (isLoading)
+    return <div className={styles.loadingState}>{t("library.loading")}</div>;
 
   const renderEmptyState = () => (
     <div className={styles.emptyState}>
-      <h2 className="text-gradient">Your library is empty</h2>
-      <p className={styles.emptyStateText}>Go explore and find some games!</p>
+      <h2 className="text-gradient">{t("library.emptyLibrary")}</h2>
+      <p className={styles.emptyStateText}>{t("library.emptyDescription")}</p>
       <Link to="/" className={styles.browseLink}>
-        Browse Store
+        {t("library.browseStore")}
       </Link>
     </div>
   );
@@ -46,20 +50,22 @@ const LibraryPage = () => {
           <h1 className="text-gradient">{t("nav.library")}</h1>
           <span className={styles.gameCount}>
             {filteredGames.length}{" "}
-            {filteredGames.length === 1 ? "Game" : "Games"}
+            {filteredGames.length === 1
+              ? t("wishlist.game")
+              : t("wishlist.games")}
           </span>
         </div>
 
         <div className={styles.headerActions}>
           <Button variant="primary" size="sm">
-            My Games
+            {t("library.myGames")}
           </Button>
           <Button
             variant="ghost"
             onClick={() => navigate("/wishlist")}
             size="sm"
           >
-            Wishlist
+            {t("library.wishlist")}
           </Button>
         </div>
       </div>

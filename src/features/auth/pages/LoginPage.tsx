@@ -54,7 +54,7 @@ const LoginPage = () => {
     } catch (error) {
       console.error(error); // Log for debugging
       setError("root", {
-        message: "Invalid email or password", // User-friendly error
+        message: t("auth.invalidCredentials"), // User-friendly error
       });
     }
   };
@@ -66,7 +66,7 @@ const LoginPage = () => {
 
         <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
           <Input
-            label="Email"
+            label={t("auth.email")}
             type="email"
             placeholder="you@example.com"
             {...register("email")}
@@ -74,7 +74,7 @@ const LoginPage = () => {
           />
 
           <Input
-            label="Password"
+            label={t("auth.password")}
             type="password"
             placeholder="••••••"
             {...register("password")}
@@ -94,7 +94,7 @@ const LoginPage = () => {
           </Button>
 
           <div className={styles.footer}>
-            Don't have an account?{" "}
+            {t("auth.dontHaveAccount")}{" "}
             <Link to="/register" className={styles.link}>
               {t("nav.register")}
             </Link>

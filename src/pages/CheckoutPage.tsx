@@ -1,6 +1,7 @@
 ﻿import { useState, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { clsx } from "clsx";
 import { useGameDetails } from "../features/games/hooks/useGameDetails";
 import { Card } from "../components/ui/Card";
@@ -11,6 +12,7 @@ import { useCart } from "../features/cart/CartContext";
 import styles from "./CheckoutPage.module.css";
 
 const CheckoutPage = () => {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -42,20 +44,22 @@ const CheckoutPage = () => {
   );
 
   if (isLoading && id) {
-    return <div className={styles.loadingState}>Loading Checkout...</div>;
+    return <div className={styles.loadingState}>{t("checkout.loading")}</div>;
   }
 
   if (!id && cartItems.length === 0) {
     return (
       <div className={styles.emptyState}>
-        <h2 className="text-gradient">Your cart is empty</h2>
-        <Button onClick={() => navigate("/")}>Browse games</Button>
+        <h2 className="text-gradient">{t("cart.emptyCart")}</h2>
+        <Button onClick={() => navigate("/")}>{t("cart.browseGames")}</Button>
       </div>
     );
   }
 
   if (id && !game) {
-    return <div className={styles.errorState}>Game not found</div>;
+    return (
+      <div className={styles.errorState}>{t("checkout.gameNotFound")}</div>
+    );
   }
 
   const handlePurchase = () => {
@@ -70,7 +74,7 @@ const CheckoutPage = () => {
       },
       onError: (error) => {
         console.error("Purchase failed:", error);
-        alert("Purchase failed. Please try again.");
+        alert(t("checkout.purchaseFailed"));
       },
     });
   };
@@ -82,11 +86,13 @@ const CheckoutPage = () => {
 
   return (
     <div className={styles.container}>
-      <h1 className={clsx("text-gradient", styles.pageTitle)}>Checkout</h1>
+      <h1 className={clsx("text-gradient", styles.pageTitle)}>
+        {t("checkout.title")}
+      </h1>
 
       <Card>
         <div className={styles.summary}>
-          <h3>Order Summary</h3>
+          <h3>{t("checkout.orderSummary")}</h3>
           <div className={styles.productList}>
             {itemsToCheckout.map((item) => (
               <div key={item._id} className={styles.productRow}>
@@ -100,7 +106,7 @@ const CheckoutPage = () => {
                 </div>
                 <span>
                   {item.price === 0
-                    ? "Free"
+                    ? t("common.free")
                     : formatCurrency(item.price || 0, item.currency)}
                 </span>
               </div>
@@ -108,10 +114,10 @@ const CheckoutPage = () => {
           </div>
 
           <div className={styles.totalRow}>
-            <span>Total</span>
+            <span>{t("cart.total")}</span>
             <span className={styles.totalPrice}>
               {totalAmount === 0
-                ? "Free"
+                ? t("common.free")
                 : formatCurrency(
                     totalAmount,
                     itemsToCheckout[0]?.currency || "USD"
@@ -120,7 +126,7 @@ const CheckoutPage = () => {
           </div>
         </div>
 
-        <h3 className={styles.sectionTitle}>Payment Method</h3>
+        <h3 className={styles.sectionTitle}>{t("checkout.paymentMethod")}</h3>
         <div className={styles.paymentMethods}>
           <div
             className={clsx(
@@ -129,7 +135,7 @@ const CheckoutPage = () => {
             )}
             onClick={() => setSelectedMethod("card")}
           >
-            Credit Card
+            {t("checkout.creditCard")}
           </div>
           <div
             className={clsx(
@@ -138,7 +144,7 @@ const CheckoutPage = () => {
             )}
             onClick={() => setSelectedMethod("paypal")}
           >
-            PayPal
+            {t("checkout.paypal")}
           </div>
         </div>
 
@@ -148,14 +154,14 @@ const CheckoutPage = () => {
             onClick={() => navigate(-1)}
             disabled={isPending}
           >
-            Cancel
+            {t("checkout.cancel")}
           </Button>
           <Button
             className={styles.confirmButton}
             onClick={handlePurchase}
             isLoading={isPending}
           >
-            Confirm Purchase
+            {t("checkout.confirmPurchase")}
           </Button>
         </div>
       </Card>
@@ -168,21 +174,23 @@ const CheckoutPage = () => {
             onClick={(e) => e.stopPropagation()}
           >
             <div className={styles.successIcon}>✔</div>
-            <h2>Purchase Successful!</h2>
+            <h2>{t("checkout.purchaseSuccess")}</h2>
             <p>
               {itemsToCheckout.length === 1 ? (
                 <>
-                  <strong>{itemsToCheckout[0].title}</strong> has been added to
-                  your library.
+                  <strong>{itemsToCheckout[0].title}</strong>{" "}
+                  {t("checkout.addedToLibrary")}
                 </>
               ) : (
                 <>
-                  <strong>{itemsToCheckout.length}</strong> games have been
-                  added to your library.
+                  <strong>{itemsToCheckout.length}</strong>{" "}
+                  {t("checkout.gamesAddedToLibrary")}
                 </>
               )}
             </p>
-            <Button onClick={handleCloseModal}>Go to Library</Button>
+            <Button onClick={handleCloseModal}>
+              {t("checkout.goToLibrary")}
+            </Button>
           </div>
         </div>
       )}

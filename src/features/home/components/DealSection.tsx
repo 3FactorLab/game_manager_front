@@ -23,6 +23,7 @@ export const DealSection = () => {
 
   const [freeIndex, setFreeIndex] = useState(0);
   const [cheapIndex, setCheapIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
 
   const freeGamesAll = freeResponse?.data || [];
   const cheapGamesAll = cheapResponse?.data || [];
@@ -45,6 +46,9 @@ export const DealSection = () => {
     let shouldRotateFree = true;
 
     const interval = setInterval(() => {
+      // Pause animation if hovering over any card
+      if (isPaused) return;
+
       if (shouldRotateFree) {
         // Rotate Free Games
         if (freeGamesAll.length > 4) {
@@ -67,7 +71,7 @@ export const DealSection = () => {
     }, 4000);
 
     return () => clearInterval(interval);
-  }, [freeGamesAll.length, cheapGamesAll.length]);
+  }, [freeGamesAll.length, cheapGamesAll.length, isPaused]);
 
   if (loadingFree || loadingCheap)
     return <div className="text-center py-10">{t("home.loading")}</div>;
@@ -115,6 +119,8 @@ export const DealSection = () => {
                     height: "100%",
                     overflow: "hidden",
                   }}
+                  onMouseEnter={() => setIsPaused(true)}
+                  onMouseLeave={() => setIsPaused(false)}
                 >
                   <GameCard game={game} />
                 </motion.div>
@@ -161,6 +167,8 @@ export const DealSection = () => {
                     height: "100%",
                     overflow: "hidden",
                   }}
+                  onMouseEnter={() => setIsPaused(true)}
+                  onMouseLeave={() => setIsPaused(false)}
                 >
                   <GameCard game={game} />
                 </motion.div>

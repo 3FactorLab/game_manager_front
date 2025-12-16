@@ -139,15 +139,15 @@ const CatalogPage = () => {
         {isLoading ? (
           <div className={styles.loadingState}>
             <span className={`text-gradient ${styles.loadingText}`}>
-              Loading Games...
+              {t("catalog.loading")}
             </span>
           </div>
         ) : isError ? (
-          <div className={styles.errorState}>Error loading catalog.</div>
+          <div className={styles.errorState}>{t("catalog.error")}</div>
         ) : gamesList.length === 0 ? (
           <div className={styles.emptyState}>
-            <h3>No games found</h3>
-            <p>Try adjusting your search or filters.</p>
+            <h3>{t("catalog.noGames")}</h3>
+            <p>{t("catalog.tryAdjusting")}</p>
           </div>
         ) : (
           <>

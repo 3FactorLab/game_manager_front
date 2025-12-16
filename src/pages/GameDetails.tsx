@@ -13,7 +13,7 @@
 import { useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { clsx } from "clsx";
-// import { useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import { BsCartPlus, BsHeart, BsHeartFill } from "react-icons/bs";
 import { useGameDetails } from "../features/games/hooks/useGameDetails";
 import { useWishlist } from "../features/wishlist/WishlistContext";
@@ -36,7 +36,7 @@ import styles from "./GameDetails.module.css";
 const GameDetails = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  // const { t } = useTranslation();
+  const { t } = useTranslation();
   const { isAuthenticated } = useAuth();
   const { data: game, isLoading, error } = useGameDetails(id);
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
@@ -57,9 +57,14 @@ const GameDetails = () => {
     }
   };
 
-  if (isLoading) return <div className={styles.loadingState}>Loading...</div>;
+  if (isLoading)
+    return (
+      <div className={styles.loadingState}>{t("gameDetails.loading")}</div>
+    );
   if (error || !game)
-    return <div className={styles.errorState}>Game not found</div>;
+    return (
+      <div className={styles.errorState}>{t("gameDetails.gameNotFound")}</div>
+    );
   const hasOffer = game.isOffer && game.offerPrice !== undefined;
   const currentPrice = hasOffer ? game.offerPrice : game.price;
 
@@ -107,14 +112,18 @@ const GameDetails = () => {
       <div className={styles.content}>
         <div className={styles.mainInfo}>
           <Card>
-            <h2 className={styles.sectionTitle}>About this game</h2>
+            <h2 className={styles.sectionTitle}>
+              {t("gameDetails.aboutGame")}
+            </h2>
             <p className={styles.description}>{game.description}</p>
           </Card>
 
           {/* Screenshot Gallery */}
           {game.assets?.screenshots && game.assets.screenshots.length > 0 && (
             <Card>
-              <h2 className={styles.sectionTitle}>Screenshots</h2>
+              <h2 className={styles.sectionTitle}>
+                {t("gameDetails.screenshots")}
+              </h2>
               <div className={styles.gallery}>
                 {game.assets.screenshots.slice(0, 6).map((screenshot, i) => (
                   <img
@@ -156,11 +165,15 @@ const GameDetails = () => {
                 )}
                 <span className={styles.price}>
                   {currentPrice === 0
-                    ? "Free"
+                    ? t("common.free")
                     : formatCurrency(currentPrice || 0, game.currency)}
                 </span>
               </div>
-              {hasOffer && <span className={styles.discountBadge}>OFFER</span>}
+              {hasOffer && (
+                <span className={styles.discountBadge}>
+                  {t("gameDetails.offer")}
+                </span>
+              )}
             </div>
 
             <div className={styles.actions}>
@@ -170,14 +183,14 @@ const GameDetails = () => {
                 title={!isAuthenticated ? "Login to buy" : ""}
                 onClick={() => navigate(`/checkout/${game._id}`)}
               >
-                <BsCartPlus /> Buy Now
+                <BsCartPlus /> {t("gameDetails.buyNow")}
               </Button>
               <Button
                 variant="ghost"
                 disabled={!isAuthenticated}
                 onClick={() => addItem(game)}
               >
-                Add to Cart
+                {t("gameDetails.addToCart")}
               </Button>
               <Button
                 variant="ghost"
@@ -189,17 +202,23 @@ const GameDetails = () => {
                 ) : (
                   <BsHeart />
                 )}
-                {isWishlisted ? "In Wishlist" : "Add to Wishlist"}
+                {isWishlisted
+                  ? t("gameDetails.inWishlist")
+                  : t("gameDetails.addToWishlist")}
               </Button>
               {!isAuthenticated && (
-                <p className={styles.loginPrompt}>Login to purchase</p>
+                <p className={styles.loginPrompt}>
+                  {t("gameDetails.loginToPurchase")}
+                </p>
               )}
             </div>
           </Card>
 
           <Card padding="md">
             <div className={styles.detailRow}>
-              <span className={styles.detailLabel}>Genre</span>
+              <span className={styles.detailLabel}>
+                {t("gameDetails.genre")}
+              </span>
               <Link
                 to={`/catalog?genre=${encodeURIComponent(game.genre)}`}
                 className={styles.genreValue}
@@ -208,7 +227,9 @@ const GameDetails = () => {
               </Link>
             </div>
             <div className={styles.detailRow}>
-              <span className={styles.detailLabel}>Developer</span>
+              <span className={styles.detailLabel}>
+                {t("gameDetails.developer")}
+              </span>
               <Link
                 to={`/catalog?developer=${encodeURIComponent(game.developer)}`}
                 className={styles.linkValue}
@@ -217,7 +238,9 @@ const GameDetails = () => {
               </Link>
             </div>
             <div className={styles.detailRow}>
-              <span className={styles.detailLabel}>Publisher</span>
+              <span className={styles.detailLabel}>
+                {t("gameDetails.publisher")}
+              </span>
               <Link
                 to={`/catalog?publisher=${encodeURIComponent(game.publisher)}`}
                 className={styles.linkValue}
@@ -226,7 +249,9 @@ const GameDetails = () => {
               </Link>
             </div>
             <div className={styles.detailRow}>
-              <span className={styles.detailLabel}>Release Date</span>
+              <span className={styles.detailLabel}>
+                {t("gameDetails.releaseDate")}
+              </span>
               <span>
                 {game.releaseDate
                   ? new Date(game.releaseDate).toLocaleDateString("en-US", {
@@ -234,12 +259,14 @@ const GameDetails = () => {
                       month: "long",
                       day: "numeric",
                     })
-                  : "TBA"}
+                  : t("gameDetails.tba")}
               </span>
             </div>
             {game.metacritic && (
               <div className={styles.detailRow}>
-                <span className={styles.detailLabel}>Metacritic</span>
+                <span className={styles.detailLabel}>
+                  {t("gameDetails.metacritic")}
+                </span>
                 <span className={styles.metacriticScore}>
                   {game.metacritic}/100
                 </span>
@@ -247,7 +274,9 @@ const GameDetails = () => {
             )}
             {game.score && (
               <div className={clsx(styles.detailRow, styles.userScore)}>
-                <span className={styles.detailLabel}>User Score (RawG)</span>
+                <span className={styles.detailLabel}>
+                  {t("gameDetails.userScore")}
+                </span>
                 <span className={styles.userScoreValue}>{game.score}/10</span>
               </div>
             )}

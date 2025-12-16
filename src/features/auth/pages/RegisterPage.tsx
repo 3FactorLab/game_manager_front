@@ -55,7 +55,7 @@ const RegisterPage = () => {
     } catch (error) {
       console.error(error);
       setError("root", {
-        message: "Registration failed. Try using a different email.",
+        message: t("auth.registrationFailed"),
       });
     }
   };
@@ -67,14 +67,14 @@ const RegisterPage = () => {
 
         <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
           <Input
-            label="Username"
+            label={t("auth.username")}
             placeholder="Gamer123"
             {...register("username")}
             error={errors.username?.message}
           />
 
           <Input
-            label="Email"
+            label={t("auth.email")}
             type="email"
             placeholder="you@example.com"
             {...register("email")}
@@ -82,7 +82,7 @@ const RegisterPage = () => {
           />
 
           <Input
-            label="Password"
+            label={t("auth.password")}
             type="password"
             placeholder="••••••"
             {...register("password")}
@@ -90,7 +90,7 @@ const RegisterPage = () => {
           />
 
           <Input
-            label="Confirm Password"
+            label={t("auth.confirmPassword")}
             type="password"
             placeholder="••••••"
             {...register("confirmPassword")}
@@ -110,7 +110,7 @@ const RegisterPage = () => {
           </Button>
 
           <div className={styles.footer}>
-            Already have an account?{" "}
+            {t("auth.alreadyHaveAccount")}{" "}
             <Link to="/login" className={styles.link}>
               {t("nav.login")}
             </Link>

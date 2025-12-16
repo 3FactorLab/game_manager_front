@@ -1,9 +1,11 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { useOrders } from "../features/orders/hooks/useOrders";
 import styles from "./OrdersPage.module.css";
 import { Link } from "react-router-dom";
 
 const OrdersPage: React.FC = () => {
+  const { t } = useTranslation();
   const { data: orders, isLoading, error } = useOrders();
 
   const formatDateString = (dateString: string) => {
@@ -19,29 +21,27 @@ const OrdersPage: React.FC = () => {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h1 className={`text-gradient ${styles.headerTitle}`}>My Orders</h1>
+        <h1 className={`text-gradient ${styles.headerTitle}`}>
+          {t("orders.title")}
+        </h1>
         <span className={styles.headerCount}>
           {orders?.length || 0}{" "}
-          {(orders?.length || 0) === 1 ? "Order" : "Orders"}
+          {(orders?.length || 0) === 1 ? t("orders.order") : t("orders.orders")}
         </span>
       </div>
 
-      {isLoading && <div className={styles.loading}>Loading orders...</div>}
+      {isLoading && <div className={styles.loading}>{t("orders.loading")}</div>}
 
-      {error && (
-        <div className={styles.emptyState}>
-          Failed to load orders. Please try again later.
-        </div>
-      )}
+      {error && <div className={styles.emptyState}>{t("orders.error")}</div>}
 
       {!isLoading && !orders?.length && (
         <div className={styles.emptyStateContainer}>
-          <h2 className="text-gradient">No orders yet</h2>
+          <h2 className="text-gradient">{t("orders.noOrders")}</h2>
           <p className={styles.emptyStateText}>
-            You haven't purchased any games yet.
+            {t("orders.noOrdersDescription")}
           </p>
           <Link to="/catalog" className={styles.browseLink}>
-            Browse Store
+            {t("orders.browseStore")}
           </Link>
         </div>
       )}
@@ -56,7 +56,8 @@ const OrdersPage: React.FC = () => {
                     {formatDateString(order.createdAt)}
                   </div>
                   <div className={styles.orderId}>
-                    Order #{order._id.slice(-6).toUpperCase()}
+                    {t("orders.orderNumber")}
+                    {order._id.slice(-6).toUpperCase()}
                   </div>
                 </div>
                 <div className={styles.orderTotal}>
@@ -67,9 +68,9 @@ const OrdersPage: React.FC = () => {
               <table className={styles.itemsTable}>
                 <thead>
                   <tr>
-                    <th>Game</th>
-                    <th>Activation Key</th>
-                    <th className={styles.alignRight}>Price</th>
+                    <th>{t("orders.game")}</th>
+                    <th>{t("orders.activationKey")}</th>
+                    <th className={styles.alignRight}>{t("orders.price")}</th>
                   </tr>
                 </thead>
                 <tbody>

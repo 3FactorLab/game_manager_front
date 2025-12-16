@@ -3,6 +3,7 @@
  * Page for displaying the user's wishlist games.
  */
 import { Link, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { BsHeart } from "react-icons/bs";
 import { useWishlist } from "../features/wishlist/WishlistContext";
 import { GameCard } from "../features/games/components/GameCard";
@@ -14,7 +15,7 @@ import { GameFilterBar } from "../components/common/GameFilterBar";
 import { useGameFiltering } from "../hooks/useGameFiltering";
 
 export const WishlistPage = () => {
-  // const { t } = useTranslation();
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { wishlist, isLoading } = useWishlist();
   const { isAuthenticated } = useAuth();
@@ -41,10 +42,10 @@ export const WishlistPage = () => {
     return (
       <div className={styles.emptyContainer}>
         <BsHeart size={48} className={styles.emptyIcon} />
-        <h2>Please login</h2>
-        <p>You need to be logged in to view your wishlist.</p>
+        <h2>{t("wishlist.pleaseLogin")}</h2>
+        <p>{t("wishlist.loginRequired")}</p>
         <Link to="/login" className={styles.browseButton}>
-          Login
+          {t("common.login")}
         </Link>
       </div>
     );
@@ -52,12 +53,10 @@ export const WishlistPage = () => {
 
   const renderEmptyState = () => (
     <div className={styles.emptyStateContainer}>
-      <h2 className="text-gradient">Your wishlist is empty</h2>
-      <p className={styles.emptyStateText}>
-        Save games you're interested in to track their price or play them later.
-      </p>
+      <h2 className="text-gradient">{t("wishlist.emptyWishlist")}</h2>
+      <p className={styles.emptyStateText}>{t("wishlist.emptyDescription")}</p>
       <Link to="/home" className={styles.browseLink}>
-        Browse Store
+        {t("library.browseStore")}
       </Link>
     </div>
   );
@@ -66,9 +65,12 @@ export const WishlistPage = () => {
     <div className={styles.page}>
       <div className={styles.header}>
         <div className={styles.titleArea}>
-          <h1 className="text-gradient">My Wishlist</h1>
+          <h1 className="text-gradient">{t("wishlist.title")}</h1>
           <span className={styles.count}>
-            {filteredGames.length} {filteredGames.length === 1 ? "Game" : "Games"}
+            {filteredGames.length}{" "}
+            {filteredGames.length === 1
+              ? t("wishlist.game")
+              : t("wishlist.games")}
           </span>
         </div>
 
@@ -78,10 +80,10 @@ export const WishlistPage = () => {
             onClick={() => navigate("/library")}
             size="sm"
           >
-            My Games
+            {t("wishlist.myGames")}
           </Button>
           <Button variant="primary" size="sm">
-            Wishlist
+            {t("library.wishlist")}
           </Button>
         </div>
       </div>

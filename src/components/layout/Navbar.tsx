@@ -173,13 +173,15 @@ export const Navbar = () => {
             {isCartOpen && (
               <div className={styles.cartDropdown}>
                 <div className={styles.cartHeader}>
-                  <span>Cart ({count})</span>
+                  <span>
+                    {t("cart.title")} ({count})
+                  </span>
                   <button
                     onClick={clear}
                     className={styles.clearCart}
                     title="Clear cart"
                   >
-                    Clear
+                    {t("cart.clear")}
                   </button>
                 </div>
                 <div className={styles.cartList}>
@@ -189,7 +191,7 @@ export const Navbar = () => {
                         <div className={styles.cartItemTitle}>{item.title}</div>
                         <div className={styles.cartItemPrice}>
                           {item.price === 0
-                            ? "Free"
+                            ? t("common.free")
                             : `${item.currency.toUpperCase()} ${item.price.toFixed(
                                 2
                               )}`}
@@ -207,14 +209,14 @@ export const Navbar = () => {
                 </div>
                 <div className={styles.cartFooter}>
                   <div className={styles.cartTotal}>
-                    Total: {total.toFixed(2)}
+                    {t("cart.total")}: {total.toFixed(2)}
                   </div>
                   <Button
                     size="sm"
                     onClick={handleCheckout}
                     className={styles.fullWidth}
                   >
-                    Checkout
+                    {t("cart.checkout")}
                   </Button>
                 </div>
               </div>

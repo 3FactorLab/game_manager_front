@@ -33,7 +33,7 @@
     "view_all": "View All",
     "loading": "Loading Deals...",
     "no_free_games": "No free games found.",
-    "no_cheap_games": "No se encontraron juegos por menos de 10$.",
+    "no_cheap_games": "No games found under $10.",
     "seasonal_offers": "Winter Sales"
   },
   "landing": {
@@ -83,6 +83,96 @@
     "priceHighLow": "Price: High to Low",
     "nameAZ": "Name: A-Z",
     "nameZA": "Name: Z-A",
-    "clear": "Clear Filters"
+    "clear": "Clear Filters",
+    "loading": "Loading...",
+    "error": "Error",
+    "noGames": "No games found",
+    "tryAdjusting": "Try adjusting your filters."
+  },
+  "cart": {
+    "title": "Cart",
+    "clear": "Clear",
+    "total": "Total",
+    "checkout": "Checkout",
+    "emptyCart": "Your cart is empty",
+    "browseGames": "Browse games"
+  },
+  "wishlist": {
+    "title": "My Wishlist",
+    "emptyWishlist": "Your wishlist is empty",
+    "emptyDescription": "Save games for later.",
+    "pleaseLogin": "Please login",
+    "loginRequired": "You need to be logged in.",
+    "myGames": "My Games",
+    "game": "Game",
+    "games": "Games"
+  },
+  "library": {
+    "loading": "Loading...",
+    "emptyLibrary": "Your library is empty",
+    "emptyDescription": "Go explore!",
+    "browseStore": "Browse Store",
+    "myGames": "My Games",
+    "wishlist": "Wishlist"
+  },
+  "checkout": {
+    "title": "Checkout",
+    "loading": "Loading...",
+    "orderSummary": "Order Summary",
+    "total": "Total",
+    "paymentMethod": "Payment Method",
+    "creditCard": "Credit Card",
+    "paypal": "PayPal",
+    "cancel": "Cancel",
+    "confirmPurchase": "Confirm Purchase",
+    "purchaseSuccess": "Purchase Successful!",
+    "addedToLibrary": "has been added to your library.",
+    "gamesAddedToLibrary": "games have been added to your library.",
+    "goToLibrary": "Go to Library",
+    "purchaseFailed": "Purchase failed. Please try again.",
+    "gameNotFound": "Game not found"
+  },
+  "orders": {
+    "title": "My Orders",
+    "order": "Order",
+    "orders": "Orders",
+    "loading": "Loading...",
+    "error": "Failed to load orders.",
+    "noOrders": "No orders yet",
+    "noOrdersDescription": "You haven't purchased any games yet.",
+    "browseStore": "Browse Store",
+    "orderNumber": "Order #",
+    "game": "Game",
+    "activationKey": "Activation Key",
+    "price": "Price"
+  },
+  "gameDetails": {
+    "loading": "Loading...",
+    "gameNotFound": "Game not found",
+    "aboutGame": "About this game",
+    "screenshots": "Screenshots",
+    "offer": "OFFER",
+    "buyNow": "Buy Now",
+    "addToCart": "Add to Cart",
+    "inWishlist": "In Wishlist",
+    "addToWishlist": "Add to Wishlist",
+    "loginToPurchase": "Login to purchase",
+    "genre": "Genre",
+    "developer": "Developer",
+    "publisher": "Publisher",
+    "releaseDate": "Release Date",
+    "tba": "TBA",
+    "metacritic": "Metacritic",
+    "userScore": "User Score (RawG)"
+  },
+  "auth": {
+    "username": "Username",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "dontHaveAccount": "Don't have an account?",
+    "alreadyHaveAccount": "Already have an account?",
+    "invalidCredentials": "Invalid email or password",
+    "registrationFailed": "Registration failed. Try using a different email."
   }
 }
