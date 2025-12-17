@@ -3,8 +3,6 @@ import {
   FaGamepad,
   FaShoppingBag,
   FaMoneyBillWave,
-  FaChartLine,
-  FaHeart,
 } from "react-icons/fa";
 import { useDashboardStats } from "../../hooks/useAdmin";
 import { getErrorMessage } from "../../utils/error.util";
@@ -63,13 +61,13 @@ const DashboardStats = () => {
       <div className={styles.detailsGrid}>
         {/* 2. Top Games Table */}
         <div className={styles.detailsCard}>
-          <h3>🏆 Top 5 Juegos (Ingresos)</h3>
+          <h3>🏆 Top 5 Juegos Más Vendidos</h3>
           <table className={styles.table}>
             <thead>
               <tr>
                 <th>Juego</th>
-                <th>Unds.</th>
-                <th>Total</th>
+                <th>Ventas</th>
+                <th>Ingresos</th>
               </tr>
             </thead>
             <tbody>
@@ -88,7 +86,7 @@ const DashboardStats = () => {
 
         {/* 3. Platform Distribution */}
         <div className={styles.detailsCard}>
-          <h3>🎮 Plataformas</h3>
+          <h3>🎮 Distribución de Plataformas</h3>
           <div className={styles.platformList}>
             {stats.platforms.map((p: any) => (
               <div key={p.name} className={styles.platformItem}>
@@ -97,7 +95,7 @@ const DashboardStats = () => {
                   <div
                     className={styles.progressFill}
                     style={{
-                      width: `${Math.min((p.count / (stats.kpis.totalGames || 1)) * 100 * 3, 100)}%`, // Scale visually
+                      width: `${(p.count / stats.kpis.totalGames) * 100}%`,
                     }}
                   />
                 </div>
@@ -105,51 +103,6 @@ const DashboardStats = () => {
               </div>
             ))}
           </div>
-        </div>
-      </div>
-
-       {/* 4. Sales Trend & Library Stats */}
-       <div className={styles.detailsGrid}>
-        {/* Sales Trend - Basic List Visualization */}
-        <div className={styles.detailsCard}>
-          <h3><FaChartLine style={{ marginRight: "0.5rem" }}/> Ventas (Últimos 12 Meses)</h3>
-           {stats.salesTrend?.length > 0 ? (
-            <div className={styles.trendList}>
-              {stats.salesTrend.map((t: any) => (
-                <div key={t.date} className={styles.trendItem}>
-                   <span className={styles.trendDate}>{t.date}</span>
-                   <span className={styles.trendValue}>${t.sales.toFixed(2)}</span>
-                   <span className={styles.trendCount}>({t.orders} pedidos)</span>
-                </div>
-              ))}
-            </div>
-           ) : (
-             <p className={styles.emptyText}>No hay datos de ventas recientes.</p>
-           )}
-        </div>
-
-        {/* Top Library Games */}
-        <div className={styles.detailsCard}>
-          <h3><FaHeart style={{ marginRight: "0.5rem", color: "#e91e63" }}/> Top en Bibliotecas</h3>
-           <table className={styles.table}>
-            <thead>
-              <tr>
-                <th>Juego</th>
-                <th>Usuarios</th>
-              </tr>
-            </thead>
-            <tbody>
-              {stats.libraryStats?.map((game: any) => (
-                <tr key={game.title}>
-                  <td>{game.title}</td>
-                  <td style={{ textAlign: "right", fontWeight: "bold" }}>{game.count}</td>
-                </tr>
-              ))}
-              {(!stats.libraryStats || stats.libraryStats.length === 0) && (
-                <tr><td colSpan={2} className={styles.emptyText}>Sin datos aún.</td></tr>
-              )}
-            </tbody>
-          </table>
         </div>
       </div>
     </div>

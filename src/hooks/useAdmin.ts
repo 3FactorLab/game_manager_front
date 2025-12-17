@@ -129,3 +129,25 @@ export const useImportFromRAWG = () => {
     },
   });
 };
+
+/**
+ * Hook to fetch all orders (Admin only)
+ */
+export const useOrders = () => {
+  return useQuery({
+    queryKey: ["admin", "orders"],
+    queryFn: () => adminService.getAllOrders(),
+    staleTime: 60 * 1000,
+  });
+};
+
+/**
+ * Hook to fetch dashboard stats (Admin only)
+ */
+export const useDashboardStats = () => {
+  return useQuery({
+    queryKey: ["admin", "stats"],
+    queryFn: () => adminService.getDashboardStats(),
+    staleTime: 60 * 1000,
+  });
+};

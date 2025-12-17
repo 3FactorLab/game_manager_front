@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { FaUsers, FaGamepad, FaDownload } from "react-icons/fa";
+import DashboardStats from "./DashboardStats";
 import styles from "./AdminDashboard.module.css";
 
 const AdminDashboard = () => {
@@ -50,6 +51,9 @@ const AdminDashboard = () => {
           </Link>
         ))}
       </div>
+
+      {/* Dashboard Metrics */}
+      <DashboardStats />
 
       <div className={styles.infoBox}>
         <h3>ℹ️ Información Importante</h3>
