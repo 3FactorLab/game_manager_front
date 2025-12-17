@@ -37,6 +37,8 @@ export interface Game {
   score?: number;
   metacritic?: number;
   image?: string; // Fallback for backend compatibility
+  isExternal?: boolean; // New Flag for Unified Search
+  rawgId?: number; // New Flag for Import
 }
 
 export interface PaginatedResponse<T> {
@@ -164,6 +166,64 @@ export const gamesService = {
       genres: string[];
       platforms: string[];
     }>("/public/games/filters");
-    return data;
+  },
+
+  // Unified Search (Local + Remote)
+  async searchUnified(
+    params: GamesQueryParams | string
+  ): Promise<PaginatedResponse<Game>> {
+    // Handle overload: if string, treat as query
+    const queryParams: any =
+      typeof params === "string" ? { query: params } : params;
+
+    // Build query with filters
+    const searchParams = new URLSearchParams();
+    if (queryParams.query) searchParams.append("q", queryParams.query);
+    if (queryParams.genre) searchParams.append("genre", queryParams.genre);
+    if (queryParams.platform)
+      searchParams.append("platform", queryParams.platform);
+    if (queryParams.developer)
+      searchParams.append("developer", queryParams.developer);
+
+    const { data } = await apiClient.get<any>(
+      `/discovery?${searchParams.toString()}`
+    );
+
+    // Map Unified Result to Game Interface
+    const games: Game[] = data.results.map((r: any) => ({
+      _id: r._id,
+      title: r.title,
+      image: r.image,
+      assets: {
+        cover: r.image,
+        screenshots: [],
+        videos: [],
+      },
+      price: r.price || 0,
+      currency: r.currency || "USD",
+      isExternal: r.isExternal,
+      rawgId: r.rawgId,
+      platforms: r.platforms || ["Unknown"],
+
+      genre: r.genre || "Unknown",
+      type: "game",
+      releaseDate: "",
+      developer: r.developer || "",
+      publisher: r.publisher || "",
+      publisher: r.publisher || "",
+      score: r.stats?.score, // [FIX] Map score
+      metacritic: r.stats?.rating, // [FIX] Map metacritic
+      isOffer: false,
+    }));
+
+    return {
+      data: games,
+      pagination: {
+        total: games.length,
+        pages: 1,
+        page: 1,
+        limit: games.length,
+      },
+    };
   },
 };

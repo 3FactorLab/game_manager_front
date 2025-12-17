@@ -19,7 +19,15 @@ import {
 export const useGames = (params: GamesQueryParams = {}) => {
   return useQuery({
     queryKey: ["games", params],
-    queryFn: () => gamesService.getCatalog(params),
+    queryFn: () => {
+      // PROMPT_AI: Unified Search Switch
+      // When a query exists, use the Unified Search endpoint to trigger Eager Sync (RAWG -> Local).
+      // Otherwise, just fetch the local catalog.
+      if (params.query && params.query.length >= 2) {
+        return gamesService.searchUnified(params);
+      }
+      return gamesService.getCatalog(params);
+    },
     staleTime: 0, // Always fetch fresh data to prevent duplicates
     refetchOnMount: true, // Refetch when component mounts
   });

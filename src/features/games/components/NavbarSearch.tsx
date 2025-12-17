@@ -65,13 +65,11 @@ export const NavbarSearch = ({
         setLoading(true);
         try {
           // Call public endpoint
-          const response = await apiClient.get<{ games: Game[] }>(
-            "/public/games",
-            {
-              params: { query, limit: 5 }, // Limit to 5 for dropdown
-            }
-          );
-          setResults(response.data.games);
+          // Call Unified Search (Eager Sync)
+          const response = await apiClient.get<any>(`/discovery?q=${query}`);
+          // Backend returns { results: [], source: ... }
+          // We map results to frontend Game interface if needed, but they should be compatible
+          setResults(response.data.results.slice(0, 5));
           setShowDropdown(true);
         } catch (error) {
           console.error("Search error:", error);
