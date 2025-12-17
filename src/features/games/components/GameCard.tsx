@@ -143,7 +143,7 @@ export const GameCard = ({ game, className, style }: GameCardProps) => {
 
         {/* Meta Info: Genre */}
         <div className={styles.metaContainer}>
-          {game.genres?.slice(0, 2).map((g) => (
+          {game.genres?.map((g) => (
             <span
               key={g}
               className={styles.genreBadge}
