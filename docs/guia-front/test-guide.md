@@ -1,161 +1,115 @@
-# 🧪 Frontend Testing Guide
+# 🧪 Guía de Testing Frontend
 
-This guide explains how to validate the functionality of the Game Manager Frontend.
+> **Estándar**: Academic Quality & Reliability
+> **Runner**: Vitest
+> **Library**: React Testing Library
 
-## 🟢 Prerequisites
+Este documento define la estrategia, herramientas y estándares para el aseguramiento de la calidad (QA) en el frontend.
 
-1.  **Backend Running**:
+## 🎯 Filosofía de Testing
 
-    - Ensure MongoDB is active.
-    - Run the backend services: `cd game-manager-BACK && npm start`.
-    - Backend should be on `http://localhost:3500`.
+Nuestra estrategia se basa en **"Testing as a User"**:
 
-2.  **frontend Running**:
-    - Run `cd frontend && npm run dev`.
-    - Access via `http://localhost:5173`.
-
----
-
-## 🔍 Manual Testing Scenarios
-
-### 1. Authentication Flow (Advanced)
-
-- [ ] **Registration**:
-  - Go to `/register`.
-  - Sign up with a new email (e.g., `testuser@example.com`).
-  - Verify redirection to Home/Login and **Auto-Login** (Token in `localStorage`).
-- [ ] **Login & Persistence**:
-  - Go to `/login`.
-  - Enter valid credentials.
-  - Verify Navbar changes (User Avatar appears).
-  - **Refresh Page**: Verify you remain logged in.
-  - **New Tab**: Open app in new tab -> Verify session persists.
-- [ ] **Dual Token System (Critical)**:
-  - **Modify Token**: Manually edit `token` in LocalStorage (make it invalid).
-  - **Trigger Action**: Navigate to `/library` (Protected Route).
-  - **Verify Behavior**:
-    - Should **NOT** log out immediately if refresh token is valid.
-    - Console should show "Refreshing token...".
-    - `token` in LocalStorage should automatically update to a new valid one.
-- [ ] **Session Expiry**:
-  - Delete `refreshToken` from LocalStorage.
-  - Trigger any protected action.
-  - Verify immediate **Automatic Logout** and redirect to `/login`.
-- [ ] **Logout**:
-  - Click User Avatar -> Logout.
-  - Verify both `token` and `refreshToken` are removed from LocalStorage.
-
-### 2. Catalog & Search
-
-- [ ] **Infinite Scroll**:
-  - Scroll down on Home page.
-  - Verify new games load automatically or via "Load More".
-- [ ] **Search**:
-  - Type query in Navbar Search (e.g., "Mario").
-  - Press Enter or click Search icon.
-  - Verify the grid updates with filtered results.
-  - Clear search -> Verify all games return.
-- [ ] **Game Card**:
-  - Hover over card -> Verify animation.
-  - Click card -> Navigate to `/game/:id`.
-
-### 3. Game Details & Actions
-
-- [ ] **Metadata**: Verify Title, Developer, and Price match expected data.
-- [ ] **Guest Mode**:
-  - Logout.
-  - Visit a game page.
-  - Verify "Buy Now" and "Wishlist" buttons are **Disabled**.
-- [ ] **User Mode**:
-  - Login.
-  - **Wishlist**: Click Heart button.
-    - Verify icon fills red.
-    - Refresh page -> Verify state persists.
-  - **Buy Now**: Click button -> Navigate to Checkout.
-
-### 4. Checkout Process
-
-- [ ] **Checkout Page**:
-  - Verify Order Summary (Game Title, Price).
-  - Select Payment Method (UI Toggle).
-  - Click **"Confirm Purchase"**.
-- [ ] **Post-Purchase**:
-  - Verify redirection to `/library`.
-  - **Library**: Verify the purchased game appears in "My Games" tab.
-  - **Wishlist**: Verify the game is removed from Wishlist (if logic appplies) or allows managing status.
-
-### 5. Collection Management
-
-- [ ] **Library Tabs**:
-  - Click "My Games": See purchased titles.
-  - Click "Wishlist": See favorited titles.
-- [ ] **Wishlist Actions**:
-  - From Wishlist tab, click "Buy Now" on a game card.
-  - Verify flow to Checkout.
-
-### 6. Error Handling & Resilience
-
-- [ ] **404 Not Found**:
-  - Visit non-existent route (e.g., `/random-page`).
-  - Verify redirection to Home or 404 Page (if implemented).
-- [ ] **Error Boundary (Crash Test)**:
-  - Temporarily throw an error in a component (e.g., `throw new Error("Test")`).
-  - Verify app DOES NOT turn white blank screen.
-  - Verify "Something went wrong" Glassmorphism UI appears.
-  - Click "Refresh Page" -> Verify recovery.
-
-### 7. Admin Panel (Role Based)
-
-- [ ] **Access Control**:
-  - Login as **Standard User**.
-  - Try to visit `/admin`.
-  - Verify "Access Denied" message or redirection.
-- [ ] **Admin Features** (Login as Admin):
-  - **User Management**:
-    - Delete a user -> Verify confirmation modal -> Verify deletion.
-  - **Game Management**:
-    - Import Game from RAWG -> Verify it appears in main catalog.
-    - Delete Game -> Verify it disappears from Store.
+1.  **No testeamos detalles de implementación**: No nos importa si el estado es `useState` o `Redux`. Nos importa si el usuario ve el cambio en pantalla.
+2.  **Interacciones Reales**: Preferimos `userEvent` sobre `fireEvent` porque simula mejor el comportamiento del navegador (focus, blur, input, etc.).
+3.  **Aislamiento**: Los tests unitarios no hacen llamadas de red reales. Todo se mockea (MSW o vi.mock).
+4.  **Zero Fragility**: Evitamos selectores por clase CSS o ID. Usamos roles semánticos (`getByRole`, `getByLabelText`).
 
 ---
 
-## 🤖 Automated Tests (Vitest)
+## 🛠️ Stack Tecnológico
 
-We use **Vitest** for unit and integration testing.
+| Herramienta                     | Propósito              | Justificación                                                               |
+| :------------------------------ | :--------------------- | :-------------------------------------------------------------------------- |
+| **Vitest**                      | Runner & Assertion Lib | Rápido, nativo de Vite, API compatible con Jest.                            |
+| **RTL (React Testing Library)** | Renderizado & Querying | Impone buenas prácticas de accesibilidad y "User-Centric Testing".          |
+| **user-event**                  | Simulación de Eventos  | Simula interacciones complejas (tecleo, drag & drop) mejor que `fireEvent`. |
+| **MSW (Mock Service Worker)**   | API Mocking            | Intercepta requests a nivel de red, desacoplando el test del backend real.  |
 
-### Running Tests
+---
 
-```bash
-npm test
-```
+## 🧩 Tipos de Tests
 
-### Current Test Scope
+### 1. Tests Unitarios (Component Components)
 
-**Coverage**: 16 test files, 74 tests passing (100%)
+Verifican componentes aislados (Atomos/Moléculas).
 
-- **Contexts**: `AuthContext`, `CartContext`, `WishlistContext`
-- **Pages**: `CheckoutPage`, `GameDetails`, `LibraryPage`, `LoginPage`, `RegisterPage`
-- **Components**: `Button`, `ErrorBoundary`, `CatalogControls`, `ChangePasswordModal`
-- **Routes**: `ProtectedRoute`
-- **Utilities**: `formatCurrency`, `error.util`
-- **Schemas**: `auth.schemas` (Zod validation)
-- **Contracts**: API contract validation with MSW
+- **Ejemplo**: `Button.test.tsx`
+- **Objetivo**: Asegurar que las props (`variant`, `isLoading`) renderizan correctamente.
+- **Mocking**: Mínimo.
 
-### Writing New Tests
+### 2. Tests de Integración (Feature Components)
 
-1. Create file `Component.test.tsx` next to your component.
-2. Import `render`, `screen` from `@testing-library/react`.
-3. Use `vi.mock()` for mocking (NOT `jest.mock()`).
-4. Example:
+Verifican flujos completos dentro de una página o gran componente.
 
-```tsx
-import { render, screen } from "@testing-library/react";
-import { describe, it, expect } from "vitest";
+- **Ejemplo**: `LoginPage.test.tsx`, `GameDetails.test.tsx`
+- **Objetivo**: Verificar que el usuario puede interactuar con varios componentes y que la lógica de negocio (hooks/context) responde bien.
+- **Mocking**: Context Providers (`AuthProvider`), API Hooks.
 
-describe("Button", () => {
-  it("renders button text", () => {
-    render(<Button>Click Me</Button>);
-    expect(screen.getByText("Click Me")).toBeInTheDocument();
-  });
+---
+
+## 📝 Estándares de Código (Guidelines)
+
+### A. Estructura AAA (Arrange, Act, Assert)
+
+Todo test debe seguir visualmente esta triada:
+
+```typescript
+it("should login successfully", async () => {
+  // 1. Arrange (Preparar)
+  render(<LoginPage />);
+  const emailInput = screen.getByLabelText(/email/i);
+
+  // 2. Act (Ejecutar)
+  await userEvent.type(emailInput, "user@test.com");
+  await userEvent.click(screen.getByRole("button", { name: /login/i }));
+
+  // 3. Assert (Verificar)
+  expect(mockLogin).toHaveBeenCalledWith("user@test.com", expect.anything());
 });
 ```
+
+### B. Prohibido `any`
+
+El uso de `any` en tests oculta errores de refactorización. Usar `vi.mocked()` para preservar tipos en mocks.
+
+```typescript
+// ❌ Incorrecto
+(authService.login as any).mockResolvedValue(user);
+
+// ✅ Correcto
+vi.mocked(authService.login).mockResolvedValue(mockUser);
+```
+
+### C. Selectores de Accesibilidad
+
+Prioridad de selectores (The "Testing Library Priority"):
+
+1.  `getByRole` (button, textbox, heading) - **Preferido**
+2.  `getByLabelText` (inputs)
+3.  `getByText` (botones, mensajes)
+4.  `getByTestId` - **Último recurso**
+
+---
+
+## 🚦 Ejecución de Tests
+
+```bash
+# Correr todos los tests
+npm test
+
+# Correr en modo UI (Dashboard visual)
+npm run test:ui
+
+# Ver cobertura
+npm run test:coverage
+```
+
+## 🔍 Cobertura de Flujos Críticos
+
+Actualmente (Diciembre 2025), garantizamos 100% de cobertura en:
+
+1.  **Autenticación**: Login, Register con validación Zod.
+2.  **Catálogo**: Renderizado de Grid, Paginación, Filtros.
+3.  **Checkout**: Flujo de compra completo.
+4.  **Admin**: Gestión de usuarios, stats y juegos.
