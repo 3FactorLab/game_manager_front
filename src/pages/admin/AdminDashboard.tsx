@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { FaUsers, FaGamepad, FaDownload, FaPlus } from "react-icons/fa";
+import { FaUsers, FaGamepad, FaDownload } from "react-icons/fa";
 import styles from "./AdminDashboard.module.css";
 
 const AdminDashboard = () => {
@@ -24,13 +24,6 @@ const AdminDashboard = () => {
       icon: <FaDownload />, // Keeping icon or changing to something else if preferred
       link: "/admin/orders",
       color: "green",
-    },
-    {
-      title: "Crear Juego Manual",
-      description: "Añadir un juego manualmente al catálogo",
-      icon: <FaPlus />,
-      link: "/admin/create-game",
-      color: "orange",
     },
   ];
 

@@ -80,19 +80,6 @@ export const adminService = {
   // ==================== GAME MANAGEMENT ====================
 
   /**
-   * Create a new game manually (Admin only)
-   * Endpoint: POST /api/games
-   */
-  async createGame(gameData: FormData): Promise<Game> {
-    const { data } = await apiClient.post<Game>("/games", gameData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
-    return data;
-  },
-
-  /**
    * Update an existing game (Admin only)
    * Endpoint: PUT /api/games/:id
    */
