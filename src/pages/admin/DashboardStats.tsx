@@ -51,11 +51,11 @@ const DashboardStats = () => {
         </div>
         <div className={styles.kpiCard}>
           <div className={`${styles.iconWrapper} ${styles.orange}`}>
-            <FaGamepad />
+            <FaMoneyBillWave />
           </div>
           <div className={styles.kpiContent}>
-            <h3>Juegos</h3>
-            <p>{stats.kpis.totalGames}</p>
+            <h3>Ticket Medio</h3>
+            <p>${stats.kpis.averageOrderValue?.toFixed(2) || "0.00"}</p>
           </div>
         </div>
       </div>
@@ -86,10 +86,11 @@ const DashboardStats = () => {
           </table>
         </div>
 
-        {/* 3. Platform Distribution */}
+        {/* 3. Platform & Genre Distribution */}
         <div className={styles.detailsCard}>
-          <h3>🎮 Plataformas</h3>
-          <div className={styles.platformList}>
+          <h3>🎮 Plataformas y Géneros</h3>
+          <div className={styles.platformList} style={{ marginBottom: "2rem" }}>
+            <h4 style={{ fontSize: "0.9rem", color: "var(--text-secondary)", marginBottom: "0.5rem" }}>Plataformas</h4>
             {stats.platforms.map((p: any) => (
               <div key={p.name} className={styles.platformItem}>
                 <span className={styles.platformName}>{p.name}</span>
@@ -97,11 +98,30 @@ const DashboardStats = () => {
                   <div
                     className={styles.progressFill}
                     style={{
-                      width: `${Math.min((p.count / (stats.kpis.totalGames || 1)) * 100 * 3, 100)}%`, // Scale visually
+                      width: `${Math.min((p.count / (stats.kpis.totalGames || 1)) * 100 * 3, 100)}%`,
                     }}
                   />
                 </div>
                 <span className={styles.platformCount}>{p.count}</span>
+              </div>
+            ))}
+          </div>
+
+          <div className={styles.platformList}>
+             <h4 style={{ fontSize: "0.9rem", color: "var(--text-secondary)", marginBottom: "0.5rem" }}>Géneros Top</h4>
+             {stats.genres?.map((g: any) => (
+              <div key={g.name} className={styles.platformItem}>
+                <span className={styles.platformName}>{g.name}</span>
+                <div className={styles.progressBar}>
+                  <div
+                    className={styles.progressFill}
+                    style={{
+                      backgroundColor: "#9c27b0", // Different color for genres
+                      width: `${Math.min((g.count / (stats.kpis.totalGames || 1)) * 100 * 3, 100)}%`,
+                    }}
+                  />
+                </div>
+                <span className={styles.platformCount}>{g.count}</span>
               </div>
             ))}
           </div>
