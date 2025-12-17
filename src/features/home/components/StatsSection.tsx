@@ -1,7 +1,7 @@
 /**
  * StatsSection.tsx
- * Displays platform statistics (Dynamic Games count + Static social proof).
- * Fetches real game count from backend via gamesService.
+ * Displays platform statistics (Dynamic Games count + Users + Collections).
+ * Fetches real global stats from backend.
  */
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
@@ -13,7 +13,7 @@ import {
   FaBan,
 } from "react-icons/fa";
 import { useQuery } from "@tanstack/react-query";
-import { gamesService } from "../../../services/games.service";
+import { statsService } from "../../../services/stats.service";
 import styles from "./StatsSection.module.css";
 import React from "react";
 
@@ -51,14 +51,16 @@ const StatItem = ({ icon: Icon, value, label, delay = 0 }: StatItemProps) => {
 export const StatsSection = () => {
   const { t } = useTranslation();
 
-  // Fetch real game count (limit=1 is enough to get pagination.total)
+  // Fetch real global stats
   const { data, isLoading } = useQuery({
-    queryKey: ["games-count"],
-    queryFn: () => gamesService.getCatalog({ limit: 1 }),
-    staleTime: 1000 * 60 * 5, // 5 minutes
+    queryKey: ["global-stats"],
+    queryFn: statsService.getGlobalStats,
+    staleTime: 1000 * 60 * 15, // 15 minutes cache
   });
 
-  const totalGames = data?.pagination.total || 0;
+  const totalGames = data?.totalGames || 0;
+  const totalUsers = data?.totalUsers || 0;
+  const totalCollections = data?.totalCollections || 0;
 
   return (
     <motion.div
@@ -71,28 +73,28 @@ export const StatsSection = () => {
       {/* Dynamic: Games Available */}
       <StatItem
         icon={FaGamepad}
-        value={isLoading ? "..." : totalGames} // Simple loading state
+        value={isLoading ? "..." : totalGames}
         label={t("home.stats.games")}
         delay={0}
       />
 
-      {/* Static: Active Users (Social Proof) */}
+      {/* Dynamic: Active Users */}
       <StatItem
         icon={FaUsers}
-        value="50k+"
+        value={isLoading ? "..." : totalUsers}
         label={t("home.stats.users")}
         delay={0.1}
       />
 
-      {/* Static: Collections (Social Proof) */}
+      {/* Dynamic: Collections (UserGame count) */}
       <StatItem
         icon={FaLayerGroup}
-        value="120k+"
+        value={isLoading ? "..." : totalCollections}
         label={t("home.stats.collections")}
         delay={0.2}
       />
 
-      {/* Value Prop: Open Source */}
+      {/* Value Prop: Open Source (Hardcoded) */}
       <StatItem
         icon={FaCode}
         value="100%"
@@ -100,10 +102,10 @@ export const StatsSection = () => {
         delay={0.3}
       />
 
-      {/* Value Prop: Zero Ads */}
+      {/* Value Prop: Zero Ads (Hardcoded) */}
       <StatItem
         icon={FaBan}
-        value={t("home.stats.no_ads")} // "Zero Ads" text as value
+        value={t("home.stats.no_ads")}
         label={t("home.stats.trusted")}
         delay={0.4}
       />
