@@ -20,10 +20,10 @@ const AdminDashboard = () => {
       color: "purple",
     },
     {
-      title: "Importar desde RAWG",
-      description: "Buscar e importar juegos desde la base de datos RAWG",
-      icon: <FaDownload />,
-      link: "/admin/import",
+      title: "Gestión de Pedidos",
+      description: "Visualizar el historial de compras de los usuarios",
+      icon: <FaDownload />, // Keeping icon or changing to something else if preferred
+      link: "/admin/orders",
       color: "green",
     },
   ];

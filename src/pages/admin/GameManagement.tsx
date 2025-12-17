@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { gamesService } from "../../services/games.service";
 import { useDeleteGame } from "../../hooks/useAdmin";
-import { FaTrash, FaEdit } from "react-icons/fa";
+import { FaTrash } from "react-icons/fa";
 import { handleApiError, getErrorMessage } from "../../utils/error.util";
 import styles from "./GameManagement.module.css";
 
@@ -107,13 +107,7 @@ const GameManagement = () => {
                   </div>
                 </div>
                 <div className={styles.cardActions}>
-                  <button
-                    className={styles.btnEdit}
-                    title="Editar (Próximamente)"
-                    disabled
-                  >
-                    <FaEdit /> Editar
-                  </button>
+
                   <button
                     className={styles.btnDelete}
                     onClick={() => handleDeleteGame(game._id, game.title)}

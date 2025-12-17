@@ -62,6 +62,22 @@ export const useDeleteUser = () => {
 };
 
 /**
+ * Hook to create a game (Admin only)
+ * Invalidates games catalog on success
+ */
+export const useCreateGame = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (gameData: FormData) => adminService.createGame(gameData),
+    onSuccess: () => {
+      // Invalidate games catalog
+      queryClient.invalidateQueries({ queryKey: ["games"] });
+    },
+  });
+};
+
+/**
  * Hook to update a game (Admin only)
  * Invalidates games catalog on success
  */
@@ -137,17 +153,6 @@ export const useOrders = () => {
   return useQuery({
     queryKey: ["admin", "orders"],
     queryFn: () => adminService.getAllOrders(),
-    staleTime: 60 * 1000,
-  });
-};
-
-/**
- * Hook to fetch dashboard stats (Admin only)
- */
-export const useDashboardStats = () => {
-  return useQuery({
-    queryKey: ["admin", "stats"],
-    queryFn: () => adminService.getDashboardStats(),
     staleTime: 60 * 1000,
   });
 };

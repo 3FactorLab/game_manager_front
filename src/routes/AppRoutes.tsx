@@ -20,6 +20,7 @@ const OrdersPage = lazy(() => import("../pages/OrdersPage"));
 const AdminDashboard = lazy(() => import("../pages/admin/AdminDashboard"));
 const UserManagement = lazy(() => import("../pages/admin/UserManagement"));
 const GameManagement = lazy(() => import("../pages/admin/GameManagement"));
+const OrderManagement = lazy(() => import("../pages/admin/OrderManagement"));
 const RAWGImport = lazy(() => import("../pages/admin/RAWGImport"));
 
 const AppRoutes = () => {
@@ -98,6 +99,14 @@ const AppRoutes = () => {
             element={
               <ProtectedRoute requireAdmin>
                 <GameManagement />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/orders"
+            element={
+              <ProtectedRoute requireAdmin>
+                <OrderManagement />
               </ProtectedRoute>
             }
           />
