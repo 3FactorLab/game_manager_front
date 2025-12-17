@@ -23,7 +23,7 @@ export const statsService = {
    * @returns {Promise<StatsResponseDto>}
    */
   async getGlobalStats(): Promise<StatsResponseDto> {
-    const { data } = await apiClient.get<StatsResponseDto>("/public/stats");
+    const { data } = await apiClient.get<StatsResponseDto>("/stats/public");
     return data;
   },
 };

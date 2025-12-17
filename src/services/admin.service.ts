@@ -137,6 +137,17 @@ export const adminService = {
     const { data } = await apiClient.get<any[]>("/orders");
     return data;
   },
+
+  // ==================== DASHBOARD STATS ====================
+
+  /**
+   * Get admin dashboard stats
+   * Endpoint: GET /api/stats/dashboard
+   */
+  async getDashboardStats(): Promise<any> {
+    const { data } = await apiClient.get<any>("/stats/dashboard");
+    return data;
+  },
 };
 
 // Exported to useAdmin hooks for admin panel operations
