@@ -156,9 +156,40 @@
   border-radius: 4px;
 }
 
-.platformCount {
-  width: 30px;
-  text-align: right;
-  color: var(--text-primary);
+/* Sales Trend List */
+.trendList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.trendItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+}
+
+.trendDate {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.trendValue {
+  color: #4caf50;
   font-weight: bold;
+}
+
+.trendCount {
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+}
+
+.emptyText {
+  color: var(--text-secondary);
+  font-style: italic;
+  text-align: center;
+  padding: 1rem;
 }
