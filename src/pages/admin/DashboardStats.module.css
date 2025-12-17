@@ -156,40 +156,154 @@
   border-radius: 4px;
 }
 
-/* Sales Trend List */
-.trendList {
+/* Top Games & Library List */
+.rankList ul {
+  list-style: none;
+  padding: 0;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
 }
 
-.trendItem {
+.rankItem {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.5rem;
+  padding: 0.75rem 1rem;
   background: rgba(255, 255, 255, 0.03);
-  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  transition: all 0.2s;
 }
 
-.trendDate {
+.rankItem:hover {
+  background: rgba(255, 255, 255, 0.06);
+  transform: translateX(4px);
+}
+
+.rankInfo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.rankBadge {
+  width: 28px;
+  height: 28px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 0.85rem;
   color: var(--text-secondary);
+}
+
+.rank1 {
+  background: linear-gradient(135deg, #ffd700 0%, #ffb900 100%);
+  color: #000;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+}
+
+.rank2 {
+  background: linear-gradient(135deg, #e0e0e0 0%, #bdbdbd 100%);
+  color: #000;
+}
+
+.rank3 {
+  background: linear-gradient(135deg, #cd7f32 0%, #a0522d 100%);
+  color: #fff;
+}
+
+.gameName {
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+/* Updated Monthly Trends */
+.trendHeader {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 1rem 0.5rem 1rem;
+  margin-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.gameStats {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.soldBadge {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+}
+
+.revenueBadge {
+  font-size: 0.9rem;
+  color: #4caf50;
+  font-weight: bold;
+  background: rgba(76, 175, 80, 0.1);
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  border: 1px solid rgba(76, 175, 80, 0.2);
+}
+
+/* Updated Monthly Trends (Overrides Platform styling for trends) */
+.trendRow {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.8rem;
+}
+
+.trendLabel {
+  width: 80px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-family: monospace; /* Align numbers better */
+}
+
+.trendBarContainer {
+  flex: 1;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative; /* For tooltip or value positioning if needed */
+  display: flex;
+  align-items: center;
+}
+
+.trendBarFill {
+  height: 100%;
+  background: linear-gradient(90deg, #2196f3 0%, #64b5f6 100%);
+  border-radius: 6px;
+  min-width: 4px; /* Ensure visibility for small values */
+}
+
+.trendValueLabel {
+  width: 80px;
+  text-align: right;
+  font-weight: bold;
+  color: #fff;
   font-size: 0.9rem;
 }
 
-.trendValue {
-  color: #4caf50;
-  font-weight: bold;
-}
-
-.trendCount {
-  color: var(--text-secondary);
-  font-size: 0.8rem;
-}
-
-.emptyText {
+.emptyState {
+  text-align: center;
+  padding: 2rem;
   color: var(--text-secondary);
   font-style: italic;
-  text-align: center;
-  padding: 1rem;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 12px;
 }

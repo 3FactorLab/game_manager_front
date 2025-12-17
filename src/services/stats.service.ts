@@ -15,12 +15,9 @@ export interface PublicStatsDto {
   totalCollections: number;
 }
 
-/**
- * DashboardStatsDto
- * Financial and operational metrics (Admin Only).
- */
 export interface DashboardStatsDto {
   revenue: number;
+  averageOrderValue: number;
   topSelling: Array<{
     _id: string; // Game ID
     title: string;
@@ -32,6 +29,9 @@ export interface DashboardStatsDto {
     sales: number;
     revenue: number;
   }>;
+  platforms: Array<{ name: string; count: number }>;
+  genres: Array<{ name: string; count: number }>;
+  libraryStats: Array<{ title: string; count: number }>;
 }
 
 export const statsService = {

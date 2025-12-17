@@ -49,6 +49,15 @@ const DashboardStats = () => {
           </div>
         </div>
         <div className={styles.kpiCard}>
+          <div className={`${styles.iconWrapper} ${styles.orange}`}>
+            <FaMoneyBillWave />
+          </div>
+          <div className={styles.kpiContent}>
+            <h3>Ticket Medio</h3>
+            <p>${dashboardStats.averageOrderValue?.toFixed(2) || "0.00"}</p>
+          </div>
+        </div>
+        <div className={styles.kpiCard}>
           <div className={`${styles.iconWrapper} ${styles.blue}`}>
             <FaUsers />
           </div>
@@ -62,17 +71,8 @@ const DashboardStats = () => {
             <FaShoppingBag />
           </div>
           <div className={styles.kpiContent}>
-            <h3>Colecciones</h3>
+            <h3>Compras</h3>
             <p>{publicStats.totalCollections}</p>
-          </div>
-        </div>
-        <div className={styles.kpiCard}>
-          <div className={`${styles.iconWrapper} ${styles.orange}`}>
-            <FaGamepad />
-          </div>
-          <div className={styles.kpiContent}>
-            <h3>Juegos</h3>
-            <p>{publicStats.totalGames}</p>
           </div>
         </div>
       </div>
@@ -81,14 +81,20 @@ const DashboardStats = () => {
         {/* 2. Top Games Table */}
         <div className={styles.detailsCard}>
           <h3>🏆 Top 5 Juegos Más Vendidos</h3>
-          <div className={styles.topGames}>
+          <div className={styles.rankList}>
+             {/* Using new rankList class */}
             <ul>
-              {dashboardStats.topSelling.map((game) => (
-                <li key={game._id}>
-                  <span>{game.title}</span>
+              {dashboardStats.topSelling.map((game, index) => (
+                <li key={game._id} className={styles.rankItem}>
+                   <div className={styles.rankInfo}>
+                      <div className={`${styles.rankBadge} ${index === 0 ? styles.rank1 : index === 1 ? styles.rank2 : index === 2 ? styles.rank3 : ''}`}>
+                        {index + 1}
+                      </div>
+                      <span className={styles.gameName}>{game.title}</span>
+                   </div>
                   <div className={styles.gameStats}>
                     <span className={styles.soldBadge}>
-                      {game.totalSold} vendidos
+                      {game.totalSold} u.
                     </span>
                     <span className={styles.revenueBadge}>
                       ${game.revenue.toFixed(2)}
@@ -100,35 +106,133 @@ const DashboardStats = () => {
           </div>
         </div>
 
-        {/* 3. Monthly Trends (Replaces Platforms) */}
+        {/* 3. Monthly Trends */}
         <div className={styles.detailsCard}>
-          <h3>📈 Tendencias Mensuales</h3>
+          <h3>💰 Ingresos Mensuales</h3>
           <div className={styles.platformList}>
+             <div className={styles.trendHeader}>
+                <span>Mes</span>
+                <span>Ingresos Generados</span>
+             </div>
             {dashboardStats.monthlyTrends.map((trend) => (
-              <div key={trend._id} className={styles.platformItem}>
-                <span className={styles.platformName}>{trend._id}</span>
-                <div className={styles.progressBar}>
+              <div key={trend._id} className={styles.trendRow}>
+                <span className={styles.trendLabel}>{trend._id}</span>
+                <div className={styles.trendBarContainer}>
                   <div
-                    className={styles.progressFill}
+                    className={styles.trendBarFill}
                     style={{
-                      // Simple normalization relative to max revenue (approx) or 100% width for showcase
                       width: `${Math.min(
-                        (trend.revenue / dashboardStats.revenue) * 100 * 5,
+                        (trend.revenue / (dashboardStats.revenue || 1)) * 100 * 5,
                         100
-                      )}%`, // Scale logic
+                      )}%`,
                     }}
                   />
                 </div>
-                <span className={styles.platformCount}>
+                <span className={styles.trendValueLabel}>
                   ${trend.revenue.toFixed(2)}
                 </span>
               </div>
             ))}
             {dashboardStats.monthlyTrends.length === 0 && (
-              <p className={styles.emptyState}>
-                No hay datos de tendencias aún.
-              </p>
+              <div className={styles.emptyState}>No hay datos de tendencias aún.</div>
             )}
+          </div>
+        </div>
+      </div>
+
+      <div className={styles.detailsGrid}>
+        {/* 4. Genres & Platforms */}
+        <div className={styles.detailsCard}>
+          <h3>🎮 Plataformas y Géneros</h3>
+          <div className={styles.platformList} style={{ marginBottom: "2rem" }}>
+            <h4
+              style={{
+                fontSize: "0.9rem",
+                color: "var(--text-secondary)",
+                marginBottom: "0.5rem",
+                display: 'flex', alignItems: 'center', gap: '0.5rem'
+              }}
+            >
+              <FaGamepad/> Plataformas
+            </h4>
+            {dashboardStats.platforms?.map((p) => {
+              const percentage = ((p.count / (publicStats.totalGames || 1)) * 100).toFixed(1);
+              return (
+              <div key={p.name} className={styles.platformItem}>
+                <span className={styles.platformName}>{p.name}</span>
+                <div className={styles.progressBar}>
+                  <div
+                    className={styles.progressFill}
+                    style={{
+                      background: "linear-gradient(90deg, #2196f3 0%, #00bcd4 100%)", // Blue-Cyan gradient
+                      width: `${Math.min((p.count / (publicStats.totalGames || 1)) * 100, 100)}%`,
+                    }}
+                  />
+                </div>
+                <div style={{ display: 'flex', gap: '0.5rem', minWidth: '80px', justifyContent: 'flex-end' }}>
+                   <span style={{ fontWeight: 'bold', color: '#fff' }}>{p.count}</span>
+                   <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', alignSelf: 'center' }}>({percentage}%)</span>
+                </div>
+              </div>
+            )})}
+          </div>
+
+          <div className={styles.platformList}>
+             <h4
+              style={{
+                fontSize: "0.9rem",
+                color: "var(--text-secondary)",
+                marginBottom: "0.5rem",
+                display: 'flex', alignItems: 'center', gap: '0.5rem'
+              }}
+            >
+               💡 Géneros Top
+            </h4>
+            {dashboardStats.genres?.map((g) => (
+              <div key={g.name} className={styles.platformItem}>
+                <span className={styles.platformName}>{g.name}</span>
+                <div className={styles.progressBar}>
+                  <div
+                    className={styles.progressFill}
+                    style={{
+                      backgroundColor: "#9c27b0",
+                      width: `${Math.min(
+                        (g.count / (publicStats.totalGames || 1)) * 100 * 3,
+                        100
+                      )}%`,
+                    }}
+                  />
+                </div>
+                <span className={styles.platformCount}>{g.count}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* 5. Library Stats */}
+        <div className={styles.detailsCard}>
+          <h3>❤️ Top en Bibliotecas</h3>
+           {/* Converted to Rank List style for consistency */}
+          <div className={styles.rankList}>
+             <ul>
+              {dashboardStats.libraryStats?.map((game, index) => (
+                <li key={game.title} className={styles.rankItem}>
+                   <div className={styles.rankInfo}>
+                      <div className={`${styles.rankBadge} ${styles.smallBadge}`}>
+                        {index + 1}
+                      </div>
+                      <span className={styles.gameName}>{game.title}</span>
+                   </div>
+                  <span style={{fontWeight: "bold", color: "#e91e63"}}>
+                    {game.count} ❤️
+                  </span>
+                </li>
+              ))}
+              {(!dashboardStats.libraryStats ||
+                dashboardStats.libraryStats.length === 0) && (
+                 <div className={styles.emptyState}>Sin datos aún.</div>
+              )}
+            </ul>
           </div>
         </div>
       </div>
