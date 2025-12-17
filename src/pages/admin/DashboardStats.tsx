@@ -3,6 +3,10 @@ import {
   FaGamepad,
   FaShoppingBag,
   FaMoneyBillWave,
+  FaGem, // For ARPU
+  FaBalanceScale, // For Pareto
+  FaBookOpen, // For Engagement
+  FaRocket, // For Efficiency
 } from "react-icons/fa";
 /**
  * DashboardStats.tsx
@@ -35,8 +39,55 @@ const DashboardStats = () => {
 
   if (!dashboardStats || !publicStats) return null;
 
+  // --- Derived BI Metrics (Frontend Only) ---
+  const totalRevenue = dashboardStats.revenue || 0;
+  const totalUsers = publicStats.totalUsers || 1;
+  const totalGames = publicStats.totalGames || 1;
+  const totalCollections = publicStats.totalCollections || 0;
+  const top5Revenue = dashboardStats.topSelling.reduce((acc, curr) => acc + curr.revenue, 0);
+
+  const arpu = totalRevenue / totalUsers;
+  const paretoRatio = totalRevenue > 0 ? (top5Revenue / totalRevenue) * 100 : 0;
+  const gamesPerUser = totalUsers > 0 ? totalCollections / totalUsers : 0;
+  const revenuePerGame = totalGames > 0 ? totalRevenue / totalGames : 0;
+
   return (
     <div className={styles.container}>
+      {/* 0. BI Grid (Premium Stats) */}
+      <div className={styles.biGrid}>
+         {/* ARPU Card */}
+         <div className={`${styles.premiumCard} ${styles.arpuCard}`}>
+            <div className={styles.premiumContent}>
+               <h3>💎 Valor por Usuario (ARPU)</h3>
+               <div className={`${styles.premiumValue} ${styles.arpuColor}`}>
+                  ${arpu.toFixed(2)}
+               </div>
+               <div className={styles.premiumSub}>
+                  Ingreso medio generado por usuario registrado
+               </div>
+            </div>
+            <div className={`${styles.premiumIcon} ${styles.arpuColor}`}>
+               <FaGem />
+            </div>
+         </div>
+
+         {/* Pareto Card */}
+         <div className={`${styles.premiumCard} ${styles.paretoCard}`}>
+            <div className={styles.premiumContent}>
+               <h3>⚖️ Concentración Top 5</h3>
+               <div className={`${styles.premiumValue} ${styles.paretoColor}`}>
+                  {paretoRatio.toFixed(1)}%
+               </div>
+               <div className={styles.premiumSub}>
+                  De ingresos provienen de solo 5 juegos
+               </div>
+            </div>
+            <div className={`${styles.premiumIcon} ${styles.paretoColor}`}>
+               <FaBalanceScale />
+            </div>
+         </div>
+      </div>
+
       {/* 1. KPI Cards */}
       <div className={styles.kpiGrid}>
         <div className={styles.kpiCard}>
@@ -77,6 +128,41 @@ const DashboardStats = () => {
         </div>
       </div>
 
+      {/* 1.5 Secondary BI Grid (Engagement & Efficiency) */}
+      <div className={styles.biGrid}>
+         {/* Engagement Card */}
+         <div className={`${styles.premiumCard} ${styles.engagementCard}`}>
+            <div className={styles.premiumContent}>
+               <h3>📚 Engagement</h3>
+               <div className={`${styles.premiumValue} ${styles.engagementColor}`}>
+                  {gamesPerUser.toFixed(1)}
+               </div>
+               <div className={styles.premiumSub}>
+                  Juegos comprados por usuario (Media)
+               </div>
+            </div>
+            <div className={`${styles.premiumIcon} ${styles.engagementColor}`}>
+               <FaBookOpen />
+            </div>
+         </div>
+
+         {/* Efficiency Card */}
+         <div className={`${styles.premiumCard} ${styles.efficiencyCard}`}>
+            <div className={styles.premiumContent}>
+               <h3>🚀 Rentabilidad Catálogo</h3>
+               <div className={`${styles.premiumValue} ${styles.efficiencyColor}`}>
+                  ${revenuePerGame.toFixed(2)}
+               </div>
+               <div className={styles.premiumSub}>
+                  Ingresos generados por cada título
+               </div>
+            </div>
+            <div className={`${styles.premiumIcon} ${styles.efficiencyColor}`}>
+               <FaRocket />
+            </div>
+         </div>
+      </div>
+
       <div className={styles.detailsGrid}>
         {/* 2. Top Games Table */}
         <div className={styles.detailsCard}>
@@ -93,6 +179,9 @@ const DashboardStats = () => {
                       <span className={styles.gameName}>{game.title}</span>
                    </div>
                   <div className={styles.gameStats}>
+                     <span style={{ fontSize: '0.8rem', color: '#666', marginRight: '0.5rem' }}>
+                        (${game.unitPrice?.toFixed(2) || "?"})
+                     </span>
                     <span className={styles.soldBadge}>
                       {game.totalSold} u.
                     </span>
@@ -127,6 +216,12 @@ const DashboardStats = () => {
                       )}%`,
                     }}
                   />
+                  <span style={{
+                     position: 'absolute', left: '10px', fontSize: '0.75rem', color: 'rgba(255,255,255,0.7)',
+                     lineHeight: '24px'
+                  }}>
+                     {trend.orders} órdenes
+                  </span>
                 </div>
                 <span className={styles.trendValueLabel}>
                   ${trend.revenue.toFixed(2)}
@@ -188,7 +283,9 @@ const DashboardStats = () => {
             >
                💡 Géneros Top
             </h4>
-            {dashboardStats.genres?.map((g) => (
+            {dashboardStats.genres?.map((g) => {
+               const percentage = ((g.count / (publicStats.totalGames || 1)) * 100).toFixed(1);
+               return (
               <div key={g.name} className={styles.platformItem}>
                 <span className={styles.platformName}>{g.name}</span>
                 <div className={styles.progressBar}>
@@ -197,15 +294,17 @@ const DashboardStats = () => {
                     style={{
                       backgroundColor: "#9c27b0",
                       width: `${Math.min(
-                        (g.count / (publicStats.totalGames || 1)) * 100 * 3,
-                        100
+                        (g.count / (publicStats.totalGames || 1)) * 100, 100 // Remove 3x boost
                       )}%`,
                     }}
                   />
                 </div>
-                <span className={styles.platformCount}>{g.count}</span>
+                <div style={{ display: 'flex', gap: '0.5rem', minWidth: '80px', justifyContent: 'flex-end' }}>
+                   <span style={{ fontWeight: 'bold', color: '#fff' }}>{g.count}</span>
+                   <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', alignSelf: 'center' }}>({percentage}%)</span>
+                </div>
               </div>
-            ))}
+            )})}
           </div>
         </div>
 

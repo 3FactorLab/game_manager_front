@@ -23,11 +23,13 @@ export interface DashboardStatsDto {
     title: string;
     totalSold: number;
     revenue: number;
+    unitPrice: number;
   }>;
   monthlyTrends: Array<{
     _id: string; // "YYYY-MM"
     sales: number;
     revenue: number;
+    orders: number;
   }>;
   platforms: Array<{ name: string; count: number }>;
   genres: Array<{ name: string; count: number }>;
