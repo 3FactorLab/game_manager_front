@@ -207,7 +207,7 @@ export const NavbarSearch = ({
                           : `$${game.price?.toFixed(2) || "0.00"}`}
                       </span>
                       <span>•</span>
-                      <span>{game.genre}</span>
+                      <span>{game.genres?.slice(0, 2).join(", ")}</span>
                       {(game.developer || game.publisher) && (
                         <>
                           <span>•</span>

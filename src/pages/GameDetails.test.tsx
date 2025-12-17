@@ -42,7 +42,7 @@ const mockGame: Game = {
   currency: "USD",
   image: "test.jpg",
   platforms: ["PC", "PS5"],
-  genre: "Action",
+  genres: ["Action"],
   type: "game",
   releaseDate: "2020-12-10",
   developer: "CDPR",

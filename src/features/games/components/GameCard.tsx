@@ -33,6 +33,7 @@ export const GameCard = ({ game, className, style }: GameCardProps) => {
   const { addItem } = useCart();
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
   const queryClient = useQueryClient();
+  const isOwned = useIsGameOwned(game._id);
 
   /**
    * Navigate to game details page
@@ -119,6 +120,11 @@ export const GameCard = ({ game, className, style }: GameCardProps) => {
         >
           {isInWishlist(game._id) ? <BsHeartFill /> : <BsHeart />}
         </button>
+        {isOwned && (
+          <div className={styles.purchasedBadge} title="En biblioteca">
+            <FaCheckCircle />
+          </div>
+        )}
       </div>
 
       {/* Game information */}
@@ -135,12 +141,15 @@ export const GameCard = ({ game, className, style }: GameCardProps) => {
 
         {/* Meta Info: Genre */}
         <div className={styles.metaContainer}>
-          <span
-            className={styles.genreBadge}
-            onClick={(e) => handleTagClick(e, "genre", game.genre)}
-          >
-            {game.genre}
-          </span>
+          {game.genres?.slice(0, 2).map((g) => (
+            <span
+              key={g}
+              className={styles.genreBadge}
+              onClick={(e) => handleTagClick(e, "genre", g)}
+            >
+              {g}
+            </span>
+          ))}
         </div>
 
         {/* Platform Badges */}
@@ -152,7 +161,7 @@ export const GameCard = ({ game, className, style }: GameCardProps) => {
                 className={styles.platformBadge}
                 onClick={(e) => handleTagClick(e, "platform", platform)}
               >
-                {platform}
+                {formatPlatformName(platform)}
               </span>
             )
           )}

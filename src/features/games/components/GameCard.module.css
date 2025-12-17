@@ -155,8 +155,15 @@
 }
 
 .genreBadge:hover {
-  background: rgba(34, 197, 94, 0.4);
+  /* Gradient Border Trick */
+  background: linear-gradient(rgba(20, 20, 20, 0.9), rgba(20, 20, 20, 0.9))
+      padding-box,
+    linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))
+      border-box;
+  border: 1px solid transparent;
+  color: var(--accent-primary);
   transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.2);
 }
 
 .developerBadge {
@@ -173,8 +180,15 @@
 }
 
 .developerBadge:hover {
-  background: rgba(59, 130, 246, 0.4);
+  /* Gradient Border Trick */
+  background: linear-gradient(rgba(20, 20, 20, 0.9), rgba(20, 20, 20, 0.9))
+      padding-box,
+    linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))
+      border-box;
+  border: 1px solid transparent;
+  color: var(--accent-primary);
   transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.2);
 }
 
 /* Badges Container - only for platform now, or if we want to keep it wrapper-like */
@@ -200,8 +214,15 @@
 }
 
 .platformBadge:hover {
-  background: rgba(139, 92, 246, 0.4);
+  /* Gradient Border Trick */
+  background: linear-gradient(rgba(20, 20, 20, 0.9), rgba(20, 20, 20, 0.9))
+      padding-box,
+    linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))
+      border-box;
+  border: 1px solid transparent;
+  color: var(--accent-primary);
   transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.2);
 }
 
 .scoreBadge {
