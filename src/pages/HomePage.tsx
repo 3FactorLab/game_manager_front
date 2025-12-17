@@ -8,6 +8,7 @@ import styles from "./HomePage.module.css";
 import { AutoScrollGameList } from "../features/home/components/AutoScrollGameList";
 import { HeroCarousel } from "../features/home/components/HeroCarousel";
 import { DealSection } from "../features/home/components/DealSection";
+import { StatsSection } from "../features/home/components/StatsSection";
 
 const HomePage = () => {
   const { t } = useTranslation();
@@ -25,6 +26,10 @@ const HomePage = () => {
           className={styles.heroCard}
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
+          whileHover={{
+            scale: 1.02,
+            boxShadow: "0 25px 70px rgba(0, 0, 0, 0.4)",
+          }}
           transition={{ duration: 0.8, ease: "easeOut" }}
         >
           <motion.div
@@ -167,6 +172,9 @@ const HomePage = () => {
           <AutoScrollGameList />
         </div>
       </div>
+
+      {/* Stats Section - Full Width Separation */}
+      <StatsSection />
 
       {/* Modern Store Sections (Flash Deals & Under $10) */}
       <DealSection />

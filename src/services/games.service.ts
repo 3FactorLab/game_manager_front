@@ -11,7 +11,6 @@ import apiClient from "./api.client";
  * Game interface
  * Represents a game entity with all its properties
  */
-
 export interface Game {
   _id: string;
   externalId?: number; // RAWG ID
@@ -39,6 +38,10 @@ export interface Game {
   image?: string; // Fallback for backend compatibility
   isExternal?: boolean; // New Flag for Unified Search
   rawgId?: number; // New Flag for Import
+  prices?: Record<string, number>;
+  slug?: string;
+  avgPlaytime?: number;
+  tags?: string[];
 }
 
 export interface PaginatedResponse<T> {
@@ -65,6 +68,22 @@ export interface GamesQueryParams {
   publisher?: string;
 }
 
+// New interfaces for Catalog
+interface CatalogParams {
+  page?: number;
+  limit?: number;
+  query?: string;
+  genre?: string;
+  platform?: string;
+  sortBy?: string;
+  order?: "asc" | "desc";
+  minPrice?: number;
+  maxPrice?: number;
+  onSale?: boolean;
+  developer?: string;
+  publisher?: string;
+}
+
 export interface BackendGame extends Partial<Omit<Game, "assets">> {
   platforms?: string[];
   platform?: string; // Legacy support
@@ -74,56 +93,63 @@ export interface BackendGame extends Partial<Omit<Game, "assets">> {
   released?: string; // Some endpoints use 'released' instead of 'releaseDate'
 }
 
+// Standardized Backend Response structure locally used
+interface BackendCatalogResponse {
+  data: any[];
+  pagination: {
+    total: number;
+    pages: number;
+    page: number;
+    limit: number;
+  };
+}
+
 export const gamesService = {
-  // Public Endpoint: Fetch catalog
-  async getCatalog(params: GamesQueryParams): Promise<PaginatedResponse<Game>> {
-    // Backend response structure
-    interface BackendResponse {
-      games: BackendGame[];
-      total: number;
-      totalPages: number;
-      page: number;
-    }
+  // Public Endpoint: Search/Filter Catalog
+  async getCatalog(
+    params: CatalogParams = {}
+  ): Promise<PaginatedResponse<Game>> {
+    const r = await apiClient.get<BackendCatalogResponse>("/public/games", {
+      params,
+    });
 
-    const { data: rawData } = await apiClient.get<BackendResponse>(
-      "/public/games",
-      {
-        params,
-      }
-    );
+    // Map backend standardized response to frontend entity
+    // r.data is the payload. r.data.data is the array.
+    const games: Game[] = r.data.data.map((g: any) => ({
+      _id: g._id,
+      title: g.title || "Untitled",
+      description: g.description || "",
+      price: g.price || 0,
+      currency: g.currency || "USD",
+      prices: g.prices,
+      image: g.image || "https://placehold.co/600x400/101010/FFF?text=No+Cover",
+      platforms: g.platforms || [],
+      genres: g.genres || [],
+      type: "game",
+      releaseDate: g.released || "",
+      developer: g.developer || "Unknown",
+      publisher: g.publisher || "Unknown",
+      isOffer: g.isOffer || false,
+      score: g.stats?.score,
+      metacritic: g.stats?.rating,
+      assets: g.assets || {
+        cover: g.image,
+        screenshots: [],
+        videos: [],
+      },
+      tags: [],
+      slug: g.slug || "",
+      avgPlaytime: 0,
+      isExternal: false,
+    }));
 
-    // Map Backend Response (games, total, page...) to Frontend Interface (data, pagination)
     return {
-      data: (rawData.games || []).map((game) => ({
-        ...game,
-        _id: game._id || "",
-        title: game.title || "Untitled",
-        description: game.description || "",
-        price: game.price || 0,
-        currency: game.currency || "USD",
-        platforms:
-          game.platforms || (game.platform ? [game.platform] : ["Unknown"]),
-        genres: game.genres || ["Unknown"],
-        type: game.type || "game",
-        releaseDate: game.released || game.releaseDate || "",
-        developer: game.developer || "Unknown",
-        publisher: game.publisher || "Unknown",
-        isOffer: !!game.isOffer,
-        assets: game.assets || {
-          cover:
-            game.image ||
-            "https://placehold.co/600x400/101010/FFF?text=No+Cover",
-          screenshots: Array.isArray(game.screenshots)
-            ? game.screenshots.filter((s) => s.startsWith("http"))
-            : [],
-          videos: [],
-        },
-      })),
+      data: games,
       pagination: {
-        total: rawData.total || 0,
-        pages: rawData.totalPages || 0,
-        page: rawData.page || 1,
-        limit: params.limit || 12,
+        total: r.data.pagination.total,
+        pages: r.data.pagination.pages,
+        page: r.data.pagination.page,
+        limit: r.data.pagination.limit,
       },
     };
   },
@@ -166,6 +192,7 @@ export const gamesService = {
       genres: string[];
       platforms: string[];
     }>("/public/games/filters");
+    return data;
     return data;
   },
 
@@ -211,9 +238,8 @@ export const gamesService = {
       releaseDate: "",
       developer: r.developer || "",
       publisher: r.publisher || "",
-      publisher: r.publisher || "",
-      score: r.stats?.score, // [FIX] Map score
-      metacritic: r.stats?.rating, // [FIX] Map metacritic
+      score: r.stats?.score,
+      metacritic: r.stats?.rating,
       isOffer: false,
     }));
 

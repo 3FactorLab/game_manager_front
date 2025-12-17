@@ -8,13 +8,14 @@
     "edit": "Editar",
     "search": "Buscar...",
     "access_denied": "Acceso Denegado",
-    "admin_only": "Solo los administradores pueden acceder a esta sección."
+    "admin_only": "Solo los administradores pueden acceder a esta sección.",
+    "free": "Gratis"
   },
   "search": {
     "placeholder": "Buscar juegos...",
     "searching": "Buscando...",
-    "noResults": "No se encontraron resultados para \"{query}\"",
-    "viewAll": "Ver todos los resultados para \"{query}\""
+    "noResults": "No hay resultados para {{query}}",
+    "viewAll": "Ver todo sobre {{query}}"
   },
   "nav": {
     "inicio": "Inicio",
@@ -36,7 +37,15 @@
     "loading": "Cargando ofertas...",
     "no_free_games": "No se encontraron juegos gratis.",
     "no_cheap_games": "No se encontraron juegos por menos de 10$.",
-    "seasonal_offers": "Rebajas de Invierno"
+    "seasonal_offers": "Rebajas de Invierno",
+    "stats": {
+      "games": "Juegos Disponibles",
+      "users": "Jugadores Activos",
+      "collections": "Colecciones Creadas",
+      "open_source": "100% Open Source",
+      "trusted": "Plataforma Confiable",
+      "no_ads": "Cero Anuncios"
+    }
   },
   "landing": {
     "hero_title": "Bienvenido a GameManager",

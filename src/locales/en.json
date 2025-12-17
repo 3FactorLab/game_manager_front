@@ -6,13 +6,14 @@
     "cancel": "Cancel",
     "delete": "Delete",
     "edit": "Edit",
-    "search": "Search..."
+    "search": "Search...",
+    "free": "Free"
   },
   "search": {
     "placeholder": "Search games...",
     "searching": "Searching...",
-    "noResults": "No results found for \"{query}\"",
-    "viewAll": "View all results for \"{query}\""
+    "noResults": "No results for {{query}}",
+    "viewAll": "View all for {{query}}"
   },
   "nav": {
     "inicio": "Home",
@@ -34,7 +35,15 @@
     "loading": "Loading Deals...",
     "no_free_games": "No free games found.",
     "no_cheap_games": "No games found under $10.",
-    "seasonal_offers": "Winter Sales"
+    "seasonal_offers": "Winter Sales",
+    "stats": {
+      "games": "Games Available",
+      "users": "Active Gamers",
+      "collections": "Collections Created",
+      "open_source": "100% Open Source",
+      "trusted": "Trusted Platform",
+      "no_ads": "Zero Ads"
+    }
   },
   "landing": {
     "hero_title": "Welcome to GameManager",

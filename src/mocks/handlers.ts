@@ -15,4 +15,13 @@ export const handlers = [
       role: "user",
     });
   }),
+
+  // Stats: Public Global Stats
+  http.get("/api/public/stats", () => {
+    return HttpResponse.json({
+      totalUsers: 5000,
+      totalGames: 15400,
+      totalCollections: 120000,
+    });
+  }),
 ];

@@ -42,13 +42,16 @@
   width: 100%;
   max-width: 600px;
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 /* Desktop Layout */
 @media (min-width: 1024px) {
   .contentWrapper {
     flex-direction: row;
-    align-items: center; /* Reverted to center */
+    align-items: flex-end; /* Align bases */
     justify-content: space-between;
     gap: 3rem; /* Slightly reduced gap */
   }
