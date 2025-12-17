@@ -45,10 +45,11 @@ export const adminService = {
    */
   async getAllUsers(
     page: number = 1,
-    limit: number = 20
+    limit: number = 20,
+    query: string = ""
   ): Promise<PaginatedUsers> {
     const { data } = await apiClient.get<PaginatedUsers>("/users", {
-      params: { page, limit },
+      params: { page, limit, query },
     });
     return data;
   },

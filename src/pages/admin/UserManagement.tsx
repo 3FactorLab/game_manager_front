@@ -5,10 +5,17 @@ import styles from "./UserManagement.module.css";
 
 const UserManagement = () => {
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
   const limit = 20;
 
-  const { data, isLoading, error } = useUsers(currentPage, limit);
+  const { data, isLoading, error } = useUsers(currentPage, limit, searchQuery);
   const deleteUserMutation = useDeleteUser();
+
+  // Reset page when searching
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+    setCurrentPage(1);
+  };
 
   const handleDeleteUser = async (userId: string, username: string) => {
     if (
@@ -50,6 +57,25 @@ const UserManagement = () => {
         <p className={styles.subtitle}>
           Total de usuarios: <strong>{data?.total || 0}</strong>
         </p>
+      </div>
+
+      <div className={styles.searchContainer} style={{ marginBottom: "1rem" }}>
+        <input
+          type="text"
+          placeholder="Buscar por usuario o email..."
+          value={searchQuery}
+          onChange={handleSearch}
+          className={styles.searchInput}
+          style={{
+            width: "100%",
+            padding: "0.75rem",
+            borderRadius: "8px",
+            border: "1px solid var(--glass-border)",
+            background: "rgba(255, 255, 255, 0.05)",
+            color: "var(--text-primary)",
+            fontSize: "1rem",
+          }}
+        />
       </div>
 
       <div className={styles.tableWrapper}>

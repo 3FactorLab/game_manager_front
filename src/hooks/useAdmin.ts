@@ -12,10 +12,14 @@ import { adminService } from "../services/admin.service";
  * Hook to fetch all users (Admin only)
  * Supports pagination
  */
-export const useUsers = (page: number = 1, limit: number = 20) => {
+export const useUsers = (
+  page: number = 1,
+  limit: number = 20,
+  searchQuery: string = ""
+) => {
   return useQuery({
-    queryKey: ["admin", "users", page, limit],
-    queryFn: () => adminService.getAllUsers(page, limit),
+    queryKey: ["admin", "users", page, limit, searchQuery],
+    queryFn: () => adminService.getAllUsers(page, limit, searchQuery),
     staleTime: 30 * 1000, // 30 seconds
   });
 };
