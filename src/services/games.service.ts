@@ -20,7 +20,7 @@ export interface Game {
   price: number;
   currency: string;
   platforms: string[];
-  genre: string; // e.g., "Action RPG", "FPS", "Platformer"
+  genres: string[]; // e.g., "Action RPG", "FPS", "Platformer"
   type: "game" | "dlc" | "bundle";
   releaseDate: string;
   developer: string;
@@ -101,7 +101,7 @@ export const gamesService = {
         currency: game.currency || "USD",
         platforms:
           game.platforms || (game.platform ? [game.platform] : ["Unknown"]),
-        genre: game.genre || "Unknown",
+        genres: game.genres || ["Unknown"],
         type: game.type || "game",
         releaseDate: game.released || game.releaseDate || "",
         developer: game.developer || "Unknown",

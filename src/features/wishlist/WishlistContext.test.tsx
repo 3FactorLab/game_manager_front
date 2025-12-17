@@ -46,7 +46,7 @@ const mockGame: Game = {
   description: "Best game",
   image: "test1.jpg",
   platforms: ["PC"],
-  genre: "Action",
+  genres: ["Action"],
   type: "game",
   releaseDate: "2022-02-25",
   developer: "FromSoftware",

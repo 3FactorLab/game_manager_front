@@ -36,7 +36,7 @@ export const useGameFiltering = (games: Game[] | undefined) => {
 
     // 2. Genre Filter
     if (filters.genre) {
-      result = result.filter((game) => game.genre === filters.genre);
+      result = result.filter((game) => game.genres?.includes(filters.genre!));
     }
 
     // 3. Platform Filter
