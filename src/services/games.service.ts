@@ -75,12 +75,15 @@ export interface BackendGame extends Partial<Omit<Game, "assets">> {
 export const gamesService = {
   // Public Endpoint: Fetch catalog
   async getCatalog(params: GamesQueryParams): Promise<PaginatedResponse<Game>> {
-    // Backend response structure
+    // Backend response structure (Standardized)
     interface BackendResponse {
-      games: BackendGame[];
-      total: number;
-      totalPages: number;
-      page: number;
+      data: BackendGame[];
+      pagination: {
+        total: number;
+        pages: number;
+        page: number;
+        limit: number;
+      };
     }
 
     const { data: rawData } = await apiClient.get<BackendResponse>(
@@ -90,9 +93,9 @@ export const gamesService = {
       }
     );
 
-    // Map Backend Response (games, total, page...) to Frontend Interface (data, pagination)
+    // Map Backend Response (data, pagination) to Frontend Interface
     return {
-      data: (rawData.games || []).map((game) => ({
+      data: (rawData.data || []).map((game) => ({
         ...game,
         _id: game._id || "",
         title: game.title || "Untitled",
@@ -117,11 +120,11 @@ export const gamesService = {
           videos: [],
         },
       })),
-      pagination: {
-        total: rawData.total || 0,
-        pages: rawData.totalPages || 0,
-        page: rawData.page || 1,
-        limit: params.limit || 12,
+      pagination: rawData.pagination || {
+        total: 0,
+        pages: 0,
+        page: 1,
+        limit: 12,
       },
     };
   },
