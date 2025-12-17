@@ -100,6 +100,43 @@
   border: 1px solid rgba(59, 130, 246, 0.3);
 }
 
+/* Role Selector Styles (Matches Badge) */
+.roleSelect {
+  appearance: none; /* Hide default arrow */
+  -webkit-appearance: none;
+  border: none;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  text-align: center;
+  outline: none;
+  transition: opacity 0.2s ease;
+}
+
+.roleSelect:hover {
+  opacity: 0.9;
+}
+
+.roleSelectAdmin {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #fff;
+}
+
+.roleSelectUser {
+  background: rgba(59, 130, 246, 0.2);
+  color: #60a5fa;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.roleSelect option {
+  background: #1e293b; /* Dark background for dropdown options */
+  color: white;
+}
+
 /* Delete Button */
 .deleteBtn {
   padding: 0.5rem 1rem;

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useUsers, useDeleteUser } from "../../hooks/useAdmin";
+import { useUsers, useDeleteUser, useUpdateUserRole } from "../../hooks/useAdmin";
 import { handleApiError, getErrorMessage } from "../../utils/error.util";
 import styles from "./UserManagement.module.css";
 
@@ -10,6 +10,7 @@ const UserManagement = () => {
 
   const { data, isLoading, error } = useUsers(currentPage, limit, searchQuery);
   const deleteUserMutation = useDeleteUser();
+  const updateRoleMutation = useUpdateUserRole();
 
   // Reset page when searching
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -29,6 +30,21 @@ const UserManagement = () => {
       } catch (error) {
         handleApiError(error, "Failed to delete user");
       }
+    }
+  };
+
+  const handleRoleChange = async (userId: string, newRole: "user" | "admin") => {
+    if (
+        window.confirm(
+            `¿Estás seguro de cambiar el rol de este usuario a "${newRole.toUpperCase()}"?`
+        )
+    ) {
+        try {
+            await updateRoleMutation.mutateAsync({ userId, role: newRole });
+            // toast.success("Rol actualizado"); // Optional if you have toast
+        } catch (error) {
+            handleApiError(error, "Failed to update role");
+        }
     }
   };
 
@@ -97,15 +113,24 @@ const UserManagement = () => {
                 </td>
                 <td>{user.email}</td>
                 <td>
-                  <span
-                    className={`${styles.badge} ${
+                  <select
+                    value={user.role}
+                    className={`${styles.roleSelect} ${
                       user.role === "admin"
-                        ? styles.badgeAdmin
-                        : styles.badgeUser
+                        ? styles.roleSelectAdmin
+                        : styles.roleSelectUser
                     }`}
+                    onChange={(e) =>
+                      handleRoleChange(
+                        user._id,
+                        e.target.value as "user" | "admin"
+                      )
+                    }
+                    disabled={updateRoleMutation.isPending}
                   >
-                    {user.role.toUpperCase()}
-                  </span>
+                    <option value="user">USER</option>
+                    <option value="admin">ADMIN</option>
+                  </select>
                 </td>
                 <td>{new Date(user.createdAt).toLocaleDateString("es-ES")}</td>
                 <td>

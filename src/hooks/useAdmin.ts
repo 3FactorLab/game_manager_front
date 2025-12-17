@@ -25,6 +25,27 @@ export const useUsers = (
 };
 
 /**
+ * Hook to update user role (Admin only)
+ * Invalidates users query on success
+ */
+export const useUpdateUserRole = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      userId,
+      role,
+    }: {
+      userId: string;
+      role: "user" | "admin";
+    }) => adminService.updateUserRole(userId, role),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin", "users"] });
+    },
+  });
+};
+
+/**
  * Hook to delete a user (Admin only)
  * Invalidates users query on success
  */

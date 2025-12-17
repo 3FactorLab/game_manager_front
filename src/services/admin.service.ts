@@ -63,6 +63,20 @@ export const adminService = {
     await apiClient.delete(`/users/${userId}`);
   },
 
+  /**
+   * Change user role (Admin only)
+   * Endpoint: PUT /api/users/:id/role
+   */
+  async updateUserRole(userId: string, role: "user" | "admin"): Promise<User> {
+    const { data } = await apiClient.put<{ user: User }>(
+      `/users/${userId}/role`,
+      {
+        role,
+      }
+    );
+    return data.user;
+  },
+
   // ==================== GAME MANAGEMENT ====================
 
   /**
