@@ -4,15 +4,38 @@ import {
   FaShoppingBag,
   FaMoneyBillWave,
 } from "react-icons/fa";
+/**
+ * DashboardStats.tsx
+ * Admin dashboard statistics component displaying KPIs, top games, and platform distribution.
+ */
 import { useDashboardStats } from "../../hooks/useAdmin";
 import { getErrorMessage } from "../../utils/error.util";
 import styles from "./DashboardStats.module.css";
 
+/**
+ * Interface for top game stats
+ */
+interface TopGame {
+  title: string;
+  revenue: number;
+  sales: number;
+}
+
+/**
+ * Interface for platform distribution
+ */
+interface PlatformStat {
+  name: string;
+  count: number;
+}
+
 const DashboardStats = () => {
   const { data: stats, isLoading, error } = useDashboardStats();
 
-  if (isLoading) return <div className={styles.loading}>Cargando estadísticas...</div>;
-  if (error) return <div className={styles.error}>Error: {getErrorMessage(error)}</div>;
+  if (isLoading)
+    return <div className={styles.loading}>Cargando estadísticas...</div>;
+  if (error)
+    return <div className={styles.error}>Error: {getErrorMessage(error)}</div>;
 
   if (!stats) return null;
 
@@ -62,33 +85,34 @@ const DashboardStats = () => {
         {/* 2. Top Games Table */}
         <div className={styles.detailsCard}>
           <h3>🏆 Top 5 Juegos Más Vendidos</h3>
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th>Juego</th>
-                <th>Ventas</th>
-                <th>Ingresos</th>
-              </tr>
-            </thead>
-            <tbody>
-              {stats.topGames.map((game: any) => (
-                <tr key={game.title}>
-                  <td>{game.title}</td>
-                  <td style={{ textAlign: "center" }}>{game.sales}</td>
-                  <td style={{ textAlign: "right", color: "#4caf50" }}>
-                    ${game.revenue.toFixed(2)}
-                  </td>
-                </tr>
+          <div className={styles.topGames}>
+            <h3>Top Selling Games</h3>
+            <ul>
+              {stats.topGames.map((game: TopGame) => (
+                <li key={game.title}>
+                  <span>{game.title}</span>
+                  <span>${game.revenue.toFixed(2)}</span>
+                </li>
               ))}
-            </tbody>
-          </table>
+            </ul>
+          </div>
+
+          <div className={styles.platforms}>
+            <h3>Platform Distribution</h3>
+            {stats.platforms.map((p: PlatformStat) => (
+              <div key={p.name} className={styles.platformBar}>
+                <span>{p.name}</span>
+                <span>{p.count}</span>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* 3. Platform Distribution */}
         <div className={styles.detailsCard}>
           <h3>🎮 Distribución de Plataformas</h3>
           <div className={styles.platformList}>
-            {stats.platforms.map((p: any) => (
+            {stats.platforms.map((p: PlatformStat) => (
               <div key={p.name} className={styles.platformItem}>
                 <span className={styles.platformName}>{p.name}</span>
                 <div className={styles.progressBar}>
