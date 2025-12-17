@@ -32,6 +32,21 @@ export interface PaginatedUsers {
   totalPages: number;
 }
 
+// ==================== ORDER MANAGEMENT ====================
+
+export interface Order {
+  _id: string;
+  userId: string;
+  totalAmount: number;
+  status: string;
+  items: Array<{
+    gameId: string;
+    title: string;
+    price: number;
+  }>;
+  createdAt: string;
+}
+
 /**
  * Admin service
  * Collection of admin-only API operations for user and game management
@@ -146,17 +161,20 @@ export const adminService = {
    * Get all orders (Admin only)
    * Endpoint: GET /api/orders
    */
-  async getAllOrders(): Promise<any[]> {
-    const { data } = await apiClient.get<any[]>("/orders");
+  async getAllOrders(): Promise<Order[]> {
+    const { data } = await apiClient.get<Order[]>("/orders");
     return data;
   },
 
   /**
-   * Get dashboard statistics (Admin only)
-   * Endpoint: GET /api/stats/dashboard
+   * @deprecated Use statsService.getDashboardStats() instead.
+   * Kept for backward compatibility during refactor.
    */
-  async getDashboardStats(): Promise<any> {
-    const { data } = await apiClient.get<any>("/stats/dashboard");
+  async getDashboardStats(): Promise<unknown> {
+    console.warn(
+      "Using deprecated adminService.getDashboardStats. Switch to statsService."
+    );
+    const { data } = await apiClient.get("/stats/dashboard");
     return data;
   },
 };

@@ -6,38 +6,34 @@ import {
 } from "react-icons/fa";
 /**
  * DashboardStats.tsx
- * Admin dashboard statistics component displaying KPIs, top games, and platform distribution.
+ * Admin dashboard statistics component displaying KPIs, top games, and sales trends.
  */
-import { useDashboardStats } from "../../hooks/useAdmin";
+import { useDashboardStats, usePublicStats } from "../../hooks/useAdmin";
 import { getErrorMessage } from "../../utils/error.util";
 import styles from "./DashboardStats.module.css";
 
-/**
- * Interface for top game stats
- */
-interface TopGame {
-  title: string;
-  revenue: number;
-  sales: number;
-}
-
-/**
- * Interface for platform distribution
- */
-interface PlatformStat {
-  name: string;
-  count: number;
-}
-
 const DashboardStats = () => {
-  const { data: stats, isLoading, error } = useDashboardStats();
+  const {
+    data: dashboardStats,
+    isLoading: isLoadingDashboard,
+    error: dashboardError,
+  } = useDashboardStats();
+
+  const {
+    data: publicStats,
+    isLoading: isLoadingPublic,
+    error: publicError,
+  } = usePublicStats();
+
+  const isLoading = isLoadingDashboard || isLoadingPublic;
+  const error = dashboardError || publicError;
 
   if (isLoading)
     return <div className={styles.loading}>Cargando estadísticas...</div>;
   if (error)
     return <div className={styles.error}>Error: {getErrorMessage(error)}</div>;
 
-  if (!stats) return null;
+  if (!dashboardStats || !publicStats) return null;
 
   return (
     <div className={styles.container}>
@@ -49,7 +45,7 @@ const DashboardStats = () => {
           </div>
           <div className={styles.kpiContent}>
             <h3>Ingresos Totales</h3>
-            <p>${stats.kpis.totalRevenue.toFixed(2)}</p>
+            <p>${dashboardStats.revenue.toFixed(2)}</p>
           </div>
         </div>
         <div className={styles.kpiCard}>
@@ -58,7 +54,7 @@ const DashboardStats = () => {
           </div>
           <div className={styles.kpiContent}>
             <h3>Usuarios</h3>
-            <p>{stats.kpis.totalUsers}</p>
+            <p>{publicStats.totalUsers}</p>
           </div>
         </div>
         <div className={styles.kpiCard}>
@@ -66,8 +62,8 @@ const DashboardStats = () => {
             <FaShoppingBag />
           </div>
           <div className={styles.kpiContent}>
-            <h3>Pedidos</h3>
-            <p>{stats.kpis.totalOrders}</p>
+            <h3>Colecciones</h3>
+            <p>{publicStats.totalCollections}</p>
           </div>
         </div>
         <div className={styles.kpiCard}>
@@ -76,7 +72,7 @@ const DashboardStats = () => {
           </div>
           <div className={styles.kpiContent}>
             <h3>Juegos</h3>
-            <p>{stats.kpis.totalGames}</p>
+            <p>{publicStats.totalGames}</p>
           </div>
         </div>
       </div>
@@ -86,46 +82,53 @@ const DashboardStats = () => {
         <div className={styles.detailsCard}>
           <h3>🏆 Top 5 Juegos Más Vendidos</h3>
           <div className={styles.topGames}>
-            <h3>Top Selling Games</h3>
             <ul>
-              {stats.topGames.map((game: TopGame) => (
-                <li key={game.title}>
+              {dashboardStats.topSelling.map((game) => (
+                <li key={game._id}>
                   <span>{game.title}</span>
-                  <span>${game.revenue.toFixed(2)}</span>
+                  <div className={styles.gameStats}>
+                    <span className={styles.soldBadge}>
+                      {game.totalSold} vendidos
+                    </span>
+                    <span className={styles.revenueBadge}>
+                      ${game.revenue.toFixed(2)}
+                    </span>
+                  </div>
                 </li>
               ))}
             </ul>
           </div>
-
-          <div className={styles.platforms}>
-            <h3>Platform Distribution</h3>
-            {stats.platforms.map((p: PlatformStat) => (
-              <div key={p.name} className={styles.platformBar}>
-                <span>{p.name}</span>
-                <span>{p.count}</span>
-              </div>
-            ))}
-          </div>
         </div>
 
-        {/* 3. Platform Distribution */}
+        {/* 3. Monthly Trends (Replaces Platforms) */}
         <div className={styles.detailsCard}>
-          <h3>🎮 Distribución de Plataformas</h3>
+          <h3>📈 Tendencias Mensuales</h3>
           <div className={styles.platformList}>
-            {stats.platforms.map((p: PlatformStat) => (
-              <div key={p.name} className={styles.platformItem}>
-                <span className={styles.platformName}>{p.name}</span>
+            {dashboardStats.monthlyTrends.map((trend) => (
+              <div key={trend._id} className={styles.platformItem}>
+                <span className={styles.platformName}>{trend._id}</span>
                 <div className={styles.progressBar}>
                   <div
                     className={styles.progressFill}
                     style={{
-                      width: `${(p.count / stats.kpis.totalGames) * 100}%`,
+                      // Simple normalization relative to max revenue (approx) or 100% width for showcase
+                      width: `${Math.min(
+                        (trend.revenue / dashboardStats.revenue) * 100 * 5,
+                        100
+                      )}%`, // Scale logic
                     }}
                   />
                 </div>
-                <span className={styles.platformCount}>{p.count}</span>
+                <span className={styles.platformCount}>
+                  ${trend.revenue.toFixed(2)}
+                </span>
               </div>
             ))}
+            {dashboardStats.monthlyTrends.length === 0 && (
+              <p className={styles.emptyState}>
+                No hay datos de tendencias aún.
+              </p>
+            )}
           </div>
         </div>
       </div>

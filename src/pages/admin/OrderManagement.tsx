@@ -69,22 +69,13 @@ const OrderManagement = () => {
         </p>
       </div>
 
-      <div className={styles.searchContainer} style={{ marginBottom: "1rem" }}>
+      <div className={styles.searchContainer}>
         <input
           type="text"
           placeholder="Buscar por ID de pedido o usuario..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className={styles.searchInput}
-          style={{
-            width: "100%",
-            padding: "0.75rem",
-            borderRadius: "8px",
-            border: "1px solid var(--glass-border)",
-            background: "rgba(255, 255, 255, 0.05)",
-            color: "var(--text-primary)",
-            fontSize: "1rem",
-          }}
         />
       </div>
 
@@ -103,42 +94,36 @@ const OrderManagement = () => {
           <tbody>
             {filteredOrders?.map((order: Order) => (
               <tr key={order._id}>
-                <td style={{ fontSize: "0.9rem", color: "#888" }}>
+                <td className={styles.orderIdCell}>
                   {order._id.slice(-6).toUpperCase()}
                 </td>
                 <td>
                   <div className={styles.username}>
                     {order.user?.username || "Usuario eliminado"}
                   </div>
-                  <div style={{ fontSize: "0.8rem", color: "#888" }}>
-                    {order.user?.email}
-                  </div>
+                  <div className={styles.userEmail}>{order.user?.email}</div>
                 </td>
                 <td>
                   {order.items?.map((item: OrderItem) => (
                     <div
                       key={item.game || item.title}
-                      style={{ fontSize: "0.9rem" }}
+                      className={styles.orderItemTitle}
                     >
                       • {item.title}
                     </div>
                   ))}
                 </td>
-                <td style={{ fontWeight: "bold", color: "#4caf50" }}>
+                <td className={styles.totalAmount}>
                   ${order.totalAmount?.toFixed(2)}
                 </td>
                 <td>{new Date(order.createdAt).toLocaleDateString()}</td>
                 <td>
                   <span
-                    className={styles.badge}
-                    style={{
-                      background:
-                        order.status === "completed"
-                          ? "rgba(76, 175, 80, 0.2)"
-                          : "rgba(255, 152, 0, 0.2)",
-                      color:
-                        order.status === "completed" ? "#4caf50" : "#ff9800",
-                    }}
+                    className={`${styles.badge} ${
+                      order.status === "completed"
+                        ? styles.badgeSuccess
+                        : styles.badgePending
+                    }`}
                   >
                     {order.status || "COMPLETED"}
                   </span>

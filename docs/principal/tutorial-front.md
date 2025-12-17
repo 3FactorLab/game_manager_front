@@ -397,7 +397,10 @@ Componentes de página que orquestan features y UI.
 
 Panel de administración (4 páginas):
 
-- `AdminDashboard.tsx`: Vista general
+Panel de administración (5 subcomponentes):
+
+- `AdminDashboard.tsx`: Layout principal
+- `DashboardStats.tsx`: **[NUEVO]** Visualización de KPIs financieros, Top Vendidos y Tendencias Mensuales.
 - `UserManagement.tsx`: CRUD de usuarios
 - `GameManagement.tsx`: CRUD de juegos
 - `RAWGImport.tsx`: Importar juegos desde RAWG API
@@ -437,7 +440,16 @@ Capa de comunicación con el backend.
 - **Funciones**:
   - `getCatalog(params)`: GET /games con paginación y búsqueda
   - `getGameById(id)`: GET /games/:id
+  - `getGameById(id)`: GET /games/:id
 - **Interface**: Define `Game` con todos los campos del juego.
+
+### `stats.service.ts`
+
+- **Qué hace**: Comunica con endpoints de analítica pública y privada.
+- **Endpoints**:
+  - `getGlobalStats()`: GET /stats/public (Usuarios, Juegos, Colecciones Totales)
+  - `getDashboardStats()`: GET /stats/dashboard (Revenue, Top Selling, Trends) - **Exclusivo Admin**
+- **DTOs**: `PublicStatsDto`, `DashboardStatsDto`.
 
 ### `user.service.ts`
 
@@ -610,6 +622,12 @@ Nuestra red de seguridad.
 - **Zero-Fragility**: Prohibido usar `any` en tests.
 - **Ejemplo**: Test de Button verifica que renderiza correctamente y responde a clicks reales.
 
+### Suites de Integración
+
+- **DashboardStats.test.tsx**: Verifica carga de KPIs y manejo de errores con MSW.
+- **UserManagement.test.tsx**: Flujo completo de eliminación de usuarios con confirmación.
+- **CatalogPage.test.tsx**: Filtrado y paginación real simulada.
+
 ---
 
 ## 📝 12. Documentación Académica
@@ -689,6 +707,11 @@ Todos los archivos críticos incluyen documentación estilo académico:
   - **Optimized Assets**: `LazyImage` y compresión Gzip en backend.
 - **Validation Driven Development (VDD)**:
   - Scripts `validate-phaseX.js` aseguran que la teoría (docs) coincide con la práctica (código).
+
+### Admin Intelligence
+
+- **Dashboard Analytics**: Panel de control financiero en tiempo real.
+- **Parallel Fetching**: Carga simultánea de KPIs y Gráficos para UX de alto rendimiento.
 
 ---
 

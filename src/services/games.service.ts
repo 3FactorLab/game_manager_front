@@ -91,11 +91,15 @@ export interface BackendGame extends Partial<Omit<Game, "assets">> {
   image?: string;
   screenshots?: string[];
   released?: string; // Some endpoints use 'released' instead of 'releaseDate'
+  stats?: {
+    score?: number;
+    rating?: number;
+  };
 }
 
 // Standardized Backend Response structure locally used
 interface BackendCatalogResponse {
-  data: any[];
+  data: BackendGame[];
   pagination: {
     total: number;
     pages: number;
@@ -114,9 +118,8 @@ export const gamesService = {
     });
 
     // Map backend standardized response to frontend entity
-    // r.data is the payload. r.data.data is the array.
-    const games: Game[] = r.data.data.map((g: any) => ({
-      _id: g._id,
+    const games: Game[] = r.data.data.map((g) => ({
+      _id: g._id || "", // Fallback for strict type (backend always sends _id)
       title: g.title || "Untitled",
       description: g.description || "",
       price: g.price || 0,
@@ -133,7 +136,8 @@ export const gamesService = {
       score: g.stats?.score,
       metacritic: g.stats?.rating,
       assets: g.assets || {
-        cover: g.image,
+        cover:
+          g.image || "https://placehold.co/600x400/101010/FFF?text=No+Cover",
         screenshots: [],
         videos: [],
       },
@@ -156,7 +160,7 @@ export const gamesService = {
 
   // Public Endpoint: Fetch single game
   async getGameById(id: string): Promise<Game> {
-    interface BackendGame extends Omit<Game, "assets" | "releaseDate"> {
+    interface BackendGameResponse extends Omit<Game, "assets" | "releaseDate"> {
       assets?: Game["assets"];
       releaseDate?: string;
       released?: string;
@@ -164,7 +168,7 @@ export const gamesService = {
       screenshots?: string[];
     }
 
-    const { data: rawGame } = await apiClient.get<BackendGame>(
+    const { data: rawGame } = await apiClient.get<BackendGameResponse>(
       `/public/games/${id}`
     );
 
@@ -178,7 +182,7 @@ export const gamesService = {
           "https://placehold.co/600x400/101010/FFF?text=No+Cover",
         screenshots: Array.isArray(rawGame.screenshots)
           ? rawGame.screenshots.filter(
-              (s) => typeof s === "string" && s.startsWith("http")
+              (s): s is string => typeof s === "string" && s.startsWith("http")
             )
           : [],
         videos: [],
@@ -193,7 +197,6 @@ export const gamesService = {
       platforms: string[];
     }>("/public/games/filters");
     return data;
-    return data;
   },
 
   // Unified Search (Local + Remote)
@@ -201,26 +204,50 @@ export const gamesService = {
     params: GamesQueryParams | string
   ): Promise<PaginatedResponse<Game>> {
     // Handle overload: if string, treat as query
-    const queryParams: any =
-      typeof params === "string" ? { query: params } : params;
+    const queryParams: Record<string, string | number | boolean | undefined> =
+      typeof params === "string"
+        ? { query: params }
+        : (params as Record<string, string | number | boolean | undefined>);
 
     // Build query with filters
     const searchParams = new URLSearchParams();
-    if (queryParams.query) searchParams.append("q", queryParams.query);
-    if (queryParams.genre) searchParams.append("genre", queryParams.genre);
+    if (queryParams.query) searchParams.append("q", String(queryParams.query)); // Backend expects 'q' for unified search
+    if (queryParams.genre)
+      searchParams.append("genre", String(queryParams.genre));
     if (queryParams.platform)
-      searchParams.append("platform", queryParams.platform);
+      searchParams.append("platform", String(queryParams.platform));
     if (queryParams.developer)
-      searchParams.append("developer", queryParams.developer);
+      searchParams.append("developer", String(queryParams.developer));
 
-    const { data } = await apiClient.get<any>(
+    interface UnifiedSearchResult {
+      results: Array<{
+        _id: string;
+        title: string;
+        image: string;
+        price?: number;
+        currency?: string;
+        isExternal: boolean;
+        rawgId?: number;
+        platforms?: string[];
+        genres?: string[];
+        developer?: string;
+        publisher?: string;
+        stats?: {
+          score?: number;
+          rating?: number;
+        };
+      }>;
+    }
+
+    const { data } = await apiClient.get<UnifiedSearchResult>(
       `/discovery?${searchParams.toString()}`
     );
 
     // Map Unified Result to Game Interface
-    const games: Game[] = data.results.map((r: any) => ({
-      _id: r._id,
+    const games: Game[] = data.results.map((r) => ({
+      _id: r._id || "", // Backend always provides _id, but type needs reassurance
       title: r.title,
+      description: "", // Unified search doesn't return description in list view
       image: r.image,
       assets: {
         cover: r.image,
@@ -232,8 +259,7 @@ export const gamesService = {
       isExternal: r.isExternal,
       rawgId: r.rawgId,
       platforms: r.platforms || ["Unknown"],
-
-      genres: r.genres || [], // [FIX] Map genres array
+      genres: r.genres || [],
       type: "game",
       releaseDate: "",
       developer: r.developer || "",
