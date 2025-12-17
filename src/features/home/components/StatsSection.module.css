@@ -26,14 +26,15 @@
   transition: transform var(--transition-normal);
 }
 
+/* Unified Hover Effects */
 .statItem:hover .icon {
   transform: scale(1.1);
+  color: var(--accent-secondary);
 }
 
 .number {
   font-size: 3.5rem;
   font-weight: 800;
-  /* Gradient Text */
   background: linear-gradient(
     135deg,
     var(--text-primary) 30%,
@@ -43,6 +44,19 @@
   background-clip: text;
   -webkit-text-fill-color: transparent;
   line-height: 1;
+  transition: all var(--transition-normal);
+}
+
+.statItem:hover .number {
+  background: linear-gradient(
+    to right,
+    var(--accent-primary),
+    var(--accent-secondary)
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  transform: scale(1.1); /* Matched to Icon */
 }
 
 .label {
@@ -51,6 +65,20 @@
   text-transform: uppercase;
   letter-spacing: 1px;
   font-weight: 500;
+  transition: all var(--transition-normal); /* Changed to all for transform */
+}
+
+.statItem:hover .label {
+  background: linear-gradient(
+    to right,
+    var(--accent-primary),
+    var(--accent-secondary)
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 700;
+  transform: scale(1.1); /* Matched to Icon */
 }
 
 /* Mobile Responsiveness */
