@@ -156,3 +156,14 @@ export const useOrders = () => {
     staleTime: 60 * 1000,
   });
 };
+
+/**
+ * Hook to fetch dashboard statistics (Admin only)
+ */
+export const useDashboardStats = () => {
+  return useQuery({
+    queryKey: ["admin", "dashboard-stats"],
+    queryFn: () => adminService.getDashboardStats(),
+    staleTime: 60 * 1000,
+  });
+};
