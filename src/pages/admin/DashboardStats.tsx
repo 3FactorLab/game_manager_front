@@ -3,20 +3,37 @@ import {
   FaGamepad,
   FaShoppingBag,
   FaMoneyBillWave,
-  FaChartLine,
-  FaHeart,
 } from "react-icons/fa";
-import { useDashboardStats } from "../../hooks/useAdmin";
+/**
+ * DashboardStats.tsx
+ * Admin dashboard statistics component displaying KPIs, top games, and sales trends.
+ */
+import { useDashboardStats, usePublicStats } from "../../hooks/useAdmin";
 import { getErrorMessage } from "../../utils/error.util";
 import styles from "./DashboardStats.module.css";
 
 const DashboardStats = () => {
-  const { data: stats, isLoading, error } = useDashboardStats();
+  const {
+    data: dashboardStats,
+    isLoading: isLoadingDashboard,
+    error: dashboardError,
+  } = useDashboardStats();
 
-  if (isLoading) return <div className={styles.loading}>Cargando estadísticas...</div>;
-  if (error) return <div className={styles.error}>Error: {getErrorMessage(error)}</div>;
+  const {
+    data: publicStats,
+    isLoading: isLoadingPublic,
+    error: publicError,
+  } = usePublicStats();
 
-  if (!stats) return null;
+  const isLoading = isLoadingDashboard || isLoadingPublic;
+  const error = dashboardError || publicError;
+
+  if (isLoading)
+    return <div className={styles.loading}>Cargando estadísticas...</div>;
+  if (error)
+    return <div className={styles.error}>Error: {getErrorMessage(error)}</div>;
+
+  if (!dashboardStats || !publicStats) return null;
 
   return (
     <div className={styles.container}>
@@ -28,7 +45,7 @@ const DashboardStats = () => {
           </div>
           <div className={styles.kpiContent}>
             <h3>Ingresos Totales</h3>
-            <p>${stats.kpis.totalRevenue.toFixed(2)}</p>
+            <p>${dashboardStats.revenue.toFixed(2)}</p>
           </div>
         </div>
         <div className={styles.kpiCard}>
@@ -37,7 +54,7 @@ const DashboardStats = () => {
           </div>
           <div className={styles.kpiContent}>
             <h3>Usuarios</h3>
-            <p>{stats.kpis.totalUsers}</p>
+            <p>{publicStats.totalUsers}</p>
           </div>
         </div>
         <div className={styles.kpiCard}>
@@ -45,17 +62,17 @@ const DashboardStats = () => {
             <FaShoppingBag />
           </div>
           <div className={styles.kpiContent}>
-            <h3>Pedidos</h3>
-            <p>{stats.kpis.totalOrders}</p>
+            <h3>Colecciones</h3>
+            <p>{publicStats.totalCollections}</p>
           </div>
         </div>
         <div className={styles.kpiCard}>
           <div className={`${styles.iconWrapper} ${styles.orange}`}>
-            <FaMoneyBillWave />
+            <FaGamepad />
           </div>
           <div className={styles.kpiContent}>
-            <h3>Ticket Medio</h3>
-            <p>${stats.kpis.averageOrderValue?.toFixed(2) || "0.00"}</p>
+            <h3>Juegos</h3>
+            <p>{publicStats.totalGames}</p>
           </div>
         </div>
       </div>
@@ -63,113 +80,56 @@ const DashboardStats = () => {
       <div className={styles.detailsGrid}>
         {/* 2. Top Games Table */}
         <div className={styles.detailsCard}>
-          <h3>🏆 Top 5 Juegos (Ingresos)</h3>
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th>Juego</th>
-                <th>Unds.</th>
-                <th>Total</th>
-              </tr>
-            </thead>
-            <tbody>
-              {stats.topGames.map((game: any) => (
-                <tr key={game.title}>
-                  <td>{game.title}</td>
-                  <td style={{ textAlign: "center" }}>{game.sales}</td>
-                  <td style={{ textAlign: "right", color: "#4caf50" }}>
-                    ${game.revenue.toFixed(2)}
-                  </td>
-                </tr>
+          <h3>🏆 Top 5 Juegos Más Vendidos</h3>
+          <div className={styles.topGames}>
+            <ul>
+              {dashboardStats.topSelling.map((game) => (
+                <li key={game._id}>
+                  <span>{game.title}</span>
+                  <div className={styles.gameStats}>
+                    <span className={styles.soldBadge}>
+                      {game.totalSold} vendidos
+                    </span>
+                    <span className={styles.revenueBadge}>
+                      ${game.revenue.toFixed(2)}
+                    </span>
+                  </div>
+                </li>
               ))}
-            </tbody>
-          </table>
+            </ul>
+          </div>
         </div>
 
-        {/* 3. Platform & Genre Distribution */}
+        {/* 3. Monthly Trends (Replaces Platforms) */}
         <div className={styles.detailsCard}>
-          <h3>🎮 Plataformas y Géneros</h3>
-          <div className={styles.platformList} style={{ marginBottom: "2rem" }}>
-            <h4 style={{ fontSize: "0.9rem", color: "var(--text-secondary)", marginBottom: "0.5rem" }}>Plataformas</h4>
-            {stats.platforms.map((p: any) => (
-              <div key={p.name} className={styles.platformItem}>
-                <span className={styles.platformName}>{p.name}</span>
-                <div className={styles.progressBar}>
-                  <div
-                    className={styles.progressFill}
-                    style={{
-                      width: `${Math.min((p.count / (stats.kpis.totalGames || 1)) * 100 * 3, 100)}%`,
-                    }}
-                  />
-                </div>
-                <span className={styles.platformCount}>{p.count}</span>
-              </div>
-            ))}
-          </div>
-
+          <h3>📈 Tendencias Mensuales</h3>
           <div className={styles.platformList}>
-             <h4 style={{ fontSize: "0.9rem", color: "var(--text-secondary)", marginBottom: "0.5rem" }}>Géneros Top</h4>
-             {stats.genres?.map((g: any) => (
-              <div key={g.name} className={styles.platformItem}>
-                <span className={styles.platformName}>{g.name}</span>
+            {dashboardStats.monthlyTrends.map((trend) => (
+              <div key={trend._id} className={styles.platformItem}>
+                <span className={styles.platformName}>{trend._id}</span>
                 <div className={styles.progressBar}>
                   <div
                     className={styles.progressFill}
                     style={{
-                      backgroundColor: "#9c27b0", // Different color for genres
-                      width: `${Math.min((g.count / (stats.kpis.totalGames || 1)) * 100 * 3, 100)}%`,
+                      // Simple normalization relative to max revenue (approx) or 100% width for showcase
+                      width: `${Math.min(
+                        (trend.revenue / dashboardStats.revenue) * 100 * 5,
+                        100
+                      )}%`, // Scale logic
                     }}
                   />
                 </div>
-                <span className={styles.platformCount}>{g.count}</span>
+                <span className={styles.platformCount}>
+                  ${trend.revenue.toFixed(2)}
+                </span>
               </div>
             ))}
+            {dashboardStats.monthlyTrends.length === 0 && (
+              <p className={styles.emptyState}>
+                No hay datos de tendencias aún.
+              </p>
+            )}
           </div>
-        </div>
-      </div>
-
-       {/* 4. Sales Trend & Library Stats */}
-       <div className={styles.detailsGrid}>
-        {/* Sales Trend - Basic List Visualization */}
-        <div className={styles.detailsCard}>
-          <h3><FaChartLine style={{ marginRight: "0.5rem" }}/> Ventas (Últimos 12 Meses)</h3>
-           {stats.salesTrend?.length > 0 ? (
-            <div className={styles.trendList}>
-              {stats.salesTrend.map((t: any) => (
-                <div key={t.date} className={styles.trendItem}>
-                   <span className={styles.trendDate}>{t.date}</span>
-                   <span className={styles.trendValue}>${t.sales.toFixed(2)}</span>
-                   <span className={styles.trendCount}>({t.orders} pedidos)</span>
-                </div>
-              ))}
-            </div>
-           ) : (
-             <p className={styles.emptyText}>No hay datos de ventas recientes.</p>
-           )}
-        </div>
-
-        {/* Top Library Games */}
-        <div className={styles.detailsCard}>
-          <h3><FaHeart style={{ marginRight: "0.5rem", color: "#e91e63" }}/> Top en Bibliotecas</h3>
-           <table className={styles.table}>
-            <thead>
-              <tr>
-                <th>Juego</th>
-                <th>Usuarios</th>
-              </tr>
-            </thead>
-            <tbody>
-              {stats.libraryStats?.map((game: any) => (
-                <tr key={game.title}>
-                  <td>{game.title}</td>
-                  <td style={{ textAlign: "right", fontWeight: "bold" }}>{game.count}</td>
-                </tr>
-              ))}
-              {(!stats.libraryStats || stats.libraryStats.length === 0) && (
-                <tr><td colSpan={2} className={styles.emptyText}>Sin datos aún.</td></tr>
-              )}
-            </tbody>
-          </table>
         </div>
       </div>
     </div>

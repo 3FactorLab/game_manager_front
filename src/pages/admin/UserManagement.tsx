@@ -1,5 +1,9 @@
 import { useState } from "react";
-import { useUsers, useDeleteUser, useUpdateUserRole } from "../../hooks/useAdmin";
+import {
+  useUsers,
+  useDeleteUser,
+  useUpdateUserRole,
+} from "../../hooks/useAdmin";
 import { handleApiError, getErrorMessage } from "../../utils/error.util";
 import styles from "./UserManagement.module.css";
 
@@ -33,18 +37,21 @@ const UserManagement = () => {
     }
   };
 
-  const handleRoleChange = async (userId: string, newRole: "user" | "admin") => {
+  const handleRoleChange = async (
+    userId: string,
+    newRole: "user" | "admin"
+  ) => {
     if (
-        window.confirm(
-            `¿Estás seguro de cambiar el rol de este usuario a "${newRole.toUpperCase()}"?`
-        )
+      window.confirm(
+        `¿Estás seguro de cambiar el rol de este usuario a "${newRole.toUpperCase()}"?`
+      )
     ) {
-        try {
-            await updateRoleMutation.mutateAsync({ userId, role: newRole });
-            // toast.success("Rol actualizado"); // Optional if you have toast
-        } catch (error) {
-            handleApiError(error, "Failed to update role");
-        }
+      try {
+        await updateRoleMutation.mutateAsync({ userId, role: newRole });
+        // toast.success("Rol actualizado"); // Optional if you have toast
+      } catch (error) {
+        handleApiError(error, "Failed to update role");
+      }
     }
   };
 
@@ -75,22 +82,13 @@ const UserManagement = () => {
         </p>
       </div>
 
-      <div className={styles.searchContainer} style={{ marginBottom: "1rem" }}>
+      <div className={styles.searchContainer}>
         <input
           type="text"
           placeholder="Buscar por usuario o email..."
           value={searchQuery}
           onChange={handleSearch}
           className={styles.searchInput}
-          style={{
-            width: "100%",
-            padding: "0.75rem",
-            borderRadius: "8px",
-            border: "1px solid var(--glass-border)",
-            background: "rgba(255, 255, 255, 0.05)",
-            color: "var(--text-primary)",
-            fontSize: "1rem",
-          }}
         />
       </div>
 

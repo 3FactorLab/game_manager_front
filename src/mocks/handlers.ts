@@ -17,7 +17,7 @@ export const handlers = [
   }),
 
   // Stats: Public Global Stats
-  http.get("/api/public/stats", () => {
+  http.get("/api/stats/public", () => {
     return HttpResponse.json({
       totalUsers: 5000,
       totalGames: 15400,

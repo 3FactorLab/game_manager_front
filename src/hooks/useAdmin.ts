@@ -141,13 +141,26 @@ export const useOrders = () => {
   });
 };
 
+import { statsService } from "../services/stats.service";
+
 /**
- * Hook to fetch dashboard stats (Admin only)
+ * Hook to fetch dashboard statistics (Admin only)
  */
 export const useDashboardStats = () => {
   return useQuery({
-    queryKey: ["admin", "stats"],
-    queryFn: () => adminService.getDashboardStats(),
+    queryKey: ["admin", "dashboard-stats"],
+    queryFn: () => statsService.getDashboardStats(),
     staleTime: 60 * 1000,
+  });
+};
+
+/**
+ * Hook to fetch public global stats
+ */
+export const usePublicStats = () => {
+  return useQuery({
+    queryKey: ["public", "stats"],
+    queryFn: () => statsService.getGlobalStats(),
+    staleTime: 5 * 60 * 1000,
   });
 };

@@ -25,6 +25,8 @@ vi.mock("react-icons/fa", () => ({
   FaLayerGroup: () => <span data-testid="icon-collections" />,
   FaCode: () => <span data-testid="icon-code" />,
   FaBan: () => <span data-testid="icon-ban" />,
+  FaShoppingBag: () => <span data-testid="icon-shopping-bag" />,
+  FaMoneyBillWave: () => <span data-testid="icon-money" />,
 }));
 
 // Mock Translations
@@ -74,7 +76,7 @@ describe("StatsSection Component (MSW)", () => {
   it("fetches and displays dynamic stats from backend", async () => {
     // Override MSW handler for specific test values
     server.use(
-      http.get("/api/public/stats", () => {
+      http.get("/api/stats/public", () => {
         return HttpResponse.json({
           totalUsers: 999,
           totalGames: 888,
@@ -91,11 +93,14 @@ describe("StatsSection Component (MSW)", () => {
     expect(screen.getByText("Collections Created")).toBeInTheDocument();
 
     // Should eventually display the real numbers from MSW
-    await waitFor(() => {
-      expect(screen.getByText("888")).toBeInTheDocument(); // Games
-      expect(screen.getByText("999")).toBeInTheDocument(); // Users
-      expect(screen.getByText("777")).toBeInTheDocument(); // Collections
-    });
+    await waitFor(
+      () => {
+        expect(screen.getByText("888")).toBeInTheDocument(); // Games
+        expect(screen.getByText("999")).toBeInTheDocument(); // Users
+        expect(screen.getByText("777")).toBeInTheDocument(); // Collections
+      },
+      { timeout: 3000 }
+    );
   });
 
   it("displays loading placeholder while fetching", async () => {
