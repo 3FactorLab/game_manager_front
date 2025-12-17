@@ -140,6 +140,16 @@ export const adminService = {
     });
     return data;
   },
+  // ==================== ORDER MANAGEMENT ====================
+
+  /**
+   * Get all orders (Admin only)
+   * Endpoint: GET /api/orders
+   */
+  async getAllOrders(): Promise<any[]> {
+    const { data } = await apiClient.get<any[]>("/orders");
+    return data;
+  },
 };
 
 // Exported to useAdmin hooks for admin panel operations

@@ -145,3 +145,14 @@ export const useImportFromRAWG = () => {
     },
   });
 };
+
+/**
+ * Hook to fetch all orders (Admin only)
+ */
+export const useOrders = () => {
+  return useQuery({
+    queryKey: ["admin", "orders"],
+    queryFn: () => adminService.getAllOrders(),
+    staleTime: 60 * 1000,
+  });
+};
