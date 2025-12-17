@@ -150,6 +150,15 @@ export const adminService = {
     const { data } = await apiClient.get<any[]>("/orders");
     return data;
   },
+
+  /**
+   * Get dashboard statistics (Admin only)
+   * Endpoint: GET /api/stats/dashboard
+   */
+  async getDashboardStats(): Promise<any> {
+    const { data } = await apiClient.get<any>("/stats/dashboard");
+    return data;
+  },
 };
 
 // Exported to useAdmin hooks for admin panel operations
