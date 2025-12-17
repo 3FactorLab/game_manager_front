@@ -62,22 +62,6 @@ export const useDeleteUser = () => {
 };
 
 /**
- * Hook to create a game (Admin only)
- * Invalidates games catalog on success
- */
-export const useCreateGame = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: (gameData: FormData) => adminService.createGame(gameData),
-    onSuccess: () => {
-      // Invalidate games catalog
-      queryClient.invalidateQueries({ queryKey: ["games"] });
-    },
-  });
-};
-
-/**
  * Hook to update a game (Admin only)
  * Invalidates games catalog on success
  */
