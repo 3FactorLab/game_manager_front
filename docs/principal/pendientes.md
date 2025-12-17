@@ -16,9 +16,18 @@
 ### Code Quality (Technical Debt)
 
 - [ ] **Migración a `userEvent`**
+
   - **Problema**: ~30 tests usan `fireEvent` (menor realismo, permite clics en elementos no interactivos).
   - **Acción**: Migrar gradualmente a `userEvent` al tocar los archivos correspondientes (Boy Scout Rule).
   - **Referencia**: Ver `PROMPT_AI_front.md` (Testing Strategy).
+
+- [ ] **Migración a MSW (Mock Service Worker)**
+  - **Problema**: 82 usos de `vi.mock` detectados. Muchos mockean servicios (`auth.service`, etc.), lo cual es frágil y acoplado a la implementación.
+  - **Acción**: Migrar gradualmente a MSW al tocar los archivos correspondientes (Boy Scout Rule).
+  - **Valoración**:
+    - **Válido**: `vi.mock` para librerías UI (`react-icons`).
+    - **Frágil**: `vi.mock` para lógica de negocio/servicios.
+  - **Estado**: Iniciado con `StatsSection`.
 
 ### Infraestructura (Futuro Monorepo)
 
