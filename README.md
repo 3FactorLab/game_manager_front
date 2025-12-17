@@ -50,10 +50,11 @@ This project implements a robust **Game Management System** featuring a custom G
 - **Persistence**: Language preference saved in LocalStorage.
 - **Toggle**: Integrated switcher in Navbar (Desktop & Mobile).
 
-### 🛡️ Robustness
+### 🛡️ Robustness & Code Quality
 
+- **Validation Driven Development (VDD)**: Automated scripts (`npm run validate:phaseX`) ensure architectural compliance.
+- **Strict Typing**: Zero `any` policy enforced by CI.
 - **Error Boundaries**: Graceful error handling prevents white screens.
-- **Type Safety**: >95% TypeScript coverage with strict mode.
 - **Centralized API**: Typed Service Layer separating API logic from UI components.
 
 ---
@@ -62,10 +63,10 @@ This project implements a robust **Game Management System** featuring a custom G
 
 We maintain detailed documentation for the codebase. Please review these files to understand the architecture:
 
-- [📐 Frontend Architecture](./docs/architecture-front.md): Deep dive into the data flow, layers, and decisions.
-- [🎓 Tutorial & Guidelines](./docs/tutorial-front.md): Contribution guide and code standards.
-- [📋 Project Roadmap](./docs/pendientes.md): Pending tasks and future improvements.
-- [🧪 Testing Guide](./docs/test-guide.md): How to run and write tests.
+- [📐 Frontend Architecture](./docs/principal/architecture-front.md): Deep dive into the data flow, layers, and decisions.
+- [🎓 Tutorial & Codebase](./docs/principal/tutorial-front.md): File-by-file codebase walkthrough.
+- [🎓 Executive Summary](./docs/principal/explicacion_proyecto.md): High-level Engineering Overview.
+- [🧪 Testing Guide](./docs/principal/tests-guide.md): Strategy for Vitest, MSW, and RTL.
 
 ---
 
