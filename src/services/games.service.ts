@@ -166,6 +166,7 @@ export const gamesService = {
       genres: string[];
       platforms: string[];
     }>("/public/games/filters");
+    return data;
   },
 
   // Unified Search (Local + Remote)
@@ -205,7 +206,7 @@ export const gamesService = {
       rawgId: r.rawgId,
       platforms: r.platforms || ["Unknown"],
 
-      genre: r.genre || "Unknown",
+      genres: r.genres || [], // [FIX] Map genres array
       type: "game",
       releaseDate: "",
       developer: r.developer || "",
