@@ -36,7 +36,15 @@
     "loading": "Cargando ofertas...",
     "no_free_games": "No se encontraron juegos gratis.",
     "no_cheap_games": "No se encontraron juegos por menos de 10$.",
-    "seasonal_offers": "Rebajas de Invierno"
+    "seasonal_offers": "Rebajas de Invierno",
+    "stats": {
+      "games": "Juegos Disponibles",
+      "users": "Jugadores Activos",
+      "collections": "Colecciones Creadas",
+      "open_source": "100% Open Source",
+      "trusted": "Plataforma Confiable",
+      "no_ads": "Cero Anuncios"
+    }
   },
   "landing": {
     "hero_title": "Bienvenido a GameManager",

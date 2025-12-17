@@ -10,8 +10,7 @@
 import { useState, useEffect, useRef, type KeyboardEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FiSearch, FiX } from "react-icons/fi";
-import type { Game } from "../../../services/games.service";
-import apiClient from "../../../services/api.client";
+import { gamesService, type Game } from "../../../services/games.service";
 import styles from "./NavbarSearch.module.css";
 import { useTranslation } from "react-i18next";
 
@@ -66,10 +65,9 @@ export const NavbarSearch = ({
         try {
           // Call public endpoint
           // Call Unified Search (Eager Sync)
-          const response = await apiClient.get<any>(`/discovery?q=${query}`);
-          // Backend returns { results: [], source: ... }
-          // We map results to frontend Game interface if needed, but they should be compatible
-          setResults(response.data.results.slice(0, 5));
+          const { data } = await gamesService.searchUnified(query);
+
+          setResults(data.slice(0, 5));
           setShowDropdown(true);
         } catch (error) {
           console.error("Search error:", error);
