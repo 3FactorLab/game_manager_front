@@ -10,8 +10,8 @@ export default defineConfig(({ mode }) => {
 
     return {
         // Base path for GitHub Pages (uses repo name if not root)
-        // Adjust this if you are not deploying to the root of a domain
-        base: './', 
+        // In local dev we use '/', in prod we use '/game_manager_front/' (based on error message)
+        base: mode === 'production' ? '/game_manager_front/' : '/', 
         plugins: [react()],
         server: {
             proxy: {
