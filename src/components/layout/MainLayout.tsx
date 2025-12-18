@@ -37,7 +37,7 @@ export const MainLayout = () => {
           <div className={styles.footerBrand}>
             <div className={styles.brandRow}>
               <img
-                src="/game_manager_icon.png"
+                src={`${import.meta.env.BASE_URL}game_manager_icon.png`}
                 alt="GameManager"
                 className={styles.brandIcon}
               />

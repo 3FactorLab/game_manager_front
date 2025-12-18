@@ -95,7 +95,7 @@ export const Navbar = () => {
     <div className={styles.navbar}>
       <Link to="/home" className={styles.logo}>
         <img
-          src="/game_manager_icon.png"
+          src={`${import.meta.env.BASE_URL}game_manager_icon.png`}
           alt="GameManager"
           className={styles.logoIcon}
         />
@@ -193,8 +193,8 @@ export const Navbar = () => {
                           {item.price === 0
                             ? t("common.free")
                             : `${item.currency.toUpperCase()} ${item.price.toFixed(
-                                2
-                              )}`}
+                              2
+                            )}`}
                         </div>
                       </div>
                       <button

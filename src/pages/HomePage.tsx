@@ -39,7 +39,7 @@ const HomePage = () => {
             transition={{ delay: 0.3, duration: 0.5, type: "spring" }}
           >
             <img
-              src="/game_manager_icon.png"
+              src={`${import.meta.env.BASE_URL}game_manager_icon.png`}
               alt="Game Manager"
               className={styles.heroIconImg}
             />
@@ -112,7 +112,7 @@ const HomePage = () => {
               <div className={styles.feature}>
                 <div className={styles.featureIconWrapper}>
                   <img
-                    src="/discover_image.png"
+                    src={`${import.meta.env.BASE_URL}discover_image.png`}
                     alt="Discover"
                     className={styles.featureIcon}
                   />
@@ -129,7 +129,7 @@ const HomePage = () => {
               <div className={styles.feature}>
                 <div className={styles.featureIconWrapper}>
                   <img
-                    src="/catalog_image.png"
+                    src={`${import.meta.env.BASE_URL}catalog_image.png`}
                     alt="Organize"
                     className={styles.featureIcon}
                   />
@@ -146,7 +146,7 @@ const HomePage = () => {
               <div className={styles.feature}>
                 <div className={styles.featureIconWrapper}>
                   <img
-                    src="/track_image.png"
+                    src={`${import.meta.env.BASE_URL}track_image.png`}
                     alt="Track"
                     className={styles.featureIcon}
                   />
