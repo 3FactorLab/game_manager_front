@@ -42,16 +42,11 @@ describe("DashboardStats Integration", () => {
     server.use(
       http.get("/api/stats/dashboard", () => {
         return HttpResponse.json({
-          kpis: {
-            totalRevenue: 12345.67,
-            totalUsers: 50,
-            totalGames: 20,
-            totalOrders: 10,
-          },
-          topGames: [{ title: "Game A", sales: 100, revenue: 5000 }],
-          salesTrend: [{ date: "2024-01", sales: 7500, orders: 5 }],
-          platforms: [],
-          libraryStats: [],
+          revenue: 12345.67,
+          topSelling: [
+            { _id: "1", title: "Game A", totalSold: 100, revenue: 5000 },
+          ],
+          monthlyTrends: [{ _id: "2024-01", sales: 150, revenue: 7500 }],
         });
       }),
       http.get("/api/stats/public", () => {

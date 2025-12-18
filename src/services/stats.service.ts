@@ -36,19 +36,6 @@ export interface DashboardStatsDto {
   libraryStats: Array<{ title: string; count: number }>;
 }
 
-interface BackendStatsResponse {
-  kpis: {
-    totalUsers: number;
-    totalGames: number;
-    totalOrders: number;
-    totalRevenue: number;
-  };
-  topGames: Array<{ title: string; revenue: number; sales: number }>;
-  platforms: Array<{ name: string; count: number }>;
-  salesTrend: Array<{ date: string; sales: number; orders: number }>;
-  libraryStats: Array<{ title: string; count: number }>;
-}
-
 export const statsService = {
   /**
    * getGlobalStats (Public)
@@ -64,33 +51,7 @@ export const statsService = {
    * Fetches real-time financial KPIs (Revenue, Top Selling, Trends).
    */
   async getDashboardStats(): Promise<DashboardStatsDto> {
-    const { data } = await apiClient.get<BackendStatsResponse>(
-      "/stats/dashboard"
-    );
-
-    // Adapt Backend Response to Frontend DTO
-    return {
-      revenue: data.kpis.totalRevenue,
-      averageOrderValue:
-        data.kpis.totalOrders > 0
-          ? data.kpis.totalRevenue / data.kpis.totalOrders
-          : 0,
-      topSelling: data.topGames.map((g) => ({
-        _id: g.title,
-        title: g.title,
-        totalSold: g.sales,
-        revenue: g.revenue,
-        unitPrice: g.sales > 0 ? g.revenue / g.sales : 0,
-      })),
-      monthlyTrends: data.salesTrend.map((t) => ({
-        _id: t.date,
-        sales: t.sales,
-        revenue: t.sales,
-        orders: t.orders,
-      })),
-      platforms: data.platforms || [],
-      genres: [], // Not provided by backend yet
-      libraryStats: data.libraryStats || [],
-    };
+    const { data } = await apiClient.get<DashboardStatsDto>("/stats/dashboard");
+    return data;
   },
 };
