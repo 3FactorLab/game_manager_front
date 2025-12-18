@@ -16,7 +16,7 @@ concurrency:
 
 jobs:
   build:
-    if: startsWith(github.event.head_commit.message, 'deploy:')
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.event.head_commit.message, 'deploy:')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
