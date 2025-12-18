@@ -62,22 +62,6 @@ export const useDeleteUser = () => {
 };
 
 /**
- * Hook to create a game (Admin only)
- * Invalidates games catalog on success
- */
-export const useCreateGame = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: (gameData: FormData) => adminService.createGame(gameData),
-    onSuccess: () => {
-      // Invalidate games catalog
-      queryClient.invalidateQueries({ queryKey: ["games"] });
-    },
-  });
-};
-
-/**
  * Hook to update a game (Admin only)
  * Invalidates games catalog on success
  */
@@ -157,13 +141,26 @@ export const useOrders = () => {
   });
 };
 
+import { statsService } from "../services/stats.service";
+
 /**
  * Hook to fetch dashboard statistics (Admin only)
  */
 export const useDashboardStats = () => {
   return useQuery({
     queryKey: ["admin", "dashboard-stats"],
-    queryFn: () => adminService.getDashboardStats(),
+    queryFn: () => statsService.getDashboardStats(),
     staleTime: 60 * 1000,
+  });
+};
+
+/**
+ * Hook to fetch public global stats
+ */
+export const usePublicStats = () => {
+  return useQuery({
+    queryKey: ["public", "stats"],
+    queryFn: () => statsService.getGlobalStats(),
+    staleTime: 5 * 60 * 1000,
   });
 };

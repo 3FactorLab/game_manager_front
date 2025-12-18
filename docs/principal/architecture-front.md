@@ -967,7 +967,26 @@ Desacoplamos totalmente la UI de la Lógica.
 - **Solución**: Custom Hooks (`useWishlist`, `useGames`) encapsulan el estado, efectos y llamadas a servicios.
 - **Beneficio**: Te permite cambiar la implementación lógica (ej: migrar de Context a Redux) sin tocar una sola línea de la UI.
 
-### 4. Hybrid State Strategy (Pragmatismo)
+### 4. Strict Typing Strategy (Seguridad Tipada)
+
+Desde la versión "Final Audit" (Diciembre 2025), implementamos **TypeScript Strict Mode** al 100%.
+
+- **Zero `any` Policy**: El uso de `any` está prohibido y bloqueado por linters.
+- **Shared Interfaces**: Los modelos de dominio (`Game`, `User`) se comparten via `src/types/*.ts`, asegurando que el frontend espera exactamente lo que el backend envía.
+- **Partial Updates**: Usamos `Partial<T>` y `Pick<T>` (Utility Types) para formularios de edición, evitando la necesidad de crear interfaces duplicadas.
+
+### 5. Validation Driven Development (VDD)
+
+Siguiendo la metodología del backend, el frontend implementa **Scripts de Validación** para garantizar la integridad arquitectónica antes de cada hito.
+
+- **Scripts**: `npm run validate:phaseX` (ej: `scripts/validate-phase16.js`).
+- **Propósito**:
+  1. **Static Analysis**: Verificar estructura de carpetas y nomenclatura.
+  2. **Code Quality**: Escanear en busca de `console.log` olvidados o `any`.
+  3. **Testing**: Ejecutar suites de test relevantes para la fase.
+- **Beneficio**: "Compliance as Code". La arquitectura no es solo un documento, es una restricción ejecutable en el CI/CD pipeline.
+
+### 6. Hybrid State Strategy (Pragmatismo)
 
 No usamos una "bala de plata" para el estado. Usamos la herramienta correcta para cada necesidad:
 
@@ -985,7 +1004,7 @@ No usamos una "bala de plata" para el estado. Usamos la herramienta correcta par
 | **Auth State**   | Context API      | Usuario, Tokens           |
 | **UI State**     | useState / Props | Formularios, Pestañas     |
 
-### 5. Styling Strategy (Clean Code)
+### 7. Styling Strategy (Clean Code)
 
 - **CSS Modules**: Usamos `*.module.css` para estilos locales. **Zero Inline Styles**.
 - **Variables CSS**: `index.css` define el sistema de diseño (colores, espacios) con variables.
@@ -1006,27 +1025,37 @@ No usamos una "bala de plata" para el estado. Usamos la herramienta correcta par
 
 ---
 
-## 🔮 Roadmap Actualizado
+### 8. Estrategias de Optimización y Rendimiento
 
-### Corto Plazo (Completado)
+Para garantizar una experiencia de usuario fluida, implementamos múltiples capas de optimización:
 
-- [x] ~~Implementar lógica de refresh token~~ ✅ Completado
-- [x] ~~Error Boundaries para manejo robusto de errores~~ ✅ Completado
-- [x] ~~Type safety al 95%~~ ✅ Completado
-- [x] ~~Cargar traducciones al español~~ ✅ Completado
-- [x] ~~Mover estilos inline restantes a CSS modules~~ ✅ Completado (100% Clean Code)
-- [x] ~~Implementar Buscador Avanzado (Search, Filters & Sort)~~ ✅ Completado
-- [x] ~~Optimistic Updates en Wishlist~~ ✅ Completado
-- [x] ~~Testing Strategy (74 tests, 16 archivos)~~ ✅ Completado
+1.  **Code Splitting (Lazy Loading)**:
 
-### Medio Plazo
+    - Uso de `React.lazy()` y `Suspense` en rutas principales.
+    - Vite divide el bundle en chunks lógicos, reduciendo el TBT (Total Blocking Time) inicial.
 
-- [ ] Refactorización Fast Refresh (Fase 16 - Opcional)
-- [ ] Service Workers para PWA
-- [ ] Integración con Sentry para tracking
+2.  **Server State Caching (React Query)**:
 
-### Largo Plazo
+    - `staleTime: 5 mins`: Evita refetching innecesario al navegar entre vistas.
+    - `keepPreviousData: true`: Elimina el parpadeo (layout shift) durante la paginación.
 
-- [ ] Server-Side Rendering (SSR) con Next.js
-- [ ] Testing E2E con Playwright
-- [ ] Storybook para documentación
+3.  **Memoization Selectiva**:
+    - `useMemo` en cálculos costosos del carrito (`totalAmount`, `totalItems`).
+    - `useCallback` en handlers pasados a componentes puros para evitar re-renders.
+
+---
+
+## 🔮 Conclusiones y Evolución Futura
+
+La arquitectura actual ha alcanzado un nivel de madurez alto, caracterizado por **estabilidad, tipado estricto y desacoplamiento**.
+
+### Trabajo Futuro (Roadmap Académico)
+
+1.  **Server-Side Rendering (SSR)**:
+    - Migración potencial a **Next.js** para mejorar SEO y First Contentful Paint (FCP).
+2.  **Testing End-to-End (E2E)**:
+    - Implementación de **Playwright** para simular flujos de usuario completos en navegadores reales.
+3.  **Documentation System**:
+    - Integración de **Storybook** para documentar visualmente la biblioteca de componentes (Atomic Design).
+4.  **PWA Capabilities**:
+    - Service Workers para soporte offline básico y caché de activos estáticos.

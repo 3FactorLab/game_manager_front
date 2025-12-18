@@ -112,4 +112,4 @@ Actualmente (Diciembre 2025), garantizamos 100% de cobertura en:
 1.  **Autenticación**: Login, Register con validación Zod.
 2.  **Catálogo**: Renderizado de Grid, Paginación, Filtros.
 3.  **Checkout**: Flujo de compra completo.
-4.  **Admin**: Gestión de usuarios, stats y juegos.
+4.  **Admin**: Gestión de usuarios y juegos.

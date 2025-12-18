@@ -25,6 +25,8 @@ vi.mock("react-icons/fa", () => ({
   FaLayerGroup: () => <span data-testid="icon-collections" />,
   FaCode: () => <span data-testid="icon-code" />,
   FaBan: () => <span data-testid="icon-ban" />,
+  FaShoppingBag: () => <span data-testid="icon-shopping-bag" />,
+  FaMoneyBillWave: () => <span data-testid="icon-money" />,
 }));
 
 // Mock Translations

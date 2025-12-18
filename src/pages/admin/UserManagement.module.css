@@ -212,3 +212,59 @@
     font-size: 1.5rem;
   }
 }
+
+/* Search Container */
+.searchContainer {
+  margin-bottom: 1rem;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 8px;
+  border: 1px solid var(--glass-border);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+  font-size: 1rem;
+  transition: all 0.2s ease;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Table Cells */
+.orderIdCell {
+  font-size: 0.9rem;
+  color: #888;
+  font-family: monospace;
+}
+
+.userEmail {
+  font-size: 0.8rem;
+  color: #888;
+}
+
+.orderItemTitle {
+  font-size: 0.9rem;
+}
+
+.totalAmount {
+  font-weight: bold;
+  color: #4caf50;
+}
+
+/* Status Badges */
+.badgeSuccess {
+  background: rgba(76, 175, 80, 0.2);
+  color: #4caf50;
+  border: 1px solid rgba(76, 175, 80, 0.3);
+}
+
+.badgePending {
+  background: rgba(255, 152, 0, 0.2);
+  color: #ff9800;
+  border: 1px solid rgba(255, 152, 0, 0.3);
+}
