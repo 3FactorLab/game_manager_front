@@ -19,7 +19,7 @@ import { logger } from "../utils/error.util";
  */
 const baseURL = import.meta.env.DEV
   ? "/api"
-  : import.meta.env.VITE_API_URL || "/api";
+  : (import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/api` : "/api");
 
 console.log("🔌 [API Client] Initializing with baseURL:", baseURL);
 console.log("🌍 [Environment] Mode:", import.meta.env.MODE);
