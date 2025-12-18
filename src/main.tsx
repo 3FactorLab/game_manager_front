@@ -20,7 +20,7 @@ createRoot(document.getElementById("root")!).render(
         <AuthProvider>
           <CartProvider>
             <WishlistProvider>
-              <BrowserRouter>
+            <BrowserRouter basename={import.meta.env.BASE_URL}>
                 <ScrollToTop />
                 <App />
               </BrowserRouter>

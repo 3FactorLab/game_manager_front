@@ -9,6 +9,9 @@ export default defineConfig(({ mode }) => {
     console.log("✅ [Vite Config] Loaded API URL:", env.VITE_API_URL);
 
     return {
+        // Base path for GitHub Pages (uses repo name if not root)
+        // Adjust this if you are not deploying to the root of a domain
+        base: './', 
         plugins: [react()],
         server: {
             proxy: {
