@@ -17,12 +17,17 @@ import { logger } from "../utils/error.util";
  * - Handles 401 errors by logging out user
  * - Sends credentials (cookies) with requests
  */
+const baseURL = import.meta.env.DEV
+  ? "/api"
+  : import.meta.env.VITE_API_URL || "/api";
+
+console.log("🔌 [API Client] Initializing with baseURL:", baseURL);
+console.log("🌍 [Environment] Mode:", import.meta.env.MODE);
+
 const apiClient = axios.create({
   // In DEV, always use /api to leverage Vite Proxy (avoids CORS)
   // In PROD, use VITE_API_URL if defined, or fallback to /api
-  baseURL: import.meta.env.DEV
-    ? "/api"
-    : import.meta.env.VITE_API_URL || "/api",
+  baseURL,
   headers: {
     "Content-Type": "application/json",
   },
